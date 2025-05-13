@@ -3,7 +3,6 @@ package com.ssafy.questory.domain;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.sql.Date;
 import java.time.LocalDate;
 
 @Getter
@@ -17,6 +16,7 @@ public class Member {
     private boolean isAdmin;
     private boolean mode;
     private boolean isDeleted;
+    private String profileUrl;
 
     protected Member() {}
 
@@ -31,5 +31,6 @@ public class Member {
         this.isAdmin = false;
         this.mode = false;
         this.isDeleted = false;
+        this.profileUrl = "";
     }
 }
