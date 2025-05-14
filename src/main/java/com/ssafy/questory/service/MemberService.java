@@ -21,11 +21,12 @@ public class MemberService {
 
         validateDuplicatedMember(email);
 
-        Member member = memberRepository.regist(Member.builder()
-                        .email(email)
-                        .password(password)
-                        .nickname(nickname)
-                        .build());
+        Member member = Member.builder()
+                .email(email)
+                .password(password)
+                .nickname(nickname)
+                .build();
+        memberRepository.regist(member);
         return MemberRegistResponseDto.from(member);
     }
 

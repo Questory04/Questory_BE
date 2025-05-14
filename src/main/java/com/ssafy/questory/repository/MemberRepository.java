@@ -8,5 +8,5 @@ import java.util.Optional;
 @Mapper
 public interface MemberRepository {
     Optional<Member> findByEmail(String email);
-    Member regist(Member member);
+    int regist(Member member);
 }
