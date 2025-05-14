@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssafy.questory.repository.MemberRepository">
+    <insert id="regist" parameterType="com.ssafy.questory.domain.Member" useGeneratedKeys="true" keyProperty="memberId">
+        INSERT INTO Members ( email, password, nickname, exp, title, created_at, is_admin, mode, is_deleted, profile_image_url )
+        VALUES ( #{email}, #{password}, #{nickname}, #{exp}, #{title}, #{createAt}, #{isAdmin}, #{mode}, #{isDeleted}, #{profileUrl} )
+    </insert>
+    <select id="findByEmail" parameterType="String" resultMap="memberResultMap">
+        SELECT email, password, nickname, exp, title, created_at, is_admin, mode, is_deleted, profile_image_url
+        FROM Members
+        WHERE email = #{email}
+    </select>
+
+    <resultMap id="memberResultMap" type="com.ssafy.questory.domain.Member">
+        <id property="email" column="email"/>
+        <result property="password" column="password"/>
+        <result property="nickname" column="nickname"/>
+        <result property="exp" column="exp"/>
+        <result property="title" column="title"/>
+        <result property="createAt" column="created_at"/>
+        <result property="isAdmin" column="is_admin"/>
+        <result property="mode" column="mode"/>
+        <result property="isDeleted" column="is_deleted"/>
+        <result property="profileUrl" column="profile_image_url"/>
+    </resultMap>
+
+</mapper>
