@@ -3,14 +3,19 @@ package com.ssafy.questory.service;
 import com.ssafy.questory.config.jwt.CustomUserDetailsService;
 import com.ssafy.questory.config.jwt.JwtService;
 import com.ssafy.questory.domain.Member;
+import com.ssafy.questory.dto.request.member.MemberLoginRequestDto;
 import com.ssafy.questory.dto.request.member.MemberRegistRequestDto;
 import com.ssafy.questory.dto.response.member.MemberRegistResponseDto;
+import com.ssafy.questory.dto.response.member.MemberTokenResponseDto;
 import com.ssafy.questory.repository.MemberRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
@@ -92,5 +97,88 @@ class MemberServiceTest {
         assertThatThrownBy(() -> memberService.regist(request))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("이미 존재하는 회원입니다.");
+    }
+
+    @Test
+    @DisplayName("로그인 성공 시 토큰 반환")
+    void login_success() {
+        // given
+        String email = "test@test.com";
+        String rawPassword = "password";
+        String encodedPassword = "encodedPassword";
+        String expectedToken = "jwt.token.value";
+
+        MemberLoginRequestDto request = MemberLoginRequestDto.builder()
+                .email(email)
+                .password(rawPassword)
+                .build();
+
+        UserDetails userDetails = mock(UserDetails.class);
+        when(userDetails.getUsername()).thenReturn(email);
+        when(userDetails.getPassword()).thenReturn(encodedPassword);
+
+        when(passwordEncoder.matches(rawPassword, encodedPassword)).thenReturn(true);
+        when(userDetailsService.loadUserByUsername(email)).thenReturn(userDetails);
+        when(jwtService.generateToken(userDetails)).thenReturn(expectedToken);
+
+        // when
+        MemberTokenResponseDto response = memberService.login(request);
+
+        // then
+        verify(authenticationManager).authenticate(
+                argThat(authToken -> authToken instanceof UsernamePasswordAuthenticationToken &&
+                        authToken.getPrincipal().equals(email) &&
+                        authToken.getCredentials().equals(rawPassword))
+        );
+
+        assertThat(response.getEmail()).isEqualTo(email);
+        assertThat(response.getAccessToken()).isEqualTo(expectedToken);
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 이메일로 로그인 시 UsernameNotFoundException 발생")
+    void login_emailNotFound_throwsException() {
+        // given
+        String email = "notfound@test.com";
+        String password = "password";
+
+        MemberLoginRequestDto request = MemberLoginRequestDto.builder()
+                .email(email)
+                .password(password)
+                .build();
+
+        when(userDetailsService.loadUserByUsername(email))
+                .thenThrow(new UsernameNotFoundException("회원이 존재하지 않습니다."));
+
+        // when & then
+        assertThatThrownBy(() -> memberService.login(request))
+                .isInstanceOf(UsernameNotFoundException.class)
+                .hasMessageContaining("회원이 존재하지 않습니다.");
+    }
+
+    @Test
+    @DisplayName("비밀번호가 일치하지 않을 경우 RuntimeException 발생")
+    void login_passwordMismatch_throwsException() {
+        // given
+        String email = "test@test.com";
+        String rawPassword = "wrongpassword";
+        String encodedPassword = "encodedPassword";
+
+        MemberLoginRequestDto request = MemberLoginRequestDto.builder()
+                .email(email)
+                .password(rawPassword)
+                .build();
+
+        UserDetails userDetails = mock(UserDetails.class);
+        when(userDetails.getUsername()).thenReturn(email);
+        when(userDetails.getPassword()).thenReturn(encodedPassword);
+
+        when(userDetailsService.loadUserByUsername(email)).thenReturn(userDetails);
+        when(passwordEncoder.matches(rawPassword, encodedPassword)).thenReturn(false);
+
+        // when & then
+        assertThatThrownBy(() -> memberService.login(request))
+                .isInstanceOf(RuntimeException.class)
+                .hasMessage("비밀번호 불일치");
     }
 }
