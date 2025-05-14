@@ -1,5 +1,7 @@
 package com.ssafy.questory.service;
 
+import com.ssafy.questory.config.jwt.CustomUserDetailsService;
+import com.ssafy.questory.config.jwt.JwtService;
 import com.ssafy.questory.domain.Member;
 import com.ssafy.questory.dto.request.member.MemberRegistRequestDto;
 import com.ssafy.questory.dto.response.member.MemberRegistResponseDto;
@@ -8,6 +10,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
@@ -19,13 +22,27 @@ class MemberServiceTest {
 
     private MemberRepository memberRepository;
     private PasswordEncoder passwordEncoder;
+    private AuthenticationManager authenticationManager;
+    private CustomUserDetailsService userDetailsService;
+    private JwtService jwtService;
+
     private MemberService memberService;
 
     @BeforeEach
     void setUp() {
         memberRepository = mock(MemberRepository.class);
         passwordEncoder = mock(PasswordEncoder.class);
-        memberService = new MemberService(memberRepository, passwordEncoder);
+        authenticationManager = mock(AuthenticationManager.class);
+        userDetailsService = mock(CustomUserDetailsService.class);
+        jwtService = mock(JwtService.class);
+
+        memberService = new MemberService(
+                memberRepository,
+                passwordEncoder,
+                authenticationManager,
+                userDetailsService,
+                jwtService
+        );
     }
 
     @Test
