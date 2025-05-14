@@ -1,7 +1,7 @@
 package com.ssafy.questory.service;
 
 import com.ssafy.questory.domain.Member;
-import com.ssafy.questory.dto.request.MemberRegistRequestDto;
+import com.ssafy.questory.dto.request.member.MemberRegistRequestDto;
 import com.ssafy.questory.dto.response.member.MemberRegistResponseDto;
 import com.ssafy.questory.repository.MemberRepository;
 import org.junit.jupiter.api.BeforeEach;

@@ -1,6 +1,6 @@
 package com.ssafy.questory.controller;
 
-import com.ssafy.questory.dto.request.MemberRegistRequestDto;
+import com.ssafy.questory.dto.request.member.MemberRegistRequestDto;
 import com.ssafy.questory.dto.response.member.MemberRegistResponseDto;
 import com.ssafy.questory.service.MemberService;
 import lombok.RequiredArgsConstructor;

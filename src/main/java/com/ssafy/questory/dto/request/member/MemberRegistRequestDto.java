@@ -1,4 +1,4 @@
-package com.ssafy.questory.dto.request;
+package com.ssafy.questory.dto.request.member;
 
 import lombok.Builder;
 import lombok.Getter;
