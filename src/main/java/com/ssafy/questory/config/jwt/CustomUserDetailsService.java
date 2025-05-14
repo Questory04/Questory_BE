@@ -1,5 +1,7 @@
 package com.ssafy.questory.config.jwt;
 
+import com.ssafy.questory.domain.Member;
+import com.ssafy.questory.domain.SecurityMember;
 import com.ssafy.questory.repository.SecurityMemberRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -16,8 +18,8 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return this.memberRepository.findByEmail(username).orElseThrow(
-                () -> new UsernameNotFoundException("User not found")
-        );
+        Member member = this.memberRepository.findByEmail(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        return SecurityMember.of(member);
     }
 }
