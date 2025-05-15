@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 public class MailSendService {
     private final MemberRepository memberRepository;
     private final JavaMailSender mailSender;
+    private final PasswordEncoder passwordEncoder;
 
     @Value("${spring.mail.username}")
     private String fromEmail;
@@ -41,6 +43,7 @@ public class MailSendService {
         String nickname = member.getNickname();
 
         String newPassword = getNewPassword();
+        changePassword(member, newPassword);
 
         return MailResponseDto.builder()
                 .email(email)
@@ -57,5 +60,10 @@ public class MailSendService {
             newPassword.append(idx);
         }
         return newPassword.toString();
+    }
+
+    private void changePassword(Member member, String newPassword) {
+        String encodedPassword = passwordEncoder.encode(newPassword);
+        memberRepository.changePassword(member, encodedPassword);
     }
 }
