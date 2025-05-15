@@ -1,13 +1,10 @@
-package com.ssafy.questory.service;
+package com.ssafy.questory.service.mail;
 
 import com.ssafy.questory.domain.Member;
 import com.ssafy.questory.dto.request.member.MemberEmailRequestDto;
 import com.ssafy.questory.dto.response.mail.MailResponseDto;
 import com.ssafy.questory.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -15,30 +12,15 @@ import java.security.SecureRandom;
 
 @Service
 @RequiredArgsConstructor
-public class MailSendService {
+public class PasswordResetService implements MailContentBuilder {
     private final MemberRepository memberRepository;
-    private final JavaMailSender mailSender;
     private final PasswordEncoder passwordEncoder;
-
-    @Value("${spring.mail.username}")
-    private String fromEmail;
 
     private final char[] charSet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*".toCharArray();
 
-    public void createAndSendEmail(MemberEmailRequestDto memberFindPasswordRequestDto) {
-        sendEmail(createEmail(memberFindPasswordRequestDto));
-    }
-
-    public void sendEmail(MailResponseDto mailResponseDto) {
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(mailResponseDto.getEmail());
-        message.setFrom(fromEmail);
-        message.setText(mailResponseDto.getContent());
-        mailSender.send(message);
-    }
-
-    public MailResponseDto createEmail(MemberEmailRequestDto memberFindPasswordRequestDto) {
-        String email = memberFindPasswordRequestDto.getEmail();
+    @Override
+    public MailResponseDto buildMail(MemberEmailRequestDto memberEmailRequestDto) {
+        String email = memberEmailRequestDto.getEmail();
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 이메일입니다: " + email));;
         String nickname = member.getNickname();
