@@ -35,7 +35,7 @@ public class PasswordResetService implements MailContentBuilder {
                 .build();
     }
 
-    public String getNewPassword() {
+    private String getNewPassword() {
         SecureRandom random = new SecureRandom();
         StringBuilder newPassword = new StringBuilder();
 
