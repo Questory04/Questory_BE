@@ -1,9 +1,8 @@
 package com.ssafy.questory.service.mail;
 
-import com.ssafy.questory.domain.Member;
-import com.ssafy.questory.dto.request.member.MemberEmailRequestDto;
+import com.ssafy.questory.common.util.RedisUtil;
+import com.ssafy.questory.dto.request.member.EmailVerifyRequestDto;
 import com.ssafy.questory.dto.response.mail.MailResponseDto;
-import com.ssafy.questory.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +11,8 @@ import java.security.SecureRandom;
 @Service
 @RequiredArgsConstructor
 public class VerifyService implements MailContentBuilder {
+
+    private final RedisUtil redisUtil;
 
     @Override
     public MailResponseDto buildMail(String email) {
@@ -30,6 +31,8 @@ public class VerifyService implements MailContentBuilder {
 
             감사합니다.
             """, verificationCode);
+
+        redisUtil.setDataExpire(email, verificationCode, 60 * 5L);
 
         return MailResponseDto.builder()
                 .email(email)
@@ -50,5 +53,15 @@ public class VerifyService implements MailContentBuilder {
         }
 
         return code.toString();
+    }
+
+    public void checkVerifyCode(EmailVerifyRequestDto emailVerifyRequestDto) {
+        String email = emailVerifyRequestDto.getEmail();
+        String verifyCode = emailVerifyRequestDto.getCode();
+
+        String verifyCodeByEmail = redisUtil.getData(email);
+        if (!verifyCodeByEmail.equals(verifyCode)) {
+            throw new IllegalArgumentException("인증 코드가 일치하지 않습니다.");
+        }
     }
 }

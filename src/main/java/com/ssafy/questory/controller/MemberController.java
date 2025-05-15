@@ -50,11 +50,19 @@ public class MemberController {
         ));
     }
 
-    @PostMapping("send-verify")
-    public ResponseEntity<Map<String, String>> sendVerifyEmail(@RequestBody EmailVerifyRequestDto emailVerifyRequestDto) {
-        mailSendService.sendEmail(verifyService.buildMail(emailVerifyRequestDto.getEmail()));
+    @PostMapping("/send-verify")
+    public ResponseEntity<Map<String, String>> sendVerifyEmail(@RequestBody MemberEmailRequestDto memberEmailRequestDto) {
+        mailSendService.sendEmail(verifyService.buildMail(memberEmailRequestDto.getEmail()));
         return ResponseEntity.ok().body(Map.of(
                 "message", "인증코드를 이메일로 전송했습니다."
+        ));
+    }
+
+    @PostMapping("/verify-code")
+    public ResponseEntity<Map<String, String>> verifyCode(@RequestBody EmailVerifyRequestDto emailVerifyRequestDto) {
+        verifyService.checkVerifyCode(emailVerifyRequestDto);
+        return ResponseEntity.ok().body(Map.of(
+                "message", "인증이 완료되었습니다."
         ));
     }
 }
