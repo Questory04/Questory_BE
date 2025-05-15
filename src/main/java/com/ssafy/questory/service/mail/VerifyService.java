@@ -14,8 +14,7 @@ import java.security.SecureRandom;
 public class VerifyService implements MailContentBuilder {
 
     @Override
-    public MailResponseDto buildMail(MemberEmailRequestDto memberEmailRequestDto) {
-        String email = memberEmailRequestDto.getEmail();
+    public MailResponseDto buildMail(String email) {
         String verificationCode = generateVerificationCode();
 
         String title = "[Questory] 이메일 인증 코드 안내";

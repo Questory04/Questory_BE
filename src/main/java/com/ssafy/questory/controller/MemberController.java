@@ -44,15 +44,15 @@ public class MemberController {
     @PostMapping("/find-password")
     public ResponseEntity<Map<String, String>> findPassword(
             @RequestBody MemberEmailRequestDto memberEmailRequestDto) {
-        mailSendService.sendEmail(passwordResetService.buildMail(memberEmailRequestDto));
+        mailSendService.sendEmail(passwordResetService.buildMail(memberEmailRequestDto.getEmail()));
         return ResponseEntity.ok().body(Map.of(
                 "message", "임시 비밀번호를 이메일로 전송했습니다."
         ));
     }
 
     @PostMapping("send-verify")
-    public ResponseEntity<Map<String, String>> sendVerifyEmail(@RequestBody MemberEmailRequestDto memberEmailRequestDto) {
-        mailSendService.sendEmail(verifyService.buildMail(memberEmailRequestDto));
+    public ResponseEntity<Map<String, String>> sendVerifyEmail(@RequestBody EmailVerifyRequestDto emailVerifyRequestDto) {
+        mailSendService.sendEmail(verifyService.buildMail(emailVerifyRequestDto.getEmail()));
         return ResponseEntity.ok().body(Map.of(
                 "message", "인증코드를 이메일로 전송했습니다."
         ));

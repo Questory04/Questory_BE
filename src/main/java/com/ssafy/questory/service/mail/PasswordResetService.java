@@ -20,8 +20,7 @@ public class PasswordResetService implements MailContentBuilder {
     private final char[] charSet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*".toCharArray();
 
     @Override
-    public MailResponseDto buildMail(MemberEmailRequestDto memberEmailRequestDto) {
-        String email = memberEmailRequestDto.getEmail();
+    public MailResponseDto buildMail(String email) {
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 이메일입니다: " + email));
 
