@@ -12,6 +12,11 @@
         FROM Members
         WHERE email = #{email}
     </select>
+    <update id="changePassword" parameterType="map">
+        UPDATE Members
+        SET password = #{changedPassword}
+        WHERE email = #{member.email}
+    </update>
 
     <resultMap id="memberResultMap" type="com.ssafy.questory.domain.Member">
         <id property="email" column="email"/>
