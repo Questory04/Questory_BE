@@ -23,8 +23,8 @@ class MailSendServiceTest {
     @BeforeEach
     void setUp() {
         javaMailSender = mock(JavaMailSender.class);
-        mailSendService = new MailSendService(javaMailSender); // ✅ 생성자에는 mailSender만
-        ReflectionTestUtils.setField(mailSendService, "fromEmail", fromEmail); // ✅ fromEmail 직접 주입
+        mailSendService = new MailSendService(javaMailSender);
+        ReflectionTestUtils.setField(mailSendService, "fromEmail", fromEmail);
     }
 
     @Test
