@@ -1,12 +1,15 @@
 package com.ssafy.questory.controller;
 
+import com.ssafy.questory.dto.request.member.EmailVerifyRequestDto;
 import com.ssafy.questory.dto.request.member.MemberEmailRequestDto;
 import com.ssafy.questory.dto.request.member.MemberLoginRequestDto;
 import com.ssafy.questory.dto.request.member.MemberRegistRequestDto;
 import com.ssafy.questory.dto.response.member.MemberRegistResponseDto;
 import com.ssafy.questory.dto.response.member.MemberTokenResponseDto;
-import com.ssafy.questory.service.MailSendService;
+import com.ssafy.questory.service.mail.MailSendService;
 import com.ssafy.questory.service.MemberService;
+import com.ssafy.questory.service.mail.PasswordResetService;
+import com.ssafy.questory.service.mail.VerifyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +26,8 @@ import java.util.Map;
 public class MemberController {
     private final MemberService userService;
     private final MailSendService mailSendService;
+    private final PasswordResetService passwordResetService;
+    private final VerifyService verifyService;
 
     @PostMapping("/regist")
     public ResponseEntity<MemberRegistResponseDto> regist(@RequestBody MemberRegistRequestDto memberRegistRequestDto) {
@@ -38,10 +43,18 @@ public class MemberController {
 
     @PostMapping("/find-password")
     public ResponseEntity<Map<String, String>> findPassword(
-            @RequestBody MemberEmailRequestDto memberFindPasswordRequestDto) {
-        mailSendService.createAndSendEmail(memberFindPasswordRequestDto);
+            @RequestBody MemberEmailRequestDto memberEmailRequestDto) {
+        mailSendService.sendEmail(passwordResetService.buildMail(memberEmailRequestDto));
         return ResponseEntity.ok().body(Map.of(
                 "message", "임시 비밀번호를 이메일로 전송했습니다."
+        ));
+    }
+
+    @PostMapping("send-verify")
+    public ResponseEntity<Map<String, String>> sendVerifyEmail(@RequestBody MemberEmailRequestDto memberEmailRequestDto) {
+        mailSendService.sendEmail(verifyService.buildMail(memberEmailRequestDto));
+        return ResponseEntity.ok().body(Map.of(
+                "message", "인증코드를 이메일로 전송했습니다."
         ));
     }
 }
