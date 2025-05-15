@@ -1,7 +1,7 @@
 package com.ssafy.questory.service;
 
 import com.ssafy.questory.domain.Member;
-import com.ssafy.questory.dto.request.member.MemberFindPasswordRequestDto;
+import com.ssafy.questory.dto.request.member.MemberEmailRequestDto;
 import com.ssafy.questory.dto.response.mail.MailResponseDto;
 import com.ssafy.questory.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +25,7 @@ public class MailSendService {
 
     private final char[] charSet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*".toCharArray();
 
-    public void createAndSendEmail(MemberFindPasswordRequestDto memberFindPasswordRequestDto) {
+    public void createAndSendEmail(MemberEmailRequestDto memberFindPasswordRequestDto) {
         sendEmail(createEmail(memberFindPasswordRequestDto));
     }
 
@@ -37,7 +37,7 @@ public class MailSendService {
         mailSender.send(message);
     }
 
-    public MailResponseDto createEmail(MemberFindPasswordRequestDto memberFindPasswordRequestDto) {
+    public MailResponseDto createEmail(MemberEmailRequestDto memberFindPasswordRequestDto) {
         String email = memberFindPasswordRequestDto.getEmail();
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 이메일입니다: " + email));;

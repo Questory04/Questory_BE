@@ -1,7 +1,7 @@
 package com.ssafy.questory.service;
 
 import com.ssafy.questory.domain.Member;
-import com.ssafy.questory.dto.request.member.MemberFindPasswordRequestDto;
+import com.ssafy.questory.dto.request.member.MemberEmailRequestDto;
 import com.ssafy.questory.repository.MemberRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -55,7 +55,7 @@ class MailSendServiceTest {
         when(memberRepository.findByEmail(email)).thenReturn(Optional.of(member));
         when(passwordEncoder.encode(anyString())).thenReturn("encodedPassword");
 
-        MemberFindPasswordRequestDto requestDto = MemberFindPasswordRequestDto.builder()
+        MemberEmailRequestDto requestDto = MemberEmailRequestDto.builder()
                 .email(email)
                 .build();
 
@@ -83,7 +83,7 @@ class MailSendServiceTest {
         String email = "none@questory.com";
         when(memberRepository.findByEmail(email)).thenReturn(Optional.empty());
 
-        MemberFindPasswordRequestDto requestDto = MemberFindPasswordRequestDto.builder()
+        MemberEmailRequestDto requestDto = MemberEmailRequestDto.builder()
                 .email(email)
                 .build();
 

@@ -1,6 +1,6 @@
 package com.ssafy.questory.controller;
 
-import com.ssafy.questory.dto.request.member.MemberFindPasswordRequestDto;
+import com.ssafy.questory.dto.request.member.MemberEmailRequestDto;
 import com.ssafy.questory.dto.request.member.MemberLoginRequestDto;
 import com.ssafy.questory.dto.request.member.MemberRegistRequestDto;
 import com.ssafy.questory.dto.response.member.MemberRegistResponseDto;
@@ -38,7 +38,7 @@ public class MemberController {
 
     @PostMapping("/find-password")
     public ResponseEntity<Map<String, String>> findPassword(
-            @RequestBody MemberFindPasswordRequestDto memberFindPasswordRequestDto) {
+            @RequestBody MemberEmailRequestDto memberFindPasswordRequestDto) {
         mailSendService.createAndSendEmail(memberFindPasswordRequestDto);
         return ResponseEntity.ok().body(Map.of(
                 "message", "임시 비밀번호를 이메일로 전송했습니다."

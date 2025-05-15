@@ -4,11 +4,11 @@ import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-public class MemberFindPasswordRequestDto {
+public class MemberEmailRequestDto {
     private String email;
 
     @Builder
-    private MemberFindPasswordRequestDto(String email) {
+    private MemberEmailRequestDto(String email) {
         this.email = email;
     }
 }
