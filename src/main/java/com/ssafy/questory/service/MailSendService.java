@@ -11,6 +11,8 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.security.SecureRandom;
+
 @Service
 @RequiredArgsConstructor
 public class MailSendService {
@@ -21,8 +23,7 @@ public class MailSendService {
     @Value("${spring.mail.username}")
     private String fromEmail;
 
-    private final char[] charSet = new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F',
-            'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z' };
+    private final char[] charSet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*".toCharArray();
 
     public void createAndSendEmail(MemberFindPasswordRequestDto memberFindPasswordRequestDto) {
         sendEmail(createEmail(memberFindPasswordRequestDto));
@@ -53,12 +54,14 @@ public class MailSendService {
     }
 
     public String getNewPassword() {
+        SecureRandom random = new SecureRandom();
         StringBuilder newPassword = new StringBuilder();
-        int idx = 0;
-        for (int i = 0; i < 10; i++) {
-            idx = (int) (charSet.length * Math.random());
-            newPassword.append(idx);
+
+        for (int i = 0; i < 12; i++) {
+            int idx = random.nextInt(charSet.length);
+            newPassword.append(charSet[idx]);
         }
+
         return newPassword.toString();
     }
 
