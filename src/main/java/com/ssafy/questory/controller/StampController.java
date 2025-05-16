@@ -5,8 +5,9 @@ import com.ssafy.questory.service.StampService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/stamp")
@@ -15,10 +16,9 @@ public class StampController {
     private final StampService stampService;
 
     @GetMapping("")
-    public ResponseEntity<StampsResponseDto> findStamps(@RequestParam int page, @RequestParam int size){
-        StampsResponseDto stampsResponseDto = stampService.findStamps(page, size);
-        System.out.println(stampsResponseDto.toString());
-        return ResponseEntity.status(HttpStatus.OK).body(stampsResponseDto);
+    public ResponseEntity<List<StampsResponseDto>> findStamps(@RequestParam int page, @RequestParam int size){
+        List<StampsResponseDto> stampsResponseDtoList = stampService.findStamps(page, size);
+        return ResponseEntity.status(HttpStatus.OK).body(stampsResponseDtoList);
     }
 
 }
