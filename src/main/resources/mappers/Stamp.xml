@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ssafy.questory.repository.StampRepository">
+
+    <select id="findStamps" resultMap="stampsMap" resultType="com.ssafy.questory.dto.response.stamp.StampsResponseDto">
+        SELECT
+        q.title AS title,
+        q.stamp_image_url AS url,
+        mq.created_at AS date,
+        ct.content_type_name AS content_type_name,
+        g.gugun_name AS sido_name,
+        q.difficulty AS difficulty,
+        q.stamp_description AS description
+        FROM
+        Quests q
+        JOIN
+        Members_Quests mq ON q.location_quest_id = mq.location_quest_id
+        JOIN
+        attractions a ON q.attraction_id = a.no
+        JOIN
+        contenttypes ct ON a.content_type_id = ct.content_type_id
+        JOIN
+        guguns g ON (a.area_code = g.sido_code AND a.si_gun_gu_code = g.gugun_code)
+        WHERE
+        q.member_id = ${memberId}
+        ORDER BY
+        mq.created_at DESC;
+    </select>
+
+    <resultMap type="StampsResponseDto" id="stampsMap">
+       <!-- <id column="no" property="no" /> -->
+        <result column="title" property="title" />
+        <result column="url" property="url" />
+        <result column="date" property="date" />
+        <result column="content_type_name" property="contentTypeName" />
+        <result column="sido_name" property="sidoName" />
+        <result column="difficulty" property="difficulty" />
+        <result column="description" property="description" />
+    </resultMap>
+
+</mapper>

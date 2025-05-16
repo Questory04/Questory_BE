@@ -1,3 +1,5 @@
+CREATE SCHEMA `ssafytrip`;
+
 USE `ssafytrip`;
 
 CREATE TABLE Members (
@@ -79,31 +81,22 @@ CREATE TABLE Members_Titles (
     created_at DATETIME DEFAULT NOW()
 );
 
-CREATE TABLE Stamps (
-    stamp_id INT AUTO_INCREMENT PRIMARY KEY,
-    location_quest_id INT NOT NULL,
-    image_url VARCHAR(100) NOT NULL,
-    description TEXT
-);
-
-CREATE TABLE Members_Stamps (
-    member_id INT NOT NULL,
-    stamp_id INT NOT NULL,
-    created_at DATETIME DEFAULT NOW()
-);
-
 CREATE TABLE Quests (
     location_quest_id INT AUTO_INCREMENT PRIMARY KEY,
     attraction_id INT NOT NULL,
     member_id INT NOT NULL,
     title VARCHAR(100),
-    description VARCHAR(3000),
+    quest_description VARCHAR(10000) NULL,
     difficulty ENUM('EASY', 'MEDIUM', 'HARD') DEFAULT 'MEDIUM',
-    is_private TINYINT(1) DEFAULT 0
+	created_at	DATETIME NOT NULL DEFAULT NOW(),
+    is_private TINYINT(1) DEFAULT 0,
+    stamp_image_url VARCHAR(100) NOT NULL,
+    stamp_description TEXT
 );
 
 CREATE TABLE Members_Quests (
     member_id INT NOT NULL,
     location_quest_id INT NOT NULL,
-    is_completed ENUM('YET', 'COMPLETE') DEFAULT 'YET'
+    is_completed ENUM('YET', 'COMPLETE') DEFAULT 'YET',
+    created_at DATETIME DEFAULT NOW()
 );
