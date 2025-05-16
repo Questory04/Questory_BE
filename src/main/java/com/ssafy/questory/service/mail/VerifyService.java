@@ -1,5 +1,6 @@
 package com.ssafy.questory.service.mail;
 
+import com.ssafy.questory.common.exception.CustomException;
 import com.ssafy.questory.common.util.RedisUtil;
 import com.ssafy.questory.dto.request.member.EmailVerifyRequestDto;
 import com.ssafy.questory.dto.response.mail.MailResponseDto;
@@ -7,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
+
+import static com.ssafy.questory.common.exception.ErrorCode.VERIFICATION_CODE_MISMATCH;
 
 @Service
 @RequiredArgsConstructor
@@ -61,7 +64,7 @@ public class VerifyService implements MailContentBuilder {
 
         String verifyCodeByEmail = redisUtil.getData(email);
         if (!verifyCodeByEmail.equals(verifyCode)) {
-            throw new IllegalArgumentException("인증 코드가 일치하지 않습니다.");
+            throw new CustomException(VERIFICATION_CODE_MISMATCH);
         }
     }
 }

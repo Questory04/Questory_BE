@@ -1,5 +1,7 @@
 package com.ssafy.questory.service;
 
+import com.ssafy.questory.common.exception.CustomException;
+import com.ssafy.questory.common.exception.ErrorCode;
 import com.ssafy.questory.config.jwt.CustomUserDetailsService;
 import com.ssafy.questory.config.jwt.JwtService;
 import com.ssafy.questory.domain.Member;
@@ -59,22 +61,22 @@ public class MemberService {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password));
         } catch (DisabledException e) {
-            throw new RuntimeException("인증되지 않은 아이디입니다.");
+            throw new CustomException(ErrorCode.MEMBER_NOT_FOUND);
         } catch (BadCredentialsException e) {
-            throw new RuntimeException("비밀번호가 일치하지 않습니다.");
+            throw new CustomException(ErrorCode.INVALID_PASSWORD);
         }
     }
 
     private void checkPassword(String rawPassword, String encodedPassword) {
         if (!passwordEncoder.matches(rawPassword, encodedPassword)) {
-            throw new RuntimeException("비밀번호 불일치");
+            throw new CustomException(ErrorCode.INVALID_PASSWORD);
         }
     }
 
     private void validateDuplicatedMember(String email) {
         memberRepository.findByEmail(email)
                 .ifPresent(error -> {
-                    throw new IllegalArgumentException("이미 존재하는 회원입니다.");
+                    throw new CustomException(ErrorCode.EMAIL_ALREADY_EXISTS);
                 });
     }
 }

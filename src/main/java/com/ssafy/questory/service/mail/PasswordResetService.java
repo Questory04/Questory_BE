@@ -1,5 +1,7 @@
 package com.ssafy.questory.service.mail;
 
+import com.ssafy.questory.common.exception.CustomException;
+import com.ssafy.questory.common.exception.ErrorCode;
 import com.ssafy.questory.domain.Member;
 import com.ssafy.questory.dto.response.mail.MailResponseDto;
 import com.ssafy.questory.repository.MemberRepository;
@@ -21,7 +23,7 @@ public class PasswordResetService implements MailContentBuilder {
     @Override
     public MailResponseDto buildMail(String email) {
         Member member = memberRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 이메일입니다: " + email));
+                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
         String newPassword = getNewPassword();
         changePassword(member, newPassword);
