@@ -1,5 +1,7 @@
 package com.ssafy.questory.service;
 
+import com.ssafy.questory.common.exception.CustomException;
+import com.ssafy.questory.common.exception.ErrorCode;
 import com.ssafy.questory.config.jwt.CustomUserDetailsService;
 import com.ssafy.questory.config.jwt.JwtService;
 import com.ssafy.questory.domain.Member;
@@ -15,7 +17,6 @@ import org.mockito.ArgumentCaptor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
@@ -95,8 +96,8 @@ class MemberServiceTest {
 
         // when & then
         assertThatThrownBy(() -> memberService.regist(request))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("이미 존재하는 회원입니다.");
+                .isInstanceOf(CustomException.class)
+                .hasMessage(ErrorCode.EMAIL_ALREADY_EXISTS.getMessage());
     }
 
     @Test
@@ -136,7 +137,7 @@ class MemberServiceTest {
     }
 
     @Test
-    @DisplayName("존재하지 않는 이메일로 로그인 시 UsernameNotFoundException 발생")
+    @DisplayName("존재하지 않는 이메일로 로그인 시 예외 발생")
     void login_emailNotFound_throwsException() {
         // given
         String email = "notfound@test.com";
@@ -148,16 +149,16 @@ class MemberServiceTest {
                 .build();
 
         when(userDetailsService.loadUserByUsername(email))
-                .thenThrow(new UsernameNotFoundException("회원이 존재하지 않습니다."));
+                .thenThrow(new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
         // when & then
         assertThatThrownBy(() -> memberService.login(request))
-                .isInstanceOf(UsernameNotFoundException.class)
-                .hasMessageContaining("회원이 존재하지 않습니다.");
+                .isInstanceOf(CustomException.class)
+                .hasMessage(ErrorCode.MEMBER_NOT_FOUND.getMessage());
     }
 
     @Test
-    @DisplayName("비밀번호가 일치하지 않을 경우 RuntimeException 발생")
+    @DisplayName("비밀번호가 일치하지 않을 경우 예외 발생")
     void login_passwordMismatch_throwsException() {
         // given
         String email = "test@test.com";
@@ -178,7 +179,7 @@ class MemberServiceTest {
 
         // when & then
         assertThatThrownBy(() -> memberService.login(request))
-                .isInstanceOf(RuntimeException.class)
-                .hasMessage("비밀번호 불일치");
+                .isInstanceOf(CustomException.class)
+                .hasMessage(ErrorCode.INVALID_PASSWORD.getMessage());
     }
 }
