@@ -24,7 +24,6 @@
         mode = #{mode}
         WHERE email = #{email}
     </update>
-
     <resultMap id="memberResultMap" type="com.ssafy.questory.domain.Member">
         <id property="email" column="email"/>
         <result property="password" column="password"/>

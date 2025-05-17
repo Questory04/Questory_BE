@@ -1,6 +1,7 @@
 package com.ssafy.questory.controller;
 
 import com.ssafy.questory.domain.Member;
+import com.ssafy.questory.dto.request.member.MemberModifyPasswordRequestDto;
 import com.ssafy.questory.dto.request.member.MemberModifyRequestDto;
 import com.ssafy.questory.dto.response.member.auth.MemberInfoResponseDto;
 import com.ssafy.questory.service.MemberAuthService;
@@ -30,10 +31,19 @@ public class MemberAuthController {
     }
 
     @PatchMapping("/profile")
-    @Operation(summary = "내 정보 수정", description = "내 정보를 수정합니다.")
+    @Operation(summary = "내 정보 수정 - nickname, title, mode",
+            description = "nickname, title, mode에 대한 내 정보를 수정합니다.")
     public ResponseEntity<MemberInfoResponseDto> modify(
             @AuthenticationPrincipal(expression = "member") Member member,
             @RequestBody MemberModifyRequestDto memberModifyRequestDto) {
         return ResponseEntity.ok(memberAuthService.modify(member, memberModifyRequestDto));
+    }
+
+    @PatchMapping("/password")
+    @Operation(summary = "내 정보 수정 - 비밀번호", description = "비밀번호를 수정합니다.")
+    public ResponseEntity<MemberInfoResponseDto> modifyPassword(
+            @AuthenticationPrincipal(expression = "member") Member member,
+            @RequestBody MemberModifyPasswordRequestDto memberModifyPasswordRequestDto) {
+        return ResponseEntity.ok(memberAuthService.modifyPassword(member, memberModifyPasswordRequestDto));
     }
 }
