@@ -1,7 +1,6 @@
 package com.ssafy.questory.dto.response.member.auth;
 
 import com.ssafy.questory.domain.Member;
-import com.ssafy.questory.dto.response.member.MemberRegistResponseDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,7 +12,7 @@ import java.time.LocalDate;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class MemberInfoResponse {
+public class MemberInfoResponseDto {
     private String email;
     private String nickname;
     private long exp;
@@ -22,8 +21,8 @@ public class MemberInfoResponse {
     private boolean isAdmin;
     private boolean mode;
 
-    public static MemberInfoResponse from(Member member) {
-        return MemberInfoResponse.builder()
+    public static MemberInfoResponseDto from(Member member) {
+        return MemberInfoResponseDto.builder()
                 .email(member.getEmail())
                 .nickname(member.getNickname())
                 .exp(member.getExp())
