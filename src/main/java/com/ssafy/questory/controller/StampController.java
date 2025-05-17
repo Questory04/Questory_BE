@@ -7,7 +7,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/stamp")
@@ -16,9 +18,18 @@ public class StampController {
     private final StampService stampService;
 
     @GetMapping("")
-    public ResponseEntity<List<StampsResponseDto>> findStamps(@RequestParam int page, @RequestParam int size){
+    public ResponseEntity<Map<String, Object>> findStamps(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "5") int size){
         List<StampsResponseDto> stampsResponseDtoList = stampService.findStamps(page, size);
-        return ResponseEntity.status(HttpStatus.OK).body(stampsResponseDtoList);
+        int totalItems = stampService.getTotalStamps();
+        int totalPages = (int) Math.ceil((double) totalItems / size);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("stamps", stampsResponseDtoList);
+        response.put("currentPage", page);
+        response.put("totalItems", totalItems);
+        response.put("totalPages", totalPages);
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
 }

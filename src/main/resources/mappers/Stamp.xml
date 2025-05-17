@@ -25,9 +25,20 @@
         JOIN
         guguns g ON (a.area_code = g.sido_code AND a.si_gun_gu_code = g.gugun_code)
         WHERE
-        mq.member_id = ${memberId}
+        mq.member_id = #{memberId}
         ORDER BY
-        mq.created_at DESC;
+        mq.created_at
+        LIMIT #{offset}, #{limit};
+    </select>
+
+    <select id="countStamps" resultType="int">
+        SELECT COUNT(*)
+        FROM
+        Quests q
+        JOIN
+        Members_Quests mq ON q.location_quest_id = mq.location_quest_id
+        WHERE
+        q.member_id = #{memberId};
     </select>
 
     <resultMap type="StampsResponseDto" id="stampsMap">

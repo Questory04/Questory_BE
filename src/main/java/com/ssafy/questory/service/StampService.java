@@ -15,8 +15,12 @@ public class StampService {
 
     public List<StampsResponseDto> findStamps(int page, int size) {
         int memberId = 1;   // 현재 로그인 되어 있는 사용자 정보 가져오기
-        List<StampsResponseDto> stampsResponseDtoList = stampRepository.findStamps(memberId);
-        return stampsResponseDtoList;
+        int offset  = (page-1) * size;
+        return stampRepository.findStamps(memberId, offset, size);
+    }
 
+    public int getTotalStamps(){
+        int memberId = 1;   // 현재 로그인 되어 있는 사용자 정보 가져오기
+        return stampRepository.countStamps(memberId);
     }
 }
