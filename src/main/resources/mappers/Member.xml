@@ -24,6 +24,11 @@
         mode = #{mode}
         WHERE email = #{email}
     </update>
+    <update id="withdraw" parameterType="com.ssafy.questory.domain.Member">
+        UPDATE Members
+        SET is_deleted = true
+        WHERE email = #{email}
+    </update>
     <resultMap id="memberResultMap" type="com.ssafy.questory.domain.Member">
         <id property="email" column="email"/>
         <result property="password" column="password"/>

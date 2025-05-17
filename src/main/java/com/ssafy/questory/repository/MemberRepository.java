@@ -13,4 +13,5 @@ public interface MemberRepository {
     int regist(Member member);
     int changePassword(@Param("member") Member member, @Param("changedPassword") String changedPassword);
     int modify(Member member);
+    int withdraw(Member member);
 }

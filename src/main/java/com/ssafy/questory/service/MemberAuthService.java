@@ -37,4 +37,8 @@ public class MemberAuthService {
         memberRepository.changePassword(member, newPassword);
         return MemberInfoResponseDto.from(member);
     }
+
+    public void withdraw(Member member) {
+        memberRepository.withdraw(member);
+    }
 }

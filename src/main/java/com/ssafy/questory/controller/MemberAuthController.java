@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/me")
 @RequiredArgsConstructor
@@ -45,5 +47,16 @@ public class MemberAuthController {
             @AuthenticationPrincipal(expression = "member") Member member,
             @RequestBody MemberModifyPasswordRequestDto memberModifyPasswordRequestDto) {
         return ResponseEntity.ok(memberAuthService.modifyPassword(member, memberModifyPasswordRequestDto));
+    }
+
+    @PatchMapping("/withdraw")
+    @Operation(summary = "회원탈퇴", description = "회원을 탈퇴합니다.")
+    public ResponseEntity<Map<String, String>> withdraw(
+            @AuthenticationPrincipal(expression = "member") Member member) {
+        System.out.println("member = " + member);
+        memberAuthService.withdraw(member);
+        return ResponseEntity.ok().body(Map.of(
+                "message", "탈퇴하였습니다."
+        ));
     }
 }
