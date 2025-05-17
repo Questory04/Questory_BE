@@ -10,6 +10,6 @@ import java.util.List;
 
 @Mapper
 public interface StampRepository {
-    List<StampsResponseDto> findStamps(@Param("memberId") int memberId, @Param("offset") int offset, @Param("limit") int limit);
-    int countStamps(@Param("memberId") int memberId);
+    List<StampsResponseDto> findStamps(@Param("memberEmail") String memberEmail, @Param("offset") int offset, @Param("limit") int limit);
+    int countStamps(@Param("memberEmail") String memberEmail);
 }

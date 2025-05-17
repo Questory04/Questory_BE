@@ -25,7 +25,7 @@
         JOIN
         guguns g ON (a.area_code = g.sido_code AND a.si_gun_gu_code = g.gugun_code)
         WHERE
-        mq.member_id = #{memberId}
+        mq.member_email = #{memberEmail}
         ORDER BY
         mq.created_at
         LIMIT #{offset}, #{limit};
@@ -38,7 +38,7 @@
         JOIN
         Members_Quests mq ON q.location_quest_id = mq.location_quest_id
         WHERE
-        q.member_id = #{memberId};
+        q.member_email = #{memberEmail};
     </select>
 
     <resultMap type="StampsResponseDto" id="stampsMap">
