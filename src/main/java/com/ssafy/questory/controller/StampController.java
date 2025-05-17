@@ -1,5 +1,6 @@
 package com.ssafy.questory.controller;
 
+import com.ssafy.questory.config.jwt.JwtService;
 import com.ssafy.questory.dto.response.stamp.StampsResponseDto;
 import com.ssafy.questory.service.StampService;
 import lombok.RequiredArgsConstructor;
@@ -12,15 +13,21 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/stamp")
+@RequestMapping("/stamps")
 @RequiredArgsConstructor
 public class StampController {
     private final StampService stampService;
+    private final JwtService jwtService;
 
     @GetMapping("")
-    public ResponseEntity<Map<String, Object>> findStamps(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "5") int size) {
-        List<StampsResponseDto> stampsResponseDtoList = stampService.findStamps(page, size);
-        int totalItems = stampService.getTotalStamps();
+    public ResponseEntity<Map<String, Object>> findStamps(@RequestParam(defaultValue = "1") int page,
+                                                          @RequestParam(defaultValue = "5") int size,
+                                                          @RequestHeader("Authorization") String authorizationHeader) {
+        String token = authorizationHeader.substring(7);
+        String memberEmail = jwtService.extractUsername(token);
+
+        List<StampsResponseDto> stampsResponseDtoList = stampService.findStamps(memberEmail, page, size);
+        int totalItems = stampService.getTotalStamps(memberEmail);
         int totalPages = (int) Math.ceil((double) totalItems / size);
 
         Map<String, Object> pagination = new HashMap<>();

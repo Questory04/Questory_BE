@@ -38,11 +38,10 @@
         JOIN
         Members_Quests mq ON q.location_quest_id = mq.location_quest_id
         WHERE
-        q.member_email = #{memberEmail};
+        mq.member_email = #{memberEmail};
     </select>
 
     <resultMap type="StampsResponseDto" id="stampsMap">
-       <!-- <id column="no" property="no" /> -->
         <result column="title" property="title" />
         <result column="url" property="url" />
         <result column="date" property="date" />

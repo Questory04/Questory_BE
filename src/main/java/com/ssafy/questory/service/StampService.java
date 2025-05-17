@@ -13,14 +13,12 @@ public class StampService {
 
     private final StampRepository stampRepository;
 
-    public List<StampsResponseDto> findStamps(int page, int size) {
-        String memberEmail = "1@ssafy.com";   // 현재 로그인 되어 있는 사용자 정보 가져오기
+    public List<StampsResponseDto> findStamps(String memberEmail, int page, int size) {
         int offset  = (page-1) * size;
         return stampRepository.findStamps(memberEmail, offset, size);
     }
 
-    public int getTotalStamps(){
-        String  memberEmail = "1@ssafy.com";   // 현재 로그인 되어 있는 사용자 정보 가져오기
+    public int getTotalStamps(String memberEmail){
         return stampRepository.countStamps(memberEmail);
     }
 }
