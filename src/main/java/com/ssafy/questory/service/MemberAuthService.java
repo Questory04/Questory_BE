@@ -3,6 +3,7 @@ package com.ssafy.questory.service;
 import com.ssafy.questory.common.exception.CustomException;
 import com.ssafy.questory.common.exception.ErrorCode;
 import com.ssafy.questory.domain.Member;
+import com.ssafy.questory.dto.request.member.MemberModifyRequestDto;
 import com.ssafy.questory.dto.response.member.auth.MemberInfoResponseDto;
 import com.ssafy.questory.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,5 +18,11 @@ public class MemberAuthService {
         return memberRepository.findByEmail(member.getEmail())
                 .map(MemberInfoResponseDto::from)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+    }
+
+    public MemberInfoResponseDto modify(Member member, MemberModifyRequestDto memberModifyRequestDto) {
+        member.modify(memberModifyRequestDto);
+        memberRepository.modify(member);
+        return MemberInfoResponseDto.from(member);
     }
 }

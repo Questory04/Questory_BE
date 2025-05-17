@@ -17,6 +17,13 @@
         SET password = #{changedPassword}
         WHERE email = #{member.email}
     </update>
+    <update id="modify" parameterType="com.ssafy.questory.domain.Member">
+        UPDATE Members
+        SET nickname = #{nickname},
+        title = #{title},
+        mode = #{mode}
+        WHERE email = #{email}
+    </update>
 
     <resultMap id="memberResultMap" type="com.ssafy.questory.domain.Member">
         <id property="email" column="email"/>
