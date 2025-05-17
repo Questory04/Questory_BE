@@ -5,7 +5,7 @@
 <mapper namespace="com.ssafy.questory.repository.MemberRepository">
     <insert id="regist" parameterType="com.ssafy.questory.domain.Member" useGeneratedKeys="true" keyProperty="memberId">
         INSERT INTO Members ( email, password, nickname, exp, title, created_at, is_admin, mode, is_deleted, profile_image_url )
-        VALUES ( #{email}, #{password}, #{nickname}, #{exp}, #{title}, #{createAt}, #{isAdmin}, #{mode}, #{isDeleted}, #{profileUrl} )
+        VALUES ( #{email}, #{password}, #{nickname}, #{exp}, #{title}, #{createdAt}, #{isAdmin}, #{mode}, #{isDeleted}, #{profileUrl} )
     </insert>
     <select id="findByEmail" parameterType="String" resultMap="memberResultMap">
         SELECT email, password, nickname, exp, title, created_at, is_admin, mode, is_deleted, profile_image_url
@@ -24,7 +24,7 @@
         <result property="nickname" column="nickname"/>
         <result property="exp" column="exp"/>
         <result property="title" column="title"/>
-        <result property="createAt" column="created_at"/>
+        <result property="createdAt" column="created_at"/>
         <result property="isAdmin" column="is_admin"/>
         <result property="mode" column="mode"/>
         <result property="isDeleted" column="is_deleted"/>
