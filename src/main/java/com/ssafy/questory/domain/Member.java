@@ -1,5 +1,7 @@
 package com.ssafy.questory.domain;
 
+import com.ssafy.questory.dto.request.member.MemberModifyPasswordRequestDto;
+import com.ssafy.questory.dto.request.member.MemberModifyRequestDto;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -12,7 +14,7 @@ public class Member {
     private String nickname;
     private Long exp;
     private String title;
-    private LocalDate createAt;
+    private LocalDate createdAt;
     private boolean isAdmin;
     private boolean mode;
     private boolean isDeleted;
@@ -27,10 +29,20 @@ public class Member {
         this.nickname = nickname;
         this.exp = 0L;
         this.title = "";
-        this.createAt = LocalDate.now();
+        this.createdAt = LocalDate.now();
         this.isAdmin = false;
         this.mode = false;
         this.isDeleted = false;
         this.profileUrl = "";
+    }
+
+    public void modify(MemberModifyRequestDto memberModifyRequestDto) {
+        this.nickname = memberModifyRequestDto.getNickname();
+        this.title = memberModifyRequestDto.getTitle();
+        this.mode = memberModifyRequestDto.isMode();
+    }
+
+    public void modifyPassword(String newPassword) {
+        this.password = newPassword;
     }
 }
