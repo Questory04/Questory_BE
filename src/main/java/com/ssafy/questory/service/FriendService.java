@@ -15,8 +15,8 @@ public class FriendService {
 
     public void request(Member member, MemberEmailRequestDto memberEmailRequestDto) {
         Friend friend = Friend.builder()
-                .followingEmail(member.getEmail())
-                .followedEmail(memberEmailRequestDto.getEmail())
+                .requesterEmail(member.getEmail())
+                .targetEmail(memberEmailRequestDto.getEmail())
                 .status(FollowStatus.APPLIED)
                 .build();
         friendRepository.request(friend);
