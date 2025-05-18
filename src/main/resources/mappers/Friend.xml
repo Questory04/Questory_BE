@@ -4,7 +4,7 @@
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ssafy.questory.repository.FriendRepository">
     <insert id="request" parameterType="com.ssafy.questory.domain.Friend" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO Follows (following_email, followed_email, status)
-        VALUES (#{followingEmail}, #{followedEmail}, #{status})
+        INSERT INTO Follow_Requests (requester_email, target_email, status)
+        VALUES (#{requesterEmail}, #{targetEmail}, #{status})
     </insert>
 </mapper>
