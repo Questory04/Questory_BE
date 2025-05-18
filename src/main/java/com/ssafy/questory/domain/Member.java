@@ -1,6 +1,5 @@
 package com.ssafy.questory.domain;
 
-import com.ssafy.questory.dto.request.member.MemberModifyPasswordRequestDto;
 import com.ssafy.questory.dto.request.member.MemberModifyRequestDto;
 import lombok.Builder;
 import lombok.Getter;
