@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ssafy.questory.repository.QuestRepository">
+
+    <select id="saveQuest">
+        INSERT INTO Quests (
+            attraction_id,
+            member_email,
+            title,
+            quest_description,
+            difficulty,
+            created_at,
+            is_private,
+            stamp_image_url,
+            stamp_description
+        ) VALUES (
+            #{questRequestDto.attractionId},
+            #{memberEmail},
+            #{questRequestDto.title},
+            #{questRequestDto.questDescription},
+            #{questRequestDto.difficulty},
+            CURRENT_DATE(),
+            #{questRequestDto.isPrivate},
+            #{questRequestDto.stampImageUrl},
+            #{questRequestDto.stampDescription}
+        )
+    </select>
+
+    <select id="getAttractionById">
+        SELECT count(*) FROM attractions WHERE no=#{attractionId};
+    </select>
+
+</mapper>

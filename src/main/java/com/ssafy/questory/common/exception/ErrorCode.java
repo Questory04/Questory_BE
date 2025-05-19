@@ -24,6 +24,9 @@ public enum ErrorCode {
     // 스탬프 관련
     STAMP_NOT_FOUND(HttpStatus.NOT_FOUND, "회원이 보유한 스탬프가 없습니다."),
 
+    // 퀘스트 관련
+    ATTRACTION_NOT_FOUND(HttpStatus.NOT_FOUND, "해당하는 관광지가 존재하지 않습니다."),
+
     // 입력 검증
     VALIDATION_ERROR(HttpStatus.BAD_REQUEST, "입력값이 유효하지 않습니다."),
 
