@@ -10,7 +10,7 @@ import java.time.LocalDate;
 public class StampsResponseDto {
 
     private String title;
-    private String url;
+    private String contentTypeId;
     private LocalDate date;
     private String contentTypeName;
     private String sidoName;
@@ -21,7 +21,7 @@ public class StampsResponseDto {
     public String toString() {
         return "StampsResponseDto{" +
                 "title='" + title + '\'' +
-                ", url='" + url + '\'' +
+                ", contentTypeId='" + contentTypeId + '\'' +
                 ", date=" + date +
                 ", contentTypeName='" + contentTypeName + '\'' +
                 ", sidoName='" + sidoName + '\'' +

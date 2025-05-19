@@ -8,7 +8,7 @@
     <select id="findStamps" resultMap="stampsMap" resultType="com.ssafy.questory.dto.response.stamp.StampsResponseDto">
         SELECT
         q.title AS title,
-        q.stamp_image_url AS url,
+        q.content_type_id AS content_type_id,
         mq.created_at AS date,
         ct.content_type_name AS content_type_name,
         g.gugun_name AS sido_name,
@@ -43,7 +43,7 @@
 
     <resultMap type="StampsResponseDto" id="stampsMap">
         <result column="title" property="title" />
-        <result column="url" property="url" />
+        <result column="content_type_id" property="contentTypeId" />
         <result column="date" property="date" />
         <result column="content_type_name" property="contentTypeName" />
         <result column="sido_name" property="sidoName" />

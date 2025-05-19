@@ -31,7 +31,6 @@ public class StampServiceTest {
 
         StampsResponseDto stamp1 = StampsResponseDto.builder()
                 .title("title1")
-                .url("url1")
                 .date(LocalDate.of(2025, 5, 10))
                 .contentTypeName("contentType1")
                 .sidoName("sido1")
@@ -41,7 +40,6 @@ public class StampServiceTest {
 
         StampsResponseDto stamp2 = StampsResponseDto.builder()
                 .title("title2")
-                .url("url2")
                 .date(LocalDate.of(2025, 6, 25))
                 .contentTypeName("contentType2")
                 .sidoName("sido2")
@@ -91,5 +89,35 @@ public class StampServiceTest {
                 .hasFieldOrPropertyWithValue("errorCode", ErrorCode.STAMP_NOT_FOUND);
 
         verify(stampRepository).findStamps(memberEmail, offset, size);
+    }
+
+    @Test
+    @DisplayName("로그인한 회원의 총 스탬프 수 반환 성공")
+    void getTotalStamps_success() {
+        // given
+        int expectedCount = 5;
+        when(stampRepository.countStamps(memberEmail)).thenReturn(expectedCount);
+
+        // when
+        int result = stampService.getTotalStamps(memberEmail);
+
+        // then
+        assertThat(result).isEqualTo(expectedCount);
+        verify(stampRepository).countStamps(memberEmail);
+    }
+
+    @Test
+    @DisplayName("로그인한 회원의 총 스탬프가 없을 경우 0 반환 성공")
+    void getTotalStamps_whenNoStamps_returnsZero() {
+        // given
+        String memberEmail = "no-stamps@ssafy.com";
+        when(stampRepository.countStamps(memberEmail)).thenReturn(0);
+
+        // when
+        int result = stampService.getTotalStamps(memberEmail);
+
+        // then
+        assertThat(result).isZero();
+        verify(stampRepository).countStamps(memberEmail);
     }
 }
