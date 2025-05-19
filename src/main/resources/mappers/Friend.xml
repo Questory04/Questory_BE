@@ -16,6 +16,12 @@
         INSERT INTO Follow_Requests (requester_email, target_email, status)
         VALUES (#{requesterEmail}, #{targetEmail}, #{status})
     </insert>
+    <update id="update" parameterType="com.ssafy.questory.domain.Friend">
+        UPDATE Follow_Requests
+        SET status = #{status}
+        WHERE requester_email = #{requesterEmail}
+        AND target_email = #{targetEmail}
+    </update>
     <resultMap id="memberResultMap" type="com.ssafy.questory.domain.Member">
         <result property="email" column="email"/>
         <result property="password" column="password"/>

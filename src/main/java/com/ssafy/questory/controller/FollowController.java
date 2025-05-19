@@ -1,6 +1,7 @@
 package com.ssafy.questory.controller;
 
 import com.ssafy.questory.domain.Member;
+import com.ssafy.questory.dto.request.friend.FriendStatusRequestDto;
 import com.ssafy.questory.dto.request.member.MemberEmailRequestDto;
 import com.ssafy.questory.dto.response.member.auth.MemberInfoResponseDto;
 import com.ssafy.questory.service.FriendService;
@@ -8,11 +9,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
@@ -30,7 +27,7 @@ public class FollowController {
         return ResponseEntity.ok(friendService.getFriendsInfo(member));
     }
 
-    @PostMapping("")
+    @PostMapping("/friends-request")
     @Operation(summary = "친구 요청", description = "친구를 요청합니다.")
     public ResponseEntity<Map<String, String>> request(
             @AuthenticationPrincipal(expression = "member") Member member,
@@ -38,6 +35,17 @@ public class FollowController {
         friendService.request(member, memberEmailRequestDto);
         return ResponseEntity.ok().body(Map.of(
                 "message", "친구 요청이 전송되었습니다."
+        ));
+    }
+
+    @PatchMapping("/friends-request")
+    @Operation(summary = "친구 요청 수락/거절", description = "친구 요청을 수락 및 거절합니다.")
+    public ResponseEntity<Map<String, String>> updateStatus(
+            @AuthenticationPrincipal(expression = "member") Member member,
+            @RequestBody FriendStatusRequestDto friendStatusRequestDto) {
+        friendService.update(member, friendStatusRequestDto);
+        return ResponseEntity.ok().body(Map.of(
+                "message", "친구 요청이 업데이트 되었습니다."
         ));
     }
 }

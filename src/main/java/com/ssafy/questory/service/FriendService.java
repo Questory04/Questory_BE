@@ -3,6 +3,7 @@ package com.ssafy.questory.service;
 import com.ssafy.questory.domain.FollowStatus;
 import com.ssafy.questory.domain.Friend;
 import com.ssafy.questory.domain.Member;
+import com.ssafy.questory.dto.request.friend.FriendStatusRequestDto;
 import com.ssafy.questory.dto.request.member.MemberEmailRequestDto;
 import com.ssafy.questory.dto.response.member.auth.MemberInfoResponseDto;
 import com.ssafy.questory.repository.FriendRepository;
@@ -31,5 +32,14 @@ public class FriendService {
                 .status(FollowStatus.APPLIED)
                 .build();
         friendRepository.request(friend);
+    }
+
+    public void update(Member member, FriendStatusRequestDto friendStatusRequestDto) {
+        Friend friend = Friend.builder()
+                .requesterEmail(friendStatusRequestDto.getRequesterEmail())
+                .targetEmail(member.getEmail())
+                .status(friendStatusRequestDto.getStatus())
+                .build();
+        friendRepository.update(friend);
     }
 }

@@ -1,5 +1,6 @@
 package com.ssafy.questory.repository;
 
+import com.ssafy.questory.domain.FollowStatus;
 import com.ssafy.questory.domain.Friend;
 import com.ssafy.questory.domain.Member;
 import org.apache.ibatis.annotations.Mapper;
@@ -11,4 +12,5 @@ import java.util.Optional;
 public interface FriendRepository {
     Optional<Member> findFriendMembersByEmail(@Param("email") String email);
     int request(Friend friend);
+    int update(Friend friend);
 }
