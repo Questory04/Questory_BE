@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssafy.questory.repository.FriendRepository">
+    <select id="findFriendMembersByEmail" parameterType="string" resultMap="memberResultMap">
+        SELECT m.*
+        FROM Friends f
+        JOIN Members m ON m.email = CASE
+        WHEN f.email1 = #{email} THEN f.email2
+        ELSE f.email1
+        END
+        WHERE f.email1 = #{email} OR f.email2 = #{email}
+    </select>
+    <resultMap id="friendResultMap" type="com.ssafy.questory.domain.Friend">
+        <result property="requesterEmail" column="requester_email"/>
+        <result property="targetEmail" column="target_email"/>
+        <result property="status" column="status"/>
+    </resultMap>
+    <select id="findFollowRequestsByTargetEmail" resultMap="friendResultMap" parameterType="string">
+        SELECT requester_email, target_email, status, created_at
+        FROM Follow_Requests
+        WHERE target_email = #{targetEmail}
+        AND status = 'APPLIED'
+        ORDER BY created_at DESC
+    </select>
+    <insert id="request" parameterType="com.ssafy.questory.domain.Friend" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO Follow_Requests (requester_email, target_email, status)
+        VALUES (#{requesterEmail}, #{targetEmail}, #{status})
+    </insert>
+    <delete id="deleteFollowRequest">
+        DELETE FROM Follow_Requests
+        WHERE requester_email = #{requesterEmail}
+        AND target_email = #{targetEmail}
+    </delete>
+    <insert id="insertFriendRelation">
+        INSERT INTO Friends (email1, email2)
+        VALUES (#{email1}, #{email2})
+    </insert>
+    <update id="update" parameterType="com.ssafy.questory.domain.Friend">
+        UPDATE Follow_Requests
+        SET status = #{status}
+        WHERE requester_email = #{requesterEmail}
+        AND target_email = #{targetEmail}
+    </update>
+    <resultMap id="memberResultMap" type="com.ssafy.questory.domain.Member">
+        <result property="email" column="email"/>
+        <result property="password" column="password"/>
+        <result property="nickname" column="nickname"/>
+        <result property="exp" column="exp"/>
+        <result property="title" column="title"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="isAdmin" column="is_admin"/>
+        <result property="mode" column="mode"/>
+        <result property="isDeleted" column="is_deleted"/>
+        <result property="profileUrl" column="profile_image_url"/>
+    </resultMap>
+</mapper>
