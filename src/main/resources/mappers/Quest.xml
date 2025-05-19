@@ -14,7 +14,7 @@
             difficulty,
             created_at,
             is_private,
-            stamp_image_url,
+            content_type_id,
             stamp_description
         ) VALUES (
             #{questRequestDto.attractionId},
@@ -24,13 +24,17 @@
             #{questRequestDto.difficulty},
             CURRENT_DATE(),
             #{questRequestDto.isPrivate},
-            #{questRequestDto.stampImageUrl},
+            #{contentTypeId},
             #{questRequestDto.stampDescription}
         )
     </select>
 
     <select id="getAttractionById">
         SELECT count(*) FROM attractions WHERE no=#{attractionId};
+    </select>
+
+    <select id="getContentTypeIdByAttractionId">
+        SELECT content_type_id FROM attractions WHERE no=#{attractionId};
     </select>
 
 </mapper>

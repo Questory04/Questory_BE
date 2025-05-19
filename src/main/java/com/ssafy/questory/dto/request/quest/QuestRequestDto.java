@@ -14,7 +14,6 @@ public class QuestRequestDto {
     private String questDescription;
     private String difficulty;
     private Boolean isPrivate;
-    private String stampImageUrl;
     private String stampDescription;
 
     @Override
@@ -25,7 +24,6 @@ public class QuestRequestDto {
                 ", questDescription='" + questDescription + '\'' +
                 ", difficulty='" + difficulty + '\'' +
                 ", isPrivate=" + isPrivate +
-                ", stampImageUrl='" + stampImageUrl + '\'' +
                 ", stampDescription='" + stampDescription + '\'' +
                 '}';
     }

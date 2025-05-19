@@ -8,7 +8,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 class QuestServiceTest {
@@ -31,19 +31,18 @@ class QuestServiceTest {
                 .questDescription("테스트 퀘스트 설명입니다.")
                 .difficulty("MEDIUM")
                 .isPrivate(false)
-                .stampImageUrl("https://example.com/stamp.jpg")
                 .stampDescription("테스트 스탬프 설명")
                 .build();
         String memberEmail = "test@ssafy.com";
 
-        when(questRepository.getAttractionById(anyInt())).thenReturn(1);
+        when(questRepository.getAttractionById(validQuestRequestDto.getAttractionId())).thenReturn(1);
+        when(questRepository.getContentTypeIdByAttractionId(validQuestRequestDto.getAttractionId())).thenReturn(13);
 
         // when
-        questService.saveQuest(validQuestRequestDto, memberEmail);
+        assertDoesNotThrow(() -> questService.saveQuest(validQuestRequestDto, memberEmail));
 
         // then
-        verify(questRepository, times(1)).getAttractionById(validQuestRequestDto.getAttractionId());
-        verify(questRepository, times(1)).saveQuest(validQuestRequestDto, memberEmail);
+        verify(questRepository).saveQuest(validQuestRequestDto, memberEmail, 13);
     }
 
     @Test
@@ -51,24 +50,23 @@ class QuestServiceTest {
     void saveQuest_ThrowsException() {
         // given
         QuestRequestDto inValidQuestRequestDto = QuestRequestDto.builder()
-                .attractionId(56644)
+                .attractionId(1)
                 .title("테스트 퀘스트")
                 .questDescription("테스트 퀘스트 설명입니다.")
                 .difficulty("MEDIUM")
                 .isPrivate(false)
-                .stampImageUrl("https://example.com/stamp.jpg")
                 .stampDescription("테스트 스탬프 설명")
                 .build();
         String memberEmail = "test@ssafy.com";
 
-        when(questRepository.getAttractionById(anyInt())).thenReturn(0);
+        when(questRepository.getAttractionById(inValidQuestRequestDto.getAttractionId())).thenReturn(0);
 
         // when & then
-        assertThatThrownBy(() -> questService.saveQuest(inValidQuestRequestDto, memberEmail))
-                .isInstanceOf(CustomException.class)
-                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.ATTRACTION_NOT_FOUND);
+        CustomException thrown = assertThrows(CustomException.class, () ->
+                questService.saveQuest(inValidQuestRequestDto, memberEmail));
 
-        verify(questRepository, times(1)).getAttractionById(inValidQuestRequestDto.getAttractionId());
-        verify(questRepository, times(0)).saveQuest(any(QuestRequestDto.class), anyString());
+        assertEquals(ErrorCode.ATTRACTION_NOT_FOUND, thrown.getErrorCode());
+
+        verify(questRepository, never()).saveQuest(any(), any(), anyInt());
     }
 }

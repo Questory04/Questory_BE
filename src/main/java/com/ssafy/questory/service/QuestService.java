@@ -17,6 +17,8 @@ public class QuestService {
         if(isValidAttraction!=1){
             throw new CustomException(ErrorCode.ATTRACTION_NOT_FOUND);
         }
-        questRepository.saveQuest(questRequestDto, memberEmail);
+
+        int contentTypeId = questRepository.getContentTypeIdByAttractionId(questRequestDto.getAttractionId());
+        questRepository.saveQuest(questRequestDto, memberEmail, contentTypeId);
     }
 }
