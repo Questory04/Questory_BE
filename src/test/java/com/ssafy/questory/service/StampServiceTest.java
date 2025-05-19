@@ -1,5 +1,7 @@
 package com.ssafy.questory.service;
 
+import com.ssafy.questory.common.exception.CustomException;
+import com.ssafy.questory.common.exception.ErrorCode;
 import com.ssafy.questory.dto.response.stamp.StampsResponseDto;
 import com.ssafy.questory.repository.StampRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -8,9 +10,11 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.*;
 
@@ -67,5 +71,25 @@ public class StampServiceTest {
 
         // verify
         verify(stampRepository, times(1)).findStamps(memberEmail, offset, size);
+    }
+
+    @Test
+    @DisplayName("회원이 보유한 스탬프가 없는 경우 예외 발생")
+    void findStamps_whenNoStampsFound_throwsException() {
+        // given
+        String memberEmail = "no-stamps@ssafy.com";
+        int page = 1;
+        int size = 5;
+        int offset = (page - 1) * size;
+
+        when(stampRepository.findStamps(memberEmail, offset, size))
+                .thenReturn(Collections.emptyList());
+
+        // when & then
+        assertThatThrownBy(() -> stampService.findStamps(memberEmail, page, size))
+                .isInstanceOf(CustomException.class)
+                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.STAMP_NOT_FOUND);
+
+        verify(stampRepository).findStamps(memberEmail, offset, size);
     }
 }
