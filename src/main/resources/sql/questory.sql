@@ -1,3 +1,5 @@
+CREATE SCHEMA `ssafytrip`;
+
 USE `ssafytrip`;
 
 CREATE TABLE Members (
@@ -15,7 +17,7 @@ CREATE TABLE Members (
 
 CREATE TABLE Posts (
     post_id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT NOT NULL,
+    user_email VARCHAR(40) NOT NULL,
     plan_id INT NOT NULL,
     title VARCHAR(100) NOT NULL,
     content TEXT NOT NULL,
@@ -27,13 +29,13 @@ CREATE TABLE Posts (
 CREATE TABLE Likes (
     like_id INT AUTO_INCREMENT PRIMARY KEY,
     post_id INT NOT NULL,
-    member_id INT NOT NULL
+    member_email VARCHAR(40) NOT NULL
 );
 
 CREATE TABLE Comments (
     comment_id INT AUTO_INCREMENT PRIMARY KEY,
     post_id INT NOT NULL,
-    member_id INT NOT NULL,
+    member_email VARCHAR(40) NOT NULL,
     content VARCHAR(1000) NOT NULL,
     created_at DATETIME DEFAULT NOW(),
     updated_at DATETIME
@@ -41,7 +43,7 @@ CREATE TABLE Comments (
 
 CREATE TABLE Plans (
     plan_id INT AUTO_INCREMENT PRIMARY KEY,
-    member_id INT NOT NULL,
+    member_email VARCHAR(40) NOT NULL,
     title VARCHAR(200),
     description VARCHAR(200),
     start_date DATETIME,
@@ -63,8 +65,8 @@ CREATE TABLE Plans_Routes (
 );
 
 CREATE TABLE Follows (
-    following_id INT,
-    follow_id INT,
+    following_email VARCHAR(40),
+    follow_email VARCHAR(40),
     status ENUM('ACCEPTED', 'DENIED', 'APPLIED') NOT NULL DEFAULT 'APPLIED'
 );
 
@@ -74,36 +76,27 @@ CREATE TABLE Titles (
 );
 
 CREATE TABLE Members_Titles (
-    member_id INT NOT NULL,
+    member_email VARCHAR(40) NOT NULL,
     title_id INT NOT NULL,
-    created_at DATETIME DEFAULT NOW()
-);
-
-CREATE TABLE Stamps (
-    stamp_id INT AUTO_INCREMENT PRIMARY KEY,
-    location_quest_id INT NOT NULL,
-    image_url VARCHAR(100) NOT NULL,
-    description TEXT
-);
-
-CREATE TABLE Members_Stamps (
-    member_id INT NOT NULL,
-    stamp_id INT NOT NULL,
     created_at DATETIME DEFAULT NOW()
 );
 
 CREATE TABLE Quests (
     location_quest_id INT AUTO_INCREMENT PRIMARY KEY,
     attraction_id INT NOT NULL,
-    member_id INT NOT NULL,
+    member_email VARCHAR(40) NOT NULL,
     title VARCHAR(100),
-    description VARCHAR(3000),
+    quest_description VARCHAR(10000) NULL,
     difficulty ENUM('EASY', 'MEDIUM', 'HARD') DEFAULT 'MEDIUM',
-    is_private TINYINT(1) DEFAULT 0
+	created_at	DATETIME NOT NULL DEFAULT NOW(),
+    is_private TINYINT(1) DEFAULT 0,
+    stamp_image_url VARCHAR(100) NOT NULL,
+    stamp_description TEXT
 );
 
 CREATE TABLE Members_Quests (
-    member_id INT NOT NULL,
+    member_email VARCHAR(40) NOT NULL,
     location_quest_id INT NOT NULL,
-    is_completed ENUM('YET', 'COMPLETE') DEFAULT 'YET'
+    is_completed ENUM('YET', 'COMPLETE') DEFAULT 'YET',
+    created_at DATETIME DEFAULT NOW()
 );
