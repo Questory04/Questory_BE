@@ -13,5 +13,7 @@ public interface FriendRepository {
     Optional<Member> findFriendMembersByEmail(@Param("email") String email);
     List<Friend> findFollowRequestsByTargetEmail(@Param("targetEmail") String targetEmail);
     int request(Friend friend);
+    int deleteFollowRequest(@Param("requesterEmail") String requesterEmail, @Param("targetEmail") String targetEmail);
+    int insertFriendRelation(@Param("email1") String email1, @Param("email2") String email2);
     int update(Friend friend);
 }

@@ -28,6 +28,15 @@
         INSERT INTO Follow_Requests (requester_email, target_email, status)
         VALUES (#{requesterEmail}, #{targetEmail}, #{status})
     </insert>
+    <delete id="deleteFollowRequest">
+        DELETE FROM Follow_Requests
+        WHERE requester_email = #{requesterEmail}
+        AND target_email = #{targetEmail}
+    </delete>
+    <insert id="insertFriendRelation">
+        INSERT INTO Friends (email1, email2)
+        VALUES (#{email1}, #{email2})
+    </insert>
     <update id="update" parameterType="com.ssafy.questory.domain.Friend">
         UPDATE Follow_Requests
         SET status = #{status}

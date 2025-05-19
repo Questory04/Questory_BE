@@ -44,11 +44,21 @@ public class FriendService {
     }
 
     public void update(Member member, FriendStatusRequestDto friendStatusRequestDto) {
+        String requesterEmail = friendStatusRequestDto.getRequesterEmail();
+        FollowStatus status = friendStatusRequestDto.getStatus();
+
         Friend friend = Friend.builder()
                 .requesterEmail(friendStatusRequestDto.getRequesterEmail())
                 .targetEmail(member.getEmail())
                 .status(friendStatusRequestDto.getStatus())
                 .build();
+
+        if (status == FollowStatus.ACCEPTED) {
+            friendRepository.deleteFollowRequest(requesterEmail, member.getEmail());
+            friendRepository.insertFriendRelation(requesterEmail, member.getEmail());
+        } else {
+            friendRepository.update(friend);
+        }
         friendRepository.update(friend);
     }
 }
