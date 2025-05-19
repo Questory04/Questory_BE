@@ -27,7 +27,7 @@ public class FollowController {
         return ResponseEntity.ok(friendService.getFriendsInfo(member));
     }
 
-    @PostMapping("/friends-request")
+    @PostMapping("/request")
     @Operation(summary = "친구 요청", description = "친구를 요청합니다.")
     public ResponseEntity<Map<String, String>> request(
             @AuthenticationPrincipal(expression = "member") Member member,
@@ -38,7 +38,7 @@ public class FollowController {
         ));
     }
 
-    @PatchMapping("/friends-request")
+    @PatchMapping("/request")
     @Operation(summary = "친구 요청 수락/거절", description = "친구 요청을 수락 및 거절합니다.")
     public ResponseEntity<Map<String, String>> updateStatus(
             @AuthenticationPrincipal(expression = "member") Member member,
