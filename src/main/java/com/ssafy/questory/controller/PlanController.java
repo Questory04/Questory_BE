@@ -21,7 +21,7 @@ public class PlanController {
     private final PlanService planService;
 
     @PostMapping()
-    @Operation(summary = "친구 목록 조회", description = "나의 친구 목록을 조회합니다.")
+    @Operation(summary = "계획 생성", description = "계획을 생성하고 경로를 추가합니다.")
     public ResponseEntity<Map<String, String>> create(
             @AuthenticationPrincipal(expression = "member") Member member,
             @RequestBody PlanCreateRequestDto planCreateRequestDto) {
