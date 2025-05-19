@@ -5,11 +5,13 @@ import com.ssafy.questory.domain.Friend;
 import com.ssafy.questory.domain.Member;
 import com.ssafy.questory.dto.request.friend.FriendStatusRequestDto;
 import com.ssafy.questory.dto.request.member.MemberEmailRequestDto;
+import com.ssafy.questory.dto.response.friend.FollowResponseDto;
 import com.ssafy.questory.dto.response.member.auth.MemberInfoResponseDto;
 import com.ssafy.questory.repository.FriendRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,6 +24,13 @@ public class FriendService {
         Optional<Member> friends = friendRepository.findFriendMembersByEmail(member.getEmail());
         return friends.stream()
                 .map(MemberInfoResponseDto::from)
+                .toList();
+    }
+
+    public List<FollowResponseDto> getFollowRequestInfo(Member member) {
+        List<Friend> friends = friendRepository.findFollowRequestsByTargetEmail(member.getEmail());
+        return friends.stream()
+                .map(FollowResponseDto::from)
                 .toList();
     }
 

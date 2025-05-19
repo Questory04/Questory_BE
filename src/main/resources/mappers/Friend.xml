@@ -12,6 +12,18 @@
         END
         WHERE f.email1 = #{email} OR f.email2 = #{email}
     </select>
+    <resultMap id="friendResultMap" type="com.ssafy.questory.domain.Friend">
+        <result property="requesterEmail" column="requester_email"/>
+        <result property="targetEmail" column="target_email"/>
+        <result property="status" column="status"/>
+    </resultMap>
+    <select id="findFollowRequestsByTargetEmail" resultMap="friendResultMap" parameterType="string">
+        SELECT requester_email, target_email, status, created_at
+        FROM Follow_Requests
+        WHERE target_email = #{targetEmail}
+        AND status = 'APPLIED'
+        ORDER BY created_at DESC
+    </select>
     <insert id="request" parameterType="com.ssafy.questory.domain.Friend" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO Follow_Requests (requester_email, target_email, status)
         VALUES (#{requesterEmail}, #{targetEmail}, #{status})

@@ -3,9 +3,11 @@ package com.ssafy.questory.controller;
 import com.ssafy.questory.domain.Member;
 import com.ssafy.questory.dto.request.friend.FriendStatusRequestDto;
 import com.ssafy.questory.dto.request.member.MemberEmailRequestDto;
+import com.ssafy.questory.dto.response.friend.FollowResponseDto;
 import com.ssafy.questory.dto.response.member.auth.MemberInfoResponseDto;
 import com.ssafy.questory.service.FriendService;
 import io.swagger.v3.oas.annotations.Operation;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -25,6 +27,13 @@ public class FollowController {
     public ResponseEntity<List<MemberInfoResponseDto>> getFriendsInfo(
             @AuthenticationPrincipal(expression = "member") Member member) {
         return ResponseEntity.ok(friendService.getFriendsInfo(member));
+    }
+
+    @GetMapping("/request")
+    @Operation(summary = "친구 요청 목록 조회", description = "친구 요청 목록을 조회합니다.")
+    public ResponseEntity<List<FollowResponseDto>> getFollowRequestInfo(
+            @AuthenticationPrincipal(expression = "member") Member member) {
+        return ResponseEntity.ok(friendService.getFollowRequestInfo(member));
     }
 
     @PostMapping("/request")

@@ -2,8 +2,12 @@ package com.ssafy.questory.domain;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.ToString;
+
+import java.time.LocalDate;
 
 @Getter
+@ToString
 public class Friend {
     private String requesterEmail;
     private String targetEmail;
