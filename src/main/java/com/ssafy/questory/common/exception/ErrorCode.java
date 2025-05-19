@@ -33,6 +33,9 @@ public enum ErrorCode {
     QUEST_ALREADY_DELETED(HttpStatus.GONE, "이미 삭제된 퀘스트입니다."),
     QUEST_LIST_EMPTY(HttpStatus.NO_CONTENT, "조회할 퀘스트가 없습니다."),
 
+    // 계획 관련
+    PLAN_NOT_FOUND(HttpStatus.NOT_FOUND, "회원이 생성한 계획이 없습니다."),
+
     // 입력 검증
     VALIDATION_ERROR(HttpStatus.BAD_REQUEST, "입력값이 유효하지 않습니다."),
 

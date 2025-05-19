@@ -7,4 +7,20 @@
         INSERT INTO Plans (member_email, title, description, start_date, end_date, created_at, is_start)
         VALUES (#{memberEmail}, #{title}, #{description}, #{startDate}, #{endDate}, NOW(), 0)
     </insert>
+    <select id="findById" parameterType="long" resultMap="planResultMap">
+        SELECT * FROM Plans WHERE plan_id = #{planId}
+    </select>
+    <resultMap id="planResultMap" type="com.ssafy.questory.domain.Plan">
+        <id property="planId" column="plan_id"/>
+        <result property="memberEmail" column="member_email"/>
+        <result property="title" column="title"/>
+        <result property="description" column="description"/>
+        <result property="startDate" column="start_date"/>
+        <result property="endDate" column="end_date"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="isStart" column="is_start"/>
+    </resultMap>
+    <delete id="deleteById" parameterType="long">
+        DELETE FROM Plans WHERE plan_id = #{planId}
+    </delete>
 </mapper>

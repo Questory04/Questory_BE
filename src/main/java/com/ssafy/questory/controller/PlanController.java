@@ -2,11 +2,13 @@ package com.ssafy.questory.controller;
 
 import com.ssafy.questory.domain.Member;
 import com.ssafy.questory.dto.request.plan.PlanCreateRequestDto;
+import com.ssafy.questory.dto.request.plan.PlanDeleteRequestDto;
 import com.ssafy.questory.service.PlanService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,6 +30,17 @@ public class PlanController {
         planService.create(member, planCreateRequestDto);
         return ResponseEntity.ok().body(Map.of(
                 "message", "여행 계획이 생성되었습니다."
+        ));
+    }
+
+    @DeleteMapping()
+    @Operation(summary = "계획 삭제", description = "생성된 계획을 삭제합니다.")
+    public ResponseEntity<Map<String, String>> delete(
+            @AuthenticationPrincipal(expression = "member") Member member,
+            @RequestBody PlanDeleteRequestDto planDeleteRequestDto) {
+        planService.delete(member, planDeleteRequestDto);
+        return ResponseEntity.ok().body(Map.of(
+                "message", "여행 계획이 삭제되었습니다."
         ));
     }
 }

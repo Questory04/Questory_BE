@@ -9,4 +9,5 @@ import java.util.List;
 @Mapper
 public interface PlanRoutesRepository {
     void insert(@Param("routes") List<Route> routes);
+    int deleteByPlanId(Long planId);
 }

@@ -20,12 +20,15 @@ public class Plan {
 
     @Builder
     private Plan(Long planId, String memberEmail, String title, String description,
-                 LocalDate startDate, LocalDate endDate) {
+                 LocalDate startDate, LocalDate endDate, LocalDate createdAt,
+                 boolean isStart) {
         this.planId = planId;
         this.memberEmail = memberEmail;
         this.title = title;
         this.description = description;
         this.startDate = startDate;
         this.endDate = endDate;
+        this.createdAt = createdAt;
+        this.isStart = isStart;
     }
 }

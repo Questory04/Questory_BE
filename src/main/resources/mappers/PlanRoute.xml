@@ -10,4 +10,7 @@
             (#{route.planId}, #{route.attractionId}, #{route.day}, #{route.sequence})
         </foreach>
     </insert>
+    <delete id="deleteByPlanId" parameterType="long">
+        DELETE FROM Plans_Routes WHERE plan_id = #{planId}
+    </delete>
 </mapper>
