@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssafy.questory.repository.PlanRepository">
+    <insert id="create" parameterType="com.ssafy.questory.domain.Plan" useGeneratedKeys="true" keyProperty="planId">
+        INSERT INTO Plans (member_email, title, description, start_date, end_date, created_at, is_start)
+        VALUES (#{memberEmail}, #{title}, #{description}, #{startDate}, #{endDate}, NOW(), 0)
+    </insert>
+</mapper>
