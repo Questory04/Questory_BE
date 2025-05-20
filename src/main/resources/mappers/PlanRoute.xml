@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssafy.questory.repository.PlanRoutesRepository">
+    <select id="findByPlanId" parameterType="long" resultType="com.ssafy.questory.domain.Route">
+        SELECT
+        plan_id AS planId,
+        attraction_id AS attractionId,
+        day,
+        sequence
+        FROM Plans_Routes
+        WHERE plan_id = #{planId}
+    </select>
+    <insert id="insert" parameterType="list">
+        INSERT INTO Plans_Routes (plan_id, attraction_id, day, sequence)
+        VALUES
+        <foreach collection="routes" item="route" separator=",">
+            (#{route.planId}, #{route.attractionId}, #{route.day}, #{route.sequence})
+        </foreach>
+    </insert>
+    <delete id="deleteByPlanId" parameterType="long">
+        DELETE FROM Plans_Routes WHERE plan_id = #{planId}
+    </delete>
+</mapper>
