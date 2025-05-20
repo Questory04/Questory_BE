@@ -49,6 +49,13 @@ public class MemberService {
         String email = memberLoginRequestDto.getEmail();
         String password = memberLoginRequestDto.getPassword();
 
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+
+        if (member.isDeleted()) {
+            throw new CustomException(ErrorCode.MEMBER_DELETED);
+        }
+
         authenticate(email, password);
         UserDetails userDetails = userDetailsService.loadUserByUsername(email);
         checkPassword(password, userDetails.getPassword());
@@ -75,7 +82,10 @@ public class MemberService {
 
     private void validateDuplicatedMember(String email) {
         memberRepository.findByEmail(email)
-                .ifPresent(error -> {
+                .ifPresent(member -> {
+                    if (member.isDeleted()) {
+                        throw new CustomException(ErrorCode.MEMBER_DELETED);
+                    }
                     throw new CustomException(ErrorCode.EMAIL_ALREADY_EXISTS);
                 });
     }
