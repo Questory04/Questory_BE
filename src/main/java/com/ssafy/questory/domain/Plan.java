@@ -33,4 +33,11 @@ public class Plan {
         this.createdAt = createdAt;
         this.isStart = isStart;
     }
+
+    public void update(String title, String description, LocalDateTime startDate, LocalDateTime endDate) {
+        this.title = title;
+        this.description = description;
+        this.startDate = startDate;
+        this.endDate = endDate;
+    }
 }

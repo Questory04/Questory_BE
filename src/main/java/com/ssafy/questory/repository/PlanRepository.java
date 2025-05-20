@@ -11,5 +11,6 @@ public interface PlanRepository {
     List<Plan> findByMemberEmail(String memberEmail);
     Optional<Plan> findById(Long planId);
     int create(Plan plan);
+    int update(Plan plan);
     int deleteById(Long planId);
 }

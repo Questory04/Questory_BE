@@ -20,6 +20,14 @@
         INSERT INTO Plans (member_email, title, description, start_date, end_date, created_at, is_start)
         VALUES (#{memberEmail}, #{title}, #{description}, #{startDate}, #{endDate}, NOW(), 0)
     </insert>
+    <update id="update" parameterType="com.ssafy.questory.domain.Plan">
+        UPDATE Plans
+        SET title = #{title},
+        description = #{description},
+        start_date = #{startDate},
+        end_date = #{endDate}
+        WHERE plan_id = #{planId}
+    </update>
     <select id="findById" parameterType="long" resultMap="planResultMap">
         SELECT * FROM Plans WHERE plan_id = #{planId}
     </select>

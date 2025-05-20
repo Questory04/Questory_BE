@@ -7,6 +7,7 @@ import com.ssafy.questory.domain.Plan;
 import com.ssafy.questory.domain.Route;
 import com.ssafy.questory.dto.request.plan.PlanCreateRequestDto;
 import com.ssafy.questory.dto.request.plan.PlanDeleteRequestDto;
+import com.ssafy.questory.dto.request.plan.PlanUpdateRequestDto;
 import com.ssafy.questory.dto.response.plan.PlanInfoResponseDto;
 import com.ssafy.questory.repository.PlanRoutesRepository;
 import com.ssafy.questory.repository.PlanRepository;
@@ -64,6 +65,34 @@ public class PlanService {
 
         planRoutesRepository.insert(routes);
     }
+
+    public void update(Member member, PlanUpdateRequestDto planUpdateRequestDto) {
+        Plan plan = planRepository.findById(planUpdateRequestDto.getPlanId())
+                .orElseThrow(() -> new CustomException(ErrorCode.PLAN_NOT_FOUND));
+
+        validateAuthorizedMember(plan.getMemberEmail(), member.getEmail());
+
+        plan.update(planUpdateRequestDto.getTitle(), planUpdateRequestDto.getDescription(),
+                planUpdateRequestDto.getStartDate(), planUpdateRequestDto.getEndDate());
+        planRepository.update(plan);
+
+        planRoutesRepository.deleteByPlanId(planUpdateRequestDto.getPlanId());
+
+        if (planUpdateRequestDto.getRoutes() != null && !planUpdateRequestDto.getRoutes().isEmpty()) {
+            List<Route> newRoutes = planUpdateRequestDto.getRoutes().stream()
+                    .map(routeDto -> Route.builder()
+                            .planId(planUpdateRequestDto.getPlanId())
+                            .attractionId(routeDto.getAttractionId())
+                            .day(routeDto.getDay())
+                            .sequence(routeDto.getSequence())
+                            .build())
+                    .toList();
+
+            planRoutesRepository.insert(newRoutes);
+        }
+
+    }
+
 
     public void delete(Member member, PlanDeleteRequestDto planDeleteRequestDto) {
         Plan plan = planRepository.findById(planDeleteRequestDto.getPlanId())
