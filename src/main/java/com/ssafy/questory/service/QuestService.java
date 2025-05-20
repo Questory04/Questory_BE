@@ -20,7 +20,7 @@ public class QuestService {
         List<QuestsResponseDto> questsResponseDtoList = questRepository.findQuests(offset, size);
 
         if(questsResponseDtoList.isEmpty()){
-            throw new CustomException(ErrorCode.QUEST_NOT_FOUND);
+            throw new CustomException(ErrorCode.QUEST_LIST_EMPTY);
         }
         return questsResponseDtoList;
     }
@@ -34,7 +34,7 @@ public class QuestService {
         List<QuestsResponseDto> questsResponseDtoList = questRepository.findQuestsByMemberEmail(memberEmail, offset, size);
 
         if(questsResponseDtoList.isEmpty()){
-            throw new CustomException(ErrorCode.QUEST_NOT_FOUND);
+            throw new CustomException(ErrorCode.QUEST_LIST_EMPTY);
         }
         return questsResponseDtoList;
     }
