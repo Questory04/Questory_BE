@@ -7,6 +7,7 @@ import com.ssafy.questory.domain.Plan;
 import com.ssafy.questory.domain.Route;
 import com.ssafy.questory.dto.request.plan.PlanCreateRequestDto;
 import com.ssafy.questory.dto.request.plan.PlanDeleteRequestDto;
+import com.ssafy.questory.dto.response.plan.PlanInfoResponseDto;
 import com.ssafy.questory.repository.PlanRoutesRepository;
 import com.ssafy.questory.repository.PlanRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,28 @@ import java.util.List;
 public class PlanService {
     private final PlanRepository planRepository;
     private final PlanRoutesRepository planRoutesRepository;
+
+    public List<PlanInfoResponseDto> getPlanInfo(Member member) {
+        List<Plan> plans = planRepository.findByMemberEmail(member.getEmail());
+        System.out.println(plans);
+        return plans.stream()
+                .map(plan -> {
+                    List<Route> routes = planRoutesRepository.findByPlanId(plan.getPlanId());
+                    return PlanInfoResponseDto.builder()
+                            .planId(plan.getPlanId())
+                            .memberEmail(plan.getMemberEmail())
+                            .title(plan.getTitle())
+                            .description(plan.getDescription())
+                            .startDate(plan.getStartDate())
+                            .endDate(plan.getEndDate())
+                            .createdAt(plan.getCreatedAt())
+                            .isStart(plan.isStart())
+                            .routes(routes)
+                            .build();
+                })
+                .toList();
+    }
+
 
     public void create(Member member, PlanCreateRequestDto dto) {
         Plan plan = Plan.builder()

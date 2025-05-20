@@ -3,20 +3,20 @@ package com.ssafy.questory.dto.request.plan;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
 public class PlanCreateRequestDto {
     private String title;
     private String description;
-    private LocalDate startDate;
-    private LocalDate endDate;
+    private LocalDateTime startDate;
+    private LocalDateTime endDate;
     private List<RouteDto> routes;
 
     @Builder
     public PlanCreateRequestDto(String title, String description,
-                                LocalDate startDate, LocalDate endDate,
+                                LocalDateTime startDate, LocalDateTime endDate,
                                 List<RouteDto> routes) {
         this.title = title;
         this.description = description;

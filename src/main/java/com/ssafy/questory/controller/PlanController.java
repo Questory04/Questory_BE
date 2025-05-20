@@ -3,17 +3,15 @@ package com.ssafy.questory.controller;
 import com.ssafy.questory.domain.Member;
 import com.ssafy.questory.dto.request.plan.PlanCreateRequestDto;
 import com.ssafy.questory.dto.request.plan.PlanDeleteRequestDto;
+import com.ssafy.questory.dto.response.plan.PlanInfoResponseDto;
 import com.ssafy.questory.service.PlanService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -21,6 +19,13 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class PlanController {
     private final PlanService planService;
+
+    @GetMapping()
+    @Operation(summary = "계획 조회", description = "내 계획을 조회합니다.")
+    public ResponseEntity<List<PlanInfoResponseDto>> getPlanInfo(
+            @AuthenticationPrincipal(expression = "member") Member member) {
+        return ResponseEntity.ok().body(planService.getPlanInfo(member));
+    }
 
     @PostMapping()
     @Operation(summary = "계획 생성", description = "계획을 생성하고 경로를 추가합니다.")

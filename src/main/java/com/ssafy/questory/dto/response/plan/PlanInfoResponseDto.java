@@ -1,14 +1,14 @@
-package com.ssafy.questory.domain;
+package com.ssafy.questory.dto.response.plan;
 
+import com.ssafy.questory.domain.Route;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.ToString;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
-@ToString
-public class Plan {
+public class PlanInfoResponseDto {
     private Long planId;
     private String memberEmail;
     private String title;
@@ -17,13 +17,12 @@ public class Plan {
     private LocalDateTime endDate;
     private LocalDateTime createdAt;
     private boolean isStart;
-
-    protected Plan() {}
+    private List<Route> routes;
 
     @Builder
-    private Plan(Long planId, String memberEmail, String title, String description,
-                 LocalDateTime startDate, LocalDateTime endDate, LocalDateTime createdAt,
-                 boolean isStart) {
+    private PlanInfoResponseDto(Long planId, String memberEmail, String title, String description,
+                                LocalDateTime startDate, LocalDateTime endDate, LocalDateTime createdAt, boolean isStart,
+                                List<Route> routes) {
         this.planId = planId;
         this.memberEmail = memberEmail;
         this.title = title;
@@ -32,5 +31,6 @@ public class Plan {
         this.endDate = endDate;
         this.createdAt = createdAt;
         this.isStart = isStart;
+        this.routes = routes;
     }
 }
