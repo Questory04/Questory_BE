@@ -129,6 +129,12 @@
         WHERE location_quest_id = #{questId} AND is_deleted = 0;
     </select>
 
+    <select id="searchAttractionByTitle" resultMap="AttractionsMap" resultType="com.ssafy.questory.dto.response.quest.AttractionResponseDto">
+        SELECT title, addr1
+        FROM attractions
+        WHERE title LIKE CONCAT('%', #{searchKeyword}, '%');
+    </select>
+
     <resultMap type="QuestsResponseDto" id="questsMap">
         <result column="quest_title" property="questTitle" />
         <result column="attraction_image" property="attractionImage" />
@@ -137,6 +143,11 @@
         <result column="attraction_address" property="attractionAddress" />
         <result column="quest_difficulty" property="questDifficulty" />
         <result column="quest_description" property="questDescription" />
+    </resultMap>
+
+    <resultMap type="AttractionResponseDto" id="AttractionsMap">
+        <result column="title" property="name" />
+        <result column="addr1" property="address" />
     </resultMap>
 
 </mapper>
