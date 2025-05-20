@@ -86,7 +86,7 @@ public class StampServiceTest {
         // when & then
         assertThatThrownBy(() -> stampService.findStamps(memberEmail, page, size))
                 .isInstanceOf(CustomException.class)
-                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.STAMP_NOT_FOUND);
+                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.STAMP_LIST_EMPTY);
 
         verify(stampRepository).findStamps(memberEmail, offset, size);
     }
