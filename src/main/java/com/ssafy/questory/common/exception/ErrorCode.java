@@ -23,7 +23,7 @@ public enum ErrorCode {
     INVALID_EMAIL_FORMAT(HttpStatus.BAD_REQUEST, "이메일 형식이 올바르지 않습니다."),
 
     // 스탬프 관련
-    STAMP_NOT_FOUND(HttpStatus.NOT_FOUND, "회원이 보유한 스탬프가 없습니다."),
+    STAMP_LIST_EMPTY(HttpStatus.NO_CONTENT, "회원이 보유한 스탬프가 없습니다."),
 
     // 퀘스트 관련
     ATTRACTION_NOT_FOUND(HttpStatus.NOT_FOUND, "해당하는 관광지가 존재하지 않습니다."),

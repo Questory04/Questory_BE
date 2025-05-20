@@ -19,7 +19,7 @@ public class StampService {
         int offset  = (page-1) * size;
         List<StampsResponseDto> stampsResponseDtoList = stampRepository.findStamps(memberEmail, offset, size);
         if(stampsResponseDtoList.isEmpty()){
-            throw new CustomException(ErrorCode.STAMP_NOT_FOUND);
+            throw new CustomException(ErrorCode.STAMP_LIST_EMPTY);
         }
         return stampsResponseDtoList;
     }
