@@ -3,10 +3,15 @@ package com.ssafy.questory.service;
 import com.ssafy.questory.common.exception.CustomException;
 import com.ssafy.questory.common.exception.ErrorCode;
 import com.ssafy.questory.dto.request.quest.QuestRequestDto;
+import com.ssafy.questory.dto.response.quest.QuestsResponseDto;
 import com.ssafy.questory.repository.QuestRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -16,9 +21,147 @@ class QuestServiceTest {
     private QuestRepository questRepository = mock(QuestRepository.class);
     private QuestService questService;
 
+    private List<QuestsResponseDto> mockQuests;
+
     @BeforeEach
     void setUp() {
         questService = new QuestService(questRepository);
+
+        QuestsResponseDto quest1 = QuestsResponseDto.builder()
+                .questTitle("title1")
+                .attractionImage("url1")
+                .attractionTitle("name1")
+                .contentTypeName("contentType1")
+                .attractionAddress("addr1")
+                .questDifficulty("EASY")
+                .questDescription("description1")
+                .build();
+
+        QuestsResponseDto quest2 = QuestsResponseDto.builder()
+                .questTitle("title2")
+                .attractionImage("url2")
+                .attractionTitle("name2")
+                .contentTypeName("contentType2")
+                .attractionAddress("addr2")
+                .questDifficulty("EASY")
+                .questDescription("description2")
+                .build();
+        mockQuests = Arrays.asList(quest1, quest2);
+    }
+
+    @Test
+    @DisplayName("전체 퀘스트 목록 조회 성공")
+    void findQuests_ReturnsQuestList() {
+        // given
+        int page = 1;
+        int size = 5;
+        int offset = (page - 1) * size;
+
+        when(questRepository.findQuests(offset, size)).thenReturn(mockQuests);
+
+        // when
+        List<QuestsResponseDto> result = questService.findQuests(page, size);
+
+        // then
+        assertNotNull(result);
+        assertEquals(mockQuests.size(), result.size());
+        verify(questRepository, times(1)).findQuests(offset, size);
+    }
+
+    @Test
+    @DisplayName("퀘스트 목록이 비어있을 경우 예외 발생")
+    void findQuests_ThrowsException_WhenQuestListEmpty() {
+        // given
+        int page = 1;
+        int size = 10;
+        int offset = (page - 1) * size;
+
+        when(questRepository.findQuests(offset, size)).thenReturn(new ArrayList<>());
+
+        // when & then
+        CustomException exception = assertThrows(CustomException.class, () -> {
+            questService.findQuests(page, size);
+        });
+
+        assertEquals(ErrorCode.QUEST_LIST_EMPTY, exception.getErrorCode());
+        verify(questRepository, times(1)).findQuests(offset, size);
+    }
+
+    @Test
+    @DisplayName("전체 퀘스트 수 반환")
+    void getTotalQuests_ReturnsTotalCount() {
+        // given
+        int expectedTotal = 15;
+        when(questRepository.getTotalQuests()).thenReturn(expectedTotal);
+
+        // when
+        int result = questService.getTotalQuests();
+
+        // then
+        assertEquals(expectedTotal, result);
+        verify(questRepository, times(1)).getTotalQuests();
+    }
+
+    @Test
+    @DisplayName("특정 회원이 실행 가능한 퀘스트 목록 조회")
+    void findQuestsByMemberEmail_ReturnsQuestList() {
+        // given
+        String testEmail = "test@example.com";
+
+        int page = 1;
+        int size = 5;
+        int offset = (page - 1) * size;
+
+        when(questRepository.findQuestsByMemberEmail(eq(testEmail), eq(offset), eq(size))).thenReturn(mockQuests);
+
+        // when
+        List<QuestsResponseDto> result = questService.findQuestsByMemberEmail(testEmail, page, size);
+
+        // then
+        assertNotNull(result);
+        assertEquals(mockQuests.size(), result.size());
+        assertEquals("title1", result.get(0).getQuestTitle());
+        assertEquals("url2", result.get(1).getAttractionImage());
+        assertEquals("addr2", result.get(1).getAttractionAddress());
+        verify(questRepository, times(1)).findQuestsByMemberEmail(testEmail, offset, size);
+    }
+
+    @Test
+    @DisplayName("특정 회원의 퀘스트 목록이 비어있을 경우 예외 발생")
+    void findQuestsByMemberEmail_ThrowsException_WhenQuestListEmpty() {
+        // given
+        String testEmail = "test@example.com";
+
+        int page = 1;
+        int size = 10;
+        int offset = (page - 1) * size;
+
+        when(questRepository.findQuestsByMemberEmail(eq(testEmail), eq(offset), eq(size))).thenReturn(new ArrayList<>());
+
+        // when & then
+        CustomException exception = assertThrows(CustomException.class, () -> {
+            questService.findQuestsByMemberEmail(testEmail, page, size);
+        });
+
+        assertEquals(ErrorCode.QUEST_LIST_EMPTY, exception.getErrorCode());
+        verify(questRepository, times(1)).findQuestsByMemberEmail(testEmail, offset, size);
+    }
+
+    @Test
+    @DisplayName("특정 회원이 실행 가능한 퀘스트 수 반환")
+    void getTotalQuestsByMemberEmail_ReturnsTotalCount() {
+        // given
+        String testEmail = "test@example.com";
+
+        int expectedTotal = 8;
+        when(questRepository.getTotalQuestsByMemberEmail(testEmail)).thenReturn(expectedTotal);
+
+        // when
+        int result = questService.getTotalQuestsByMemberEmail(testEmail);
+
+        // then
+        assertEquals(expectedTotal, result);
+        verify(questRepository, times(1)).getTotalQuestsByMemberEmail(testEmail);
     }
 
     @Test
