@@ -7,6 +7,7 @@ import com.ssafy.questory.domain.Plan;
 import com.ssafy.questory.domain.Route;
 import com.ssafy.questory.dto.request.plan.PlanCreateRequestDto;
 import com.ssafy.questory.dto.request.plan.PlanDeleteRequestDto;
+import com.ssafy.questory.dto.request.plan.PlanUpdateRequestDto;
 import com.ssafy.questory.dto.response.plan.PlanInfoResponseDto;
 import com.ssafy.questory.repository.PlanRepository;
 import com.ssafy.questory.repository.PlanRoutesRepository;
@@ -128,6 +129,58 @@ class PlanServiceTest {
 
         // then
         verify(planRepository).create(any(Plan.class));
+        verify(planRoutesRepository).insert(anyList());
+    }
+
+    @Test
+    @DisplayName("여행 계획 업데이트 성공")
+    void testUpdatePlan() {
+        // given
+        String memberEmail = "user@example.com";
+        Member member = Member.builder().email(memberEmail).build();
+
+        Long planId = 1L;
+
+        Plan plan = Plan.builder()
+                .planId(planId)
+                .memberEmail(memberEmail)
+                .title("Old Title")
+                .description("Old Desc")
+                .startDate(LocalDateTime.now())
+                .endDate(LocalDateTime.now().plusDays(1))
+                .build();
+
+        // 직접 Route 사용
+        Route route1 = Route.builder()
+                .planId(planId)
+                .attractionId(101L)
+                .day(1)
+                .sequence(1)
+                .build();
+
+        PlanUpdateRequestDto requestDto = PlanUpdateRequestDto.builder()
+                .planId(planId)
+                .title("New Title")
+                .description("New Desc")
+                .startDate(LocalDateTime.now().plusDays(1))
+                .endDate(LocalDateTime.now().plusDays(2))
+                .routes(List.of(route1))
+                .build();
+
+        when(planRepository.findById(planId)).thenReturn(Optional.of(plan));
+
+        // when
+        planService.update(member, requestDto);
+
+        // then
+        assertThat(plan.getTitle()).isEqualTo("New Title");
+        assertThat(plan.getDescription()).isEqualTo("New Desc");
+        assertThat(plan.getStartDate()).isEqualTo(requestDto.getStartDate());
+        assertThat(plan.getEndDate()).isEqualTo(requestDto.getEndDate());
+
+        verify(planRepository).findById(planId);
+        verify(planRepository).update(plan);
+        verify(planRoutesRepository).deleteByPlanId(planId);
         verify(planRoutesRepository).insert(anyList());
     }
 
