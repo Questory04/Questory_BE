@@ -54,5 +54,24 @@
         SELECT member_email FROM quests WHERE location_quest_id=#{questId};
     </select>
 
+    <select id="deleteQuest">
+        UPDATE quests
+        SET
+            is_deleted = 1
+        WHERE
+            location_quest_id = #{questId};
+    </select>
+
+    <select id="getQuestCntByQuestId">
+        SELECT count(*)
+        FROM quests
+        WHERE location_quest_id = #{questId};
+    </select>
+
+    <select id="getValidQuestCntByQuestId">
+        SELECT count(*)
+        FROM quests
+        WHERE location_quest_id = #{questId} AND is_deleted = 0;
+    </select>
 
 </mapper>

@@ -27,6 +27,8 @@ public enum ErrorCode {
 
     // 퀘스트 관련
     ATTRACTION_NOT_FOUND(HttpStatus.NOT_FOUND, "해당하는 관광지가 존재하지 않습니다."),
+    QUEST_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 퀘스트입니다."),
+    QUEST_ALREADY_DELETED(HttpStatus.GONE, "이미 삭제된 퀘스트입니다."),
 
     // 입력 검증
     VALIDATION_ERROR(HttpStatus.BAD_REQUEST, "입력값이 유효하지 않습니다."),

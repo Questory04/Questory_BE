@@ -16,4 +16,10 @@ public interface QuestRepository {
     void modifyQuest(int questId, QuestRequestDto questRequestDto);
 
     String getmemberEmailByQuestId(@Param("questId") int questId);
+
+    void deleteQuest(@Param("questId") int questId);
+
+    int getQuestCntByQuestId(@Param("questId") int questId);
+
+    int getValidQuestCntByQuestId(@Param("questId") int questId);
 }

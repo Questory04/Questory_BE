@@ -46,4 +46,17 @@ public class QuestController {
         return ResponseEntity.status(HttpStatus.OK).body(Map.of(
                 "message", "성공적으로 퀘스트를 수정했습니다."));
     }
+
+    @PatchMapping("/delete/{questId}")
+    @Operation(summary = "퀘스트 수정", description = "퀘스트를 수정합니다.")
+    public ResponseEntity<Map<String, String>> deleteQuest(@PathVariable int questId,
+                                                           @RequestHeader("Authorization") String authorizationHeader){
+        String token = authorizationHeader.substring(7);
+        String memberEmail = jwtService.extractUsername(token);
+
+        questService.deleteQuest(questId, memberEmail);
+
+        return ResponseEntity.status(HttpStatus.OK).body(Map.of(
+                "message", "성공적으로 퀘스트를 삭제했습니다."));
+    }
 }

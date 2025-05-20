@@ -35,4 +35,23 @@ public class QuestService {
 
         questRepository.modifyQuest(questId, questRequestDto);
     }
+
+    public void deleteQuest(int questId, String memberEmail) {
+        int questCntByQuestId = questRepository.getQuestCntByQuestId(questId);
+        if(questCntByQuestId!=1){
+            throw new CustomException(ErrorCode.QUEST_NOT_FOUND);
+        }
+
+        String memberEmailByQuestId = questRepository.getmemberEmailByQuestId(questId);
+        if(!memberEmailByQuestId.equals(memberEmail)) {
+            throw new CustomException(ErrorCode.UNAUTHORIZED_MEMBER);
+        }
+
+        int validQuestCntByQuestId = questRepository.getValidQuestCntByQuestId(questId);
+        if(validQuestCntByQuestId!=1){
+            throw new CustomException(ErrorCode.QUEST_ALREADY_DELETED);
+        }
+
+        questRepository.deleteQuest(questId);
+    }
 }
