@@ -3,6 +3,7 @@ package com.ssafy.questory.service;
 import com.ssafy.questory.common.exception.CustomException;
 import com.ssafy.questory.common.exception.ErrorCode;
 import com.ssafy.questory.dto.request.quest.QuestRequestDto;
+import com.ssafy.questory.dto.response.quest.AttractionResponseDto;
 import com.ssafy.questory.dto.response.quest.QuestsResponseDto;
 import com.ssafy.questory.repository.QuestRepository;
 import lombok.RequiredArgsConstructor;
@@ -84,5 +85,12 @@ public class QuestService {
         }
 
         questRepository.deleteQuest(questId);
+    }
+
+    public List<AttractionResponseDto> searchAttractionByTitle(String searchKeyword) {
+        if(searchKeyword.isBlank()){
+            throw new CustomException(ErrorCode.KEYWORD_EMPTY);
+        }
+        return questRepository.searchAttractionByTitle(searchKeyword);
     }
 }
