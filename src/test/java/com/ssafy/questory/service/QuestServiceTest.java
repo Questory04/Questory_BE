@@ -147,4 +147,79 @@ class QuestServiceTest {
         assertEquals(ErrorCode.UNAUTHORIZED_MEMBER, exception.getErrorCode());
         verify(questRepository, never()).modifyQuest(anyInt(), any(QuestRequestDto.class));
     }
+
+    @Test
+    @DisplayName("퀘스트 삭제 성공")
+    void deleteQuest_Success() {
+        int questId = 1;
+        String memberEmail = "test@ssafy.com";
+
+        // given
+        when(questRepository.getQuestCntByQuestId(questId)).thenReturn(1);
+        when(questRepository.getmemberEmailByQuestId(questId)).thenReturn(memberEmail);
+        when(questRepository.getValidQuestCntByQuestId(questId)).thenReturn(1);
+
+        // when
+        questService.deleteQuest(questId, memberEmail);
+
+        // then
+        verify(questRepository, times(1)).deleteQuest(questId);
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 퀘스트 삭제")
+    void deleteQuest_QuestNotFound_ThrowsException() {
+        int questId = 1;
+        String memberEmail = "test@ssafy.com";
+
+        // given
+        when(questRepository.getQuestCntByQuestId(questId)).thenReturn(0);
+
+        // when & then
+        CustomException exception = assertThrows(CustomException.class, () -> {
+            questService.deleteQuest(questId, memberEmail);
+        });
+
+        assertEquals(ErrorCode.QUEST_NOT_FOUND, exception.getErrorCode());
+        verify(questRepository, never()).deleteQuest(anyInt());
+    }
+
+    @Test
+    @DisplayName("권한 없는 회원이 퀘스트 삭제")
+    void deleteQuest_UnauthorizedMember_ThrowsException() {
+        int questId = 1;
+        String memberEmail = "test@ssafy.com";
+
+        // given
+        when(questRepository.getQuestCntByQuestId(questId)).thenReturn(1);
+        when(questRepository.getmemberEmailByQuestId(questId)).thenReturn("another@ssafy.com");
+
+        // when & then
+        CustomException exception = assertThrows(CustomException.class, () -> {
+            questService.deleteQuest(questId, memberEmail);
+        });
+
+        assertEquals(ErrorCode.UNAUTHORIZED_MEMBER, exception.getErrorCode());
+        verify(questRepository, never()).deleteQuest(anyInt());
+    }
+
+    @Test
+    @DisplayName("이미 삭제된 퀘스트 삭제 시 예외 발생 테스트")
+    void deleteQuest_AlreadyDeleted_ThrowsException() {
+        int questId = 1;
+        String memberEmail = "test@ssafy.com";
+
+        // given
+        when(questRepository.getQuestCntByQuestId(questId)).thenReturn(1);
+        when(questRepository.getmemberEmailByQuestId(questId)).thenReturn(memberEmail);
+        when(questRepository.getValidQuestCntByQuestId(questId)).thenReturn(0);
+
+        // when & then
+        CustomException exception = assertThrows(CustomException.class, () -> {
+            questService.deleteQuest(questId, memberEmail);
+        });
+
+        assertEquals(ErrorCode.QUEST_ALREADY_DELETED, exception.getErrorCode());
+        verify(questRepository, never()).deleteQuest(anyInt());
+    }
 }
