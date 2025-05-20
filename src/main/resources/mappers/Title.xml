@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssafy.questory.repository.TitleMemberRepository">
+    <insert id="earn">
+        INSERT INTO Members_Titles (member_email, title_id, created_at)
+        VALUES (#{memberEmail}, #{titleId}, NOW())
+    </insert>
+    <resultMap id="TitleWithCreatedAtMap" type="com.ssafy.questory.domain.Title">
+        <result property="titleId" column="title_id"/>
+        <result property="name" column="name"/>
+        <result property="createdAt" column="created_at"/>
+    </resultMap>
+
+    <select id="findAllByMemberEmail" resultMap="TitleWithCreatedAtMap">
+        SELECT t.title_id, t.name, mt.created_at
+        FROM Members_Titles mt
+        JOIN Titles t ON mt.title_id = t.title_id
+        WHERE mt.member_email = #{memberEmail}
+        ORDER BY 3
+    </select>
+</mapper>
