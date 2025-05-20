@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ssafy.questory.repository.QuestRepository">
+
+    <select id="findQuests" resultMap="questsMap" resultType="com.ssafy.questory.dto.response.quest.QuestsResponseDto">
+        SELECT
+            q.title AS quest_title,
+            a.first_image1 AS attraction_image,
+            a.title AS attraction_title,
+            ct.content_type_name AS content_type_name,
+            a.addr1 AS attraction_address,
+            q.difficulty AS quest_difficulty,
+            q.quest_description AS quest_description
+        FROM
+            quests q
+        JOIN
+            attractions a ON q.content_type_id = a.content_type_id AND q.attraction_id = a.no
+        JOIN
+            contenttypes ct ON a.content_type_id = ct.content_type_id
+        WHERE
+            q.is_deleted = 0
+        LIMIT #{offset}, #{limit};
+    </select>
+
+    <select id="getTotalQuests">
+        SELECT count(*) FROM quests;
+    </select>
+
+    <select id="findQuestsByMemberEmail" resultMap="questsMap" resultType="com.ssafy.questory.dto.response.quest.QuestsResponseDto">
+        SELECT
+            q.title AS quest_title,
+            a.first_image1 AS attraction_image,
+            a.title AS attraction_title,
+            ct.content_type_name AS content_type_name,
+            a.addr1 AS attraction_address,
+            q.difficulty AS quest_difficulty,
+            q.quest_description AS quest_description
+        FROM
+            quests q
+        JOIN
+            attractions a ON q.content_type_id = a.content_type_id AND q.attraction_id = a.no
+        JOIN
+            contenttypes ct ON a.content_type_id = ct.content_type_id
+        LEFT JOIN
+            members_quests mq ON q.location_quest_id = mq.location_quest_id AND mq.member_email = #{memberEmail}
+        WHERE
+            q.is_deleted = 0 AND mq.is_completed = 'YET'
+        LIMIT #{offset}, #{limit};
+    </select>
+
+    <select id="getTotalQuestsByMemberEmail">
+        SELECT
+            count(*)
+        FROM
+            Members_Quests
+        WHERE
+            member_email = #{memberEmail} AND is_completed = 'YET';
+    </select>
+
+    <select id="saveQuest">
+        INSERT INTO Quests (
+            attraction_id,
+            member_email,
+            title,
+            quest_description,
+            difficulty,
+            created_at,
+            is_private,
+            content_type_id,
+            stamp_description
+        ) VALUES (
+            #{questRequestDto.attractionId},
+            #{memberEmail},
+            #{questRequestDto.title},
+            #{questRequestDto.questDescription},
+            #{questRequestDto.difficulty},
+            CURRENT_DATE(),
+            #{questRequestDto.isPrivate},
+            #{contentTypeId},
+            #{questRequestDto.stampDescription}
+        )
+    </select>
+
+    <select id="getAttractionById">
+        SELECT count(*) FROM attractions WHERE no=#{attractionId};
+    </select>
+
+    <select id="getContentTypeIdByAttractionId">
+        SELECT content_type_id FROM attractions WHERE no=#{attractionId};
+    </select>
+
+    <select id="modifyQuest">
+        UPDATE quests
+        SET
+        title = #{questRequestDto.title},
+        quest_description= #{questRequestDto.questDescription},
+        difficulty = #{questRequestDto.difficulty},
+        created_at = CURRENT_DATE(),
+        is_private = #{questRequestDto.isPrivate},
+        stamp_description =  #{questRequestDto.stampDescription}
+        WHERE
+        location_quest_id = #{questId};
+    </select>
+
+    <select id="getmemberEmailByQuestId">
+        SELECT member_email FROM quests WHERE location_quest_id=#{questId};
+    </select>
+
+    <select id="deleteQuest">
+        UPDATE quests
+        SET
+            is_deleted = 1
+        WHERE
+            location_quest_id = #{questId};
+    </select>
+
+    <select id="getQuestCntByQuestId">
+        SELECT count(*)
+        FROM quests
+        WHERE location_quest_id = #{questId};
+    </select>
+
+    <select id="getValidQuestCntByQuestId">
+        SELECT count(*)
+        FROM quests
+        WHERE location_quest_id = #{questId} AND is_deleted = 0;
+    </select>
+
+    <resultMap type="QuestsResponseDto" id="questsMap">
+        <result column="quest_title" property="questTitle" />
+        <result column="attraction_image" property="attractionImage" />
+        <result column="attraction_title" property="attractionTitle" />
+        <result column="content_type_name" property="contentTypeName" />
+        <result column="attraction_address" property="attractionAddress" />
+        <result column="quest_difficulty" property="questDifficulty" />
+        <result column="quest_description" property="questDescription" />
+    </resultMap>
+
+</mapper>

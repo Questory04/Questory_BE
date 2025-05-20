@@ -9,6 +9,7 @@ public enum ErrorCode {
     MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "회원을 찾을 수 없습니다."),
     EMAIL_ALREADY_EXISTS(HttpStatus.CONFLICT, "이미 존재하는 이메일입니다."),
     INVALID_PASSWORD(HttpStatus.UNAUTHORIZED, "비밀번호가 일치하지 않습니다."),
+    UNAUTHORIZED_MEMBER(HttpStatus.UNAUTHORIZED, "권한이 없는 회원입니다."),
 
     // 인증 관련
     TOKEN_NOT_FOUND(HttpStatus.UNAUTHORIZED, "토큰이 존재하지 않습니다."),
@@ -23,6 +24,12 @@ public enum ErrorCode {
 
     // 스탬프 관련
     STAMP_NOT_FOUND(HttpStatus.NOT_FOUND, "회원이 보유한 스탬프가 없습니다."),
+
+    // 퀘스트 관련
+    ATTRACTION_NOT_FOUND(HttpStatus.NOT_FOUND, "해당하는 관광지가 존재하지 않습니다."),
+    QUEST_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 퀘스트입니다."),
+    QUEST_ALREADY_DELETED(HttpStatus.GONE, "이미 삭제된 퀘스트입니다."),
+    QUEST_LIST_EMPTY(HttpStatus.NO_CONTENT, "조회할 퀘스트가 없습니다."),
 
     // 입력 검증
     VALIDATION_ERROR(HttpStatus.BAD_REQUEST, "입력값이 유효하지 않습니다."),
