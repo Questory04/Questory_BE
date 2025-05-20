@@ -32,4 +32,18 @@ public class QuestController {
         return ResponseEntity.status(HttpStatus.OK).body(Map.of(
                 "message", "성공적으로 퀘스트를 생성했습니다."));
     }
+
+    @PatchMapping("/{questId}")
+    @Operation(summary = "퀘스트 수정", description = "퀘스트를 수정합니다.")
+    public ResponseEntity<Map<String, String>> modifyQuest(@PathVariable int questId,
+                                                           @RequestBody QuestRequestDto questRequestDto,
+                                                         @RequestHeader("Authorization") String authorizationHeader){
+        String token = authorizationHeader.substring(7);
+        String memberEmail = jwtService.extractUsername(token);
+
+        questService.modifyQuest(questId, questRequestDto, memberEmail);
+
+        return ResponseEntity.status(HttpStatus.OK).body(Map.of(
+                "message", "성공적으로 퀘스트를 수정했습니다."));
+    }
 }

@@ -21,4 +21,18 @@ public class QuestService {
         int contentTypeId = questRepository.getContentTypeIdByAttractionId(questRequestDto.getAttractionId());
         questRepository.saveQuest(questRequestDto, memberEmail, contentTypeId);
     }
+
+    public void modifyQuest(int questId, QuestRequestDto questRequestDto, String memberEmail) {
+        int isValidAttraction = questRepository.getAttractionById(questRequestDto.getAttractionId());
+        if(isValidAttraction!=1){
+            throw new CustomException(ErrorCode.ATTRACTION_NOT_FOUND);
+        }
+
+        String memberEmailByQuestId = questRepository.getmemberEmailByQuestId(questId);
+        if(!memberEmailByQuestId.equals(memberEmail)){
+            throw new CustomException(ErrorCode.UNAUTHORIZED_MEMBER);
+        }
+
+        questRepository.modifyQuest(questId, questRequestDto);
+    }
 }

@@ -37,4 +37,22 @@
         SELECT content_type_id FROM attractions WHERE no=#{attractionId};
     </select>
 
+    <select id="modifyQuest">
+        UPDATE quests
+        SET
+        title = #{questRequestDto.title},
+        quest_description= #{questRequestDto.questDescription},
+        difficulty = #{questRequestDto.difficulty},
+        created_at = CURRENT_DATE(),
+        is_private = #{questRequestDto.isPrivate},
+        stamp_description =  #{questRequestDto.stampDescription}
+        WHERE
+        location_quest_id = #{questId};
+    </select>
+
+    <select id="getmemberEmailByQuestId">
+        SELECT member_email FROM quests WHERE location_quest_id=#{questId};
+    </select>
+
+
 </mapper>

@@ -12,4 +12,8 @@ public interface QuestRepository {
     int getAttractionById(@Param("attractionId")int attractionId);
 
     int getContentTypeIdByAttractionId(@Param("attractionId") int attractionId);
+
+    void modifyQuest(int questId, QuestRequestDto questRequestDto);
+
+    String getmemberEmailByQuestId(@Param("questId") int questId);
 }
