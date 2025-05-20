@@ -2,6 +2,8 @@ package com.ssafy.questory.controller;
 
 import com.ssafy.questory.config.jwt.JwtService;
 import com.ssafy.questory.dto.request.quest.QuestRequestDto;
+import com.ssafy.questory.dto.response.quest.QuestsResponseDto;
+import com.ssafy.questory.dto.response.stamp.StampsResponseDto;
 import com.ssafy.questory.service.QuestService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -10,6 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -19,6 +23,40 @@ import java.util.Map;
 public class QuestController {
     private final QuestService questService;
     private final JwtService jwtService;
+
+    @GetMapping("")
+    @Operation(summary = "퀘스트 목록 조회", description = "퀘스트 목록을 조회합니다.")
+    public ResponseEntity<Map<String, Object>> findQuests(@RequestParam(defaultValue = "1") int page,
+                                                          @RequestParam(defaultValue = "5") int size,
+                                                          @RequestHeader(value = "Authorization", required = false) String authorizationHeader) {
+        List<QuestsResponseDto> questsResponseDtoList;
+        int totalItems;
+        int totalPages;
+        if(authorizationHeader != null && authorizationHeader.startsWith("Bearer ")){
+            String token = authorizationHeader.substring(7);
+            String memberEmail = jwtService.extractUsername(token);
+
+            questsResponseDtoList = questService.findQuestsByMemberEmail(memberEmail, page, size);
+            totalItems = questService.getTotalQuestsByMemberEmail(memberEmail);
+            totalPages = (int) Math.ceil((double) totalItems / size);
+        }else{
+            questsResponseDtoList = questService.findQuests(page, size);
+            totalItems = questService.getTotalQuests();
+            totalPages = (int) Math.ceil((double) totalItems / size);
+        }
+
+        Map<String, Object> pagination = new HashMap<>();
+        pagination.put("currentPage", page);
+        pagination.put("totalItems", totalItems);
+        pagination.put("totalPages", totalPages);
+        pagination.put("pageSize", size);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("quests", questsResponseDtoList);
+        response.put("pagination", pagination);
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
 
     @PostMapping("")
     @Operation(summary = "퀘스트 등록", description = "로그인한 사용자가 새로운 퀘스트를 생성합니다.")
