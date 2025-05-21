@@ -60,4 +60,13 @@ public class PlanController {
                 "message", "여행 계획이 삭제되었습니다."
         ));
     }
+
+    @PatchMapping("/{planId}/share/toggle")
+    @Operation(summary = "공유 상태 토글", description = "공유 상태를 반전시킵니다.")
+    public ResponseEntity<Map<String, String>> toggleShareStatus(
+            @AuthenticationPrincipal(expression = "member") Member member,
+            @PathVariable Long planId) {
+        planService.toggleShareStatus(member, planId);
+        return ResponseEntity.ok(Map.of("message", "공유 상태가 변경되었습니다."));
+    }
 }

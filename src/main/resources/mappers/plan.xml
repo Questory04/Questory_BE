@@ -12,7 +12,8 @@
         start_date AS startDate,
         end_date AS endDate,
         created_at AS createdAt,
-        is_start AS isStart
+        is_start AS isStart,
+        is_shared AS isShared
         FROM Plans
         WHERE member_email = #{memberEmail}
     </select>
@@ -40,8 +41,14 @@
         <result property="endDate" column="end_date"/>
         <result property="createdAt" column="created_at"/>
         <result property="isStart" column="is_start"/>
+        <result property="isShared" column="is_shared"/>
     </resultMap>
     <delete id="deleteById" parameterType="long">
         DELETE FROM Plans WHERE plan_id = #{planId}
     </delete>
+    <update id="toggleShareStatus">
+        UPDATE plans
+        SET is_shared = #{shared}
+        WHERE plan_id = #{planId}
+    </update>
 </mapper>

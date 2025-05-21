@@ -37,6 +37,7 @@ public class PlanService {
                             .endDate(plan.getEndDate())
                             .createdAt(plan.getCreatedAt())
                             .isStart(plan.isStart())
+                            .isShared(plan.isShared())
                             .routes(routes)
                             .build();
                 })
@@ -102,6 +103,16 @@ public class PlanService {
 
         planRoutesRepository.deleteByPlanId(planDeleteRequestDto.getPlanId());
         planRepository.deleteById(planDeleteRequestDto.getPlanId());
+    }
+
+    public void toggleShareStatus(Member member, Long planId) {
+        Plan plan = planRepository.findById(planId)
+                .orElseThrow(() -> new CustomException(ErrorCode.PLAN_NOT_FOUND));
+
+        validateAuthorizedMember(plan.getMemberEmail(), member.getEmail());
+
+        boolean newStatus = !plan.isShared();
+        planRepository.toggleShareStatus(planId, newStatus);
     }
 
     private void validateAuthorizedMember(String email1, String email2) {
