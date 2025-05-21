@@ -15,15 +15,26 @@ public class StampService {
 
     private final StampRepository stampRepository;
 
-    public List<StampsResponseDto> findStamps(String memberEmail, int page, int size) {
+    public List<StampsResponseDto> findStamps(String memberEmail, String difficulty, int page, int size) {
         int offset  = (page-1) * size;
-        List<StampsResponseDto> stampsResponseDtoList = stampRepository.findStamps(memberEmail, offset, size);
+
+        List<StampsResponseDto> stampsResponseDtoList;
+        if(difficulty== null || difficulty.equals("all")){
+            stampsResponseDtoList = stampRepository.findStamps(memberEmail, offset, size);
+        }else{
+            stampsResponseDtoList = stampRepository.findStampsByDifficulty(memberEmail, difficulty, offset, size);
+        }
+
         if(stampsResponseDtoList.isEmpty()){
             throw new CustomException(ErrorCode.STAMP_LIST_EMPTY);
         }
         return stampsResponseDtoList;
     }
-    public int getTotalStamps(String memberEmail){
-        return stampRepository.countStamps(memberEmail);
+    public int getTotalStamps(String memberEmail, String difficulty){
+        if(difficulty== null || difficulty.equals("all")){
+            return stampRepository.countStamps(memberEmail);
+        }else{
+            return stampRepository.countStampsByDifficulty(memberEmail, difficulty);
+        }
     }
 }

@@ -11,5 +11,8 @@ import java.util.List;
 @Mapper
 public interface StampRepository {
     List<StampsResponseDto> findStamps(@Param("memberEmail") String memberEmail, @Param("offset") int offset, @Param("limit") int limit);
+    List<StampsResponseDto> findStampsByDifficulty(@Param("memberEmail") String memberEmail, @Param("difficulty") String difficulty, @Param("offset") int offset, @Param("limit") int limit);
+
     int countStamps(@Param("memberEmail") String memberEmail);
+    int countStampsByDifficulty(@Param("memberEmail") String memberEmail, @Param("difficulty") String difficulty);
 }
