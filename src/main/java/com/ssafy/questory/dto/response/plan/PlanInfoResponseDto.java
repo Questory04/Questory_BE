@@ -17,11 +17,13 @@ public class PlanInfoResponseDto {
     private LocalDateTime endDate;
     private LocalDateTime createdAt;
     private boolean isStart;
+    private boolean isShared;
     private List<Route> routes;
 
     @Builder
     private PlanInfoResponseDto(Long planId, String memberEmail, String title, String description,
-                                LocalDateTime startDate, LocalDateTime endDate, LocalDateTime createdAt, boolean isStart,
+                                LocalDateTime startDate, LocalDateTime endDate, LocalDateTime createdAt,
+                                boolean isStart, boolean isShared,
                                 List<Route> routes) {
         this.planId = planId;
         this.memberEmail = memberEmail;
@@ -31,6 +33,7 @@ public class PlanInfoResponseDto {
         this.endDate = endDate;
         this.createdAt = createdAt;
         this.isStart = isStart;
+        this.isShared = isShared;
         this.routes = routes;
     }
 }

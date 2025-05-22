@@ -49,7 +49,14 @@ CREATE TABLE Plans (
     start_date DATETIME,
     end_date DATETIME,
     created_at DATETIME DEFAULT NOW(),
-    is_start TINYINT(1) DEFAULT 0
+    is_start TINYINT(1) DEFAULT 0,
+    is_shared TINYINT(1) DEFAULT 0
+);
+
+CREATE TABLE Saves (
+    member_email VARCHAR(40),
+    plan_id INT,
+    saved_at DATETIME DEFAULT NOW()
 );
 
 CREATE TABLE Routes (
@@ -88,7 +95,7 @@ CREATE TABLE Quests (
     title VARCHAR(100),
     quest_description VARCHAR(10000) NULL,
     difficulty ENUM('EASY', 'MEDIUM', 'HARD') DEFAULT 'MEDIUM',
-	created_at	DATETIME NOT NULL DEFAULT NOW(),
+    created_at    DATETIME NOT NULL DEFAULT NOW(),
     is_private TINYINT(1) DEFAULT 0,
     content_type_id int NOT NULL,
     stamp_description TEXT NULL,

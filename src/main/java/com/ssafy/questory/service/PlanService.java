@@ -11,6 +11,7 @@ import com.ssafy.questory.dto.request.plan.PlanUpdateRequestDto;
 import com.ssafy.questory.dto.response.plan.PlanInfoResponseDto;
 import com.ssafy.questory.repository.PlanRoutesRepository;
 import com.ssafy.questory.repository.PlanRepository;
+import com.ssafy.questory.repository.SavedRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +22,7 @@ import java.util.List;
 public class PlanService {
     private final PlanRepository planRepository;
     private final PlanRoutesRepository planRoutesRepository;
+    private final SavedRepository savedRepository;
 
     public List<PlanInfoResponseDto> getPlanInfo(Member member) {
         List<Plan> plans = planRepository.findByMemberEmail(member.getEmail());
@@ -37,6 +39,7 @@ public class PlanService {
                             .endDate(plan.getEndDate())
                             .createdAt(plan.getCreatedAt())
                             .isStart(plan.isStart())
+                            .isShared(plan.isShared())
                             .routes(routes)
                             .build();
                 })
@@ -102,6 +105,32 @@ public class PlanService {
 
         planRoutesRepository.deleteByPlanId(planDeleteRequestDto.getPlanId());
         planRepository.deleteById(planDeleteRequestDto.getPlanId());
+    }
+
+    public void toggleShareStatus(Member member, Long planId) {
+        Plan plan = planRepository.findById(planId)
+                .orElseThrow(() -> new CustomException(ErrorCode.PLAN_NOT_FOUND));
+
+        validateAuthorizedMember(plan.getMemberEmail(), member.getEmail());
+
+        boolean newStatus = !plan.isShared();
+        planRepository.toggleShareStatus(planId, newStatus);
+    }
+
+    public void copy(Member member, Long planId) {
+        Plan plan = planRepository.findById(planId)
+                .orElseThrow(() -> new CustomException(ErrorCode.PLAN_NOT_FOUND));
+
+        if (!plan.isShared()) {
+            throw new CustomException(ErrorCode.PLAN_NOT_SHARED);
+        }
+        if (member.getEmail().equals(plan.getMemberEmail())) {
+            throw new CustomException(ErrorCode.CANNOT_COPY_OWN_PLAN);
+        }
+        if (savedRepository.findBySavedPlan(planId, member.getEmail()) != null) {
+            throw new CustomException(ErrorCode.ALREADY_COPIED_PLAN);
+        }
+        savedRepository.copy(planId, member.getEmail());
     }
 
     private void validateAuthorizedMember(String email1, String email2) {

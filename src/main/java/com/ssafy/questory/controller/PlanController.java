@@ -60,4 +60,22 @@ public class PlanController {
                 "message", "여행 계획이 삭제되었습니다."
         ));
     }
+
+    @PatchMapping("/{planId}/share/toggle")
+    @Operation(summary = "공유 상태 토글", description = "공유 상태를 반전시킵니다.")
+    public ResponseEntity<Map<String, String>> toggleShareStatus(
+            @AuthenticationPrincipal(expression = "member") Member member,
+            @PathVariable Long planId) {
+        planService.toggleShareStatus(member, planId);
+        return ResponseEntity.ok(Map.of("message", "공유 상태가 변경되었습니다."));
+    }
+
+    @PostMapping("/{planId}/copy")
+    @Operation(summary = "계획 복사", description = "공유된 계획을 복사합니다.")
+    public ResponseEntity<Map<String, String>> copy(
+            @AuthenticationPrincipal (expression = "member") Member member,
+            @PathVariable Long planId) {
+        planService.copy(member, planId);
+        return ResponseEntity.ok(Map.of("message", "계획이 저장되었습니다."));
+    }
 }
