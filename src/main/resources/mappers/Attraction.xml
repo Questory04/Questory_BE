@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ssafy.questory.repository.AttractionRepsitory">
+
+    <select id="searchAttractionByTitle" resultMap="AttractionsMap" resultType="com.ssafy.questory.dto.response.attraction.AttractionResponseDto">
+        SELECT no, title, addr1
+        FROM attractions
+        WHERE title LIKE CONCAT('%', #{searchKeyword}, '%');
+    </select>
+
+    <resultMap type="AttractionResponseDto" id="AttractionsMap">
+        <result column="no" property="attractionId" />
+        <result column="title" property="name" />
+        <result column="addr1" property="address" />
+    </resultMap>
+
+</mapper>

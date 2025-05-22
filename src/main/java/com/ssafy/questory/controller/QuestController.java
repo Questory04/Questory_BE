@@ -2,19 +2,16 @@ package com.ssafy.questory.controller;
 
 import com.ssafy.questory.config.jwt.JwtService;
 import com.ssafy.questory.dto.request.quest.QuestRequestDto;
-import com.ssafy.questory.dto.response.quest.AttractionResponseDto;
+import com.ssafy.questory.dto.response.attraction.AttractionResponseDto;
 import com.ssafy.questory.dto.response.quest.QuestsResponseDto;
-import com.ssafy.questory.dto.response.stamp.StampsResponseDto;
 import com.ssafy.questory.service.QuestService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -75,15 +72,6 @@ public class QuestController {
                 "message", "성공적으로 퀘스트를 생성했습니다."));
     }
 
-    @GetMapping("/search-attractions")
-    @Operation(summary = "관광지 검색", description = "퀘스트 등록 시 관광지를 검색합니다.")
-    public ResponseEntity<Map<String, Object>> searchAttractionByTitle(@RequestParam String searchKeyword){
-        List<AttractionResponseDto> attractionsResponseDtoList = questService.searchAttractionByTitle(searchKeyword);
-
-        Map<String, Object> response = new HashMap<>();
-        response.put("attractions", attractionsResponseDtoList);
-        return ResponseEntity.status(HttpStatus.OK).body(response);
-    }
 
     @PatchMapping("/{questId}")
     @Operation(summary = "퀘스트 수정", description = "퀘스트를 수정합니다.")

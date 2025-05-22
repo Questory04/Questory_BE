@@ -1,4 +1,4 @@
-package com.ssafy.questory.dto.response.quest;
+package com.ssafy.questory.dto.response.attraction;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -8,13 +8,15 @@ import lombok.Setter;
 @Setter
 @Builder
 public class AttractionResponseDto {
+    private int attractionId;
     private String name;
     private String address;
 
     @Override
     public String toString() {
         return "AttractionResponseDto{" +
-                "name='" + name + '\'' +
+                "attractionId=" + attractionId +
+                ", name='" + name + '\'' +
                 ", address='" + address + '\'' +
                 '}';
     }
