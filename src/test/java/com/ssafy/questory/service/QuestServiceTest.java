@@ -103,7 +103,7 @@ class QuestServiceTest {
     }
 
     @Test
-    @DisplayName("특정 회원이 실행 가능한 퀘스트 목록 조회")
+    @DisplayName("특정 회원이 실행 가능한 퀘스트 목록 조회 - 전체 난이도")
     void findQuestsByMemberEmail_ReturnsQuestList() {
         // given
         String testEmail = "test@example.com";
@@ -111,11 +111,12 @@ class QuestServiceTest {
         int page = 1;
         int size = 5;
         int offset = (page - 1) * size;
+        String difficulty = "all";
 
         when(questRepository.findQuestsByMemberEmail(eq(testEmail), eq(offset), eq(size))).thenReturn(mockQuests);
 
         // when
-        List<QuestsResponseDto> result = questService.findQuestsByMemberEmail(testEmail, page, size);
+        List<QuestsResponseDto> result = questService.findQuestsByMemberEmail(testEmail, difficulty, page, size);
 
         // then
         assertNotNull(result);
@@ -127,6 +128,51 @@ class QuestServiceTest {
     }
 
     @Test
+    @DisplayName("특정 회원이 실행 가능한 퀘스트 목록 조회 - null 난이도")
+    void findQuestsByMemberEmail_WithNullDifficulty_ReturnsQuestList() {
+        // given
+        String testEmail = "test@example.com";
+
+        int page = 1;
+        int size = 5;
+        int offset = (page - 1) * size;
+
+        when(questRepository.findQuestsByMemberEmail(eq(testEmail), eq(offset), eq(size))).thenReturn(mockQuests);
+
+        // when
+        List<QuestsResponseDto> result = questService.findQuestsByMemberEmail(testEmail, null, page, size);
+
+        // then
+        assertNotNull(result);
+        assertEquals(mockQuests.size(), result.size());
+        verify(questRepository, times(1)).findQuestsByMemberEmail(testEmail, offset, size);
+        verify(questRepository, never()).findQuestsByMemberEmailAndDifficulty(any(), any(), anyInt(), anyInt());
+    }
+
+    @Test
+    @DisplayName("특정 회원이 실행 가능한 퀘스트 목록 조회 - 특정 난이도")
+    void findQuestsByMemberEmail_WithSpecificDifficulty_ReturnsQuestList() {
+        // given
+        String testEmail = "test@example.com";
+        int page = 1;
+        int size = 5;
+        int offset = (page - 1) * size;
+        String difficulty = "EASY";
+
+        when(questRepository.findQuestsByMemberEmailAndDifficulty(eq(testEmail), eq(difficulty), eq(offset), eq(size)))
+                .thenReturn(mockQuests);
+
+        // when
+        List<QuestsResponseDto> result = questService.findQuestsByMemberEmail(testEmail, difficulty, page, size);
+
+        // then
+        assertNotNull(result);
+        assertEquals(mockQuests.size(), result.size());
+        verify(questRepository, times(1)).findQuestsByMemberEmailAndDifficulty(testEmail, difficulty, offset, size);
+        verify(questRepository, never()).findQuestsByMemberEmail(any(), anyInt(), anyInt());
+    }
+
+    @Test
     @DisplayName("특정 회원의 퀘스트 목록이 비어있을 경우 예외 발생")
     void findQuestsByMemberEmail_ThrowsException_WhenQuestListEmpty() {
         // given
@@ -135,12 +181,13 @@ class QuestServiceTest {
         int page = 1;
         int size = 10;
         int offset = (page - 1) * size;
+        String difficulty = "all";
 
         when(questRepository.findQuestsByMemberEmail(eq(testEmail), eq(offset), eq(size))).thenReturn(new ArrayList<>());
 
         // when & then
         CustomException exception = assertThrows(CustomException.class, () -> {
-            questService.findQuestsByMemberEmail(testEmail, page, size);
+            questService.findQuestsByMemberEmail(testEmail, difficulty, page, size);
         });
 
         assertEquals(ErrorCode.QUEST_LIST_EMPTY, exception.getErrorCode());
@@ -148,8 +195,29 @@ class QuestServiceTest {
     }
 
     @Test
+    @DisplayName("특정 회원의 퀘스트 목록이 비어있을 경우 예외 발생 - 특정 난이도")
+    void getTotalQuestsByMemberEmail_WithDifficulty_ReturnsTotalCount() {
+        // given
+        String testEmail = "test@example.com";
+        String difficulty = "EASY";
+        int expectedTotal = 5;
+
+        when(questRepository.getTotalQuestsByMemberEmailAndDifficulty(testEmail, difficulty)).thenReturn(expectedTotal);
+
+        // when
+        int result = questService.getTotalQuestsByMemberEmail(testEmail, difficulty);
+
+        // then
+        assertEquals(expectedTotal, result);
+        verify(questRepository, times(1)).getTotalQuestsByMemberEmailAndDifficulty(testEmail, difficulty);
+        verify(questRepository, never()).getTotalQuestsByMemberEmail(any());
+    }
+
+    @Test
     @DisplayName("특정 회원이 실행 가능한 퀘스트 수 반환")
     void getTotalQuestsByMemberEmail_ReturnsTotalCount() {
+        String difficulty = "all";
+
         // given
         String testEmail = "test@example.com";
 
@@ -157,7 +225,7 @@ class QuestServiceTest {
         when(questRepository.getTotalQuestsByMemberEmail(testEmail)).thenReturn(expectedTotal);
 
         // when
-        int result = questService.getTotalQuestsByMemberEmail(testEmail);
+        int result = questService.getTotalQuestsByMemberEmail(testEmail, difficulty);
 
         // then
         assertEquals(expectedTotal, result);
