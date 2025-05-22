@@ -29,7 +29,8 @@ public class QuestController {
 
     @GetMapping("")
     @Operation(summary = "퀘스트 목록 조회", description = "퀘스트 목록을 조회합니다.")
-    public ResponseEntity<Map<String, Object>> findQuests(@RequestParam(defaultValue = "1") int page,
+    public ResponseEntity<Map<String, Object>> findQuests(@RequestParam(required = false) String difficulty,
+                                                          @RequestParam(defaultValue = "1") int page,
                                                           @RequestParam(defaultValue = "5") int size,
                                                           @RequestHeader(value = "Authorization", required = false) String authorizationHeader) {
         List<QuestsResponseDto> questsResponseDtoList;
@@ -39,8 +40,8 @@ public class QuestController {
             String token = authorizationHeader.substring(7);
             String memberEmail = jwtService.extractUsername(token);
 
-            questsResponseDtoList = questService.findQuestsByMemberEmail(memberEmail, page, size);
-            totalItems = questService.getTotalQuestsByMemberEmail(memberEmail);
+            questsResponseDtoList = questService.findQuestsByMemberEmail(memberEmail, difficulty, page, size);
+            totalItems = questService.getTotalQuestsByMemberEmail(memberEmail, difficulty);
             totalPages = (int) Math.ceil((double) totalItems / size);
         }else{
             questsResponseDtoList = questService.findQuests(page, size);

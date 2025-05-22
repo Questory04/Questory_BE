@@ -19,6 +19,10 @@ public interface QuestRepository {
 
     int getTotalQuestsByMemberEmail(@Param("memberEmail") String memberEmail);
 
+    List<QuestsResponseDto> findQuestsByMemberEmailAndDifficulty(@Param("memberEmail") String memberEmail, @Param("difficulty") String difficulty, @Param("offset") int offset, @Param("limit") int limit);
+
+    int getTotalQuestsByMemberEmailAndDifficulty(@Param("memberEmail") String memberEmail, @Param("difficulty") String difficulty);
+
     void saveQuest(@Param("questRequestDto") QuestRequestDto questRequestDto, @Param("memberEmail") String memberEmail, @Param("contentTypeId") int contentTypeId);
 
     int getAttractionById(@Param("attractionId")int attractionId);

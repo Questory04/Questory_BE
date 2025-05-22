@@ -30,9 +30,14 @@ public class QuestService {
         return questRepository.getTotalQuests();
     }
 
-    public List<QuestsResponseDto> findQuestsByMemberEmail(String memberEmail, int page, int size) {
+    public List<QuestsResponseDto> findQuestsByMemberEmail(String memberEmail, String difficulty, int page, int size) {
         int offset  = (page-1) * size;
-        List<QuestsResponseDto> questsResponseDtoList = questRepository.findQuestsByMemberEmail(memberEmail, offset, size);
+        List<QuestsResponseDto> questsResponseDtoList;
+        if(difficulty== null || difficulty.equals("all")){
+            questsResponseDtoList = questRepository.findQuestsByMemberEmail(memberEmail, offset, size);
+        }else{
+            questsResponseDtoList = questRepository.findQuestsByMemberEmailAndDifficulty(memberEmail, difficulty, offset, size);
+        }
 
         if(questsResponseDtoList.isEmpty()){
             throw new CustomException(ErrorCode.QUEST_LIST_EMPTY);
@@ -40,8 +45,12 @@ public class QuestService {
         return questsResponseDtoList;
     }
 
-    public int getTotalQuestsByMemberEmail(String memberEmail) {
-        return questRepository.getTotalQuestsByMemberEmail(memberEmail);
+    public int getTotalQuestsByMemberEmail(String memberEmail, String difficulty) {
+        if(difficulty== null || difficulty.equals("all")){
+            return questRepository.getTotalQuestsByMemberEmail(memberEmail);
+        }else{
+            return questRepository.getTotalQuestsByMemberEmailAndDifficulty(memberEmail, difficulty);
+        }
     }
 
     public void saveQuest(QuestRequestDto questRequestDto, String memberEmail) {
