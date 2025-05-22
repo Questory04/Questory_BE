@@ -59,22 +59,26 @@ CREATE TABLE Saves (
     saved_at DATETIME DEFAULT NOW()
 );
 
-CREATE TABLE Routes (
-    route_id INT AUTO_INCREMENT PRIMARY KEY,
-    plan_id INT NOT NULL,
-    day INT,
-    sequence INT
-);
-
 CREATE TABLE Plans_Routes (
-    plan_id INT NOT NULL,
-    route_id INT NOT NULL
+	plan_id INT NOT NULL,
+    attraction_id INT NOT NULL,
+    day INT NOT NULL,
+    sequence INT NOT NULL
 );
 
-CREATE TABLE Follows (
-    following_email VARCHAR(40),
-    follow_email VARCHAR(40),
-    status ENUM('ACCEPTED', 'DENIED', 'APPLIED') NOT NULL DEFAULT 'APPLIED'
+CREATE TABLE Friends (
+    email1 VARCHAR(40),
+    email2 VARCHAR(40),
+    created_at DATETIME DEFAULT NOW(),
+    PRIMARY KEY (email1, email2)
+);
+
+CREATE TABLE Follow_Requests (
+    requester_email VARCHAR(40),
+    target_email VARCHAR(40),
+    status ENUM('APPLIED', 'ACCEPTED', 'DENIED') NOT NULL DEFAULT 'APPLIED',
+    created_at DATETIME DEFAULT NOW(),
+    PRIMARY KEY (requester_email, target_email)
 );
 
 CREATE TABLE Titles (
