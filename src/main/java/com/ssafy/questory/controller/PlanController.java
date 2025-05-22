@@ -69,4 +69,13 @@ public class PlanController {
         planService.toggleShareStatus(member, planId);
         return ResponseEntity.ok(Map.of("message", "공유 상태가 변경되었습니다."));
     }
+
+    @PostMapping("/{planId}/copy")
+    @Operation(summary = "계획 복사", description = "공유된 계획을 복사합니다.")
+    public ResponseEntity<Map<String, String>> copy(
+            @AuthenticationPrincipal (expression = "member") Member member,
+            @PathVariable Long planId) {
+        planService.copy(member, planId);
+        return ResponseEntity.ok(Map.of("message", "계획이 저장되었습니다."));
+    }
 }
