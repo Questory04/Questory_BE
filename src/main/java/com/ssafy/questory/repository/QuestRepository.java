@@ -2,6 +2,7 @@ package com.ssafy.questory.repository;
 
 import com.ssafy.questory.dto.request.quest.QuestRequestDto;
 import com.ssafy.questory.dto.response.attraction.AttractionResponseDto;
+import com.ssafy.questory.dto.response.quest.QuestResponseDto;
 import com.ssafy.questory.dto.response.quest.QuestsResponseDto;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -38,4 +39,6 @@ public interface QuestRepository {
     int getQuestCntByQuestId(@Param("questId") int questId);
 
     int getValidQuestCntByQuestId(@Param("questId") int questId);
+
+    QuestResponseDto findQuestById(@Param("questId") int questId);
 }

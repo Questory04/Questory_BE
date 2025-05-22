@@ -3,6 +3,7 @@ package com.ssafy.questory.controller;
 import com.ssafy.questory.config.jwt.JwtService;
 import com.ssafy.questory.dto.request.quest.QuestRequestDto;
 import com.ssafy.questory.dto.response.attraction.AttractionResponseDto;
+import com.ssafy.questory.dto.response.quest.QuestResponseDto;
 import com.ssafy.questory.dto.response.quest.QuestsResponseDto;
 import com.ssafy.questory.service.QuestService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -55,6 +56,17 @@ public class QuestController {
         Map<String, Object> response = new HashMap<>();
         response.put("quests", questsResponseDtoList);
         response.put("pagination", pagination);
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @GetMapping("/{questId}")
+    @Operation(summary = "퀘스트 목록 조회", description = "퀘스트 목록을 조회합니다.")
+    public ResponseEntity<Map<String, Object>> findQuestById(@PathVariable int questId) {
+        QuestResponseDto questResponseDto = questService.findQuestById(questId);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("quest", questResponseDto);
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }

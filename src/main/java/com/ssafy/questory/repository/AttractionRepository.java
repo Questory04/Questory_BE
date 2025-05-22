@@ -7,6 +7,8 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 
 @Mapper
-public interface AttractionRepsitory {
+public interface AttractionRepository {
     List<AttractionResponseDto> searchAttractionByTitle(@Param("searchKeyword") String searchKeyword);
+
+    AttractionResponseDto searchAttractionById(@Param("questId") int questId);
 }

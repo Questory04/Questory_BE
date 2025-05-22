@@ -7,10 +7,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
@@ -31,6 +28,16 @@ public class AttractionController {
 
         Map<String, Object> response = new HashMap<>();
         response.put("attractions", attractionsResponseDtoList);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @GetMapping("/{questId}")
+    @Operation(summary = "관광지 검색", description = "퀘스트 등록 시 관광지를 검색합니다.")
+    public ResponseEntity<Map<String, Object>> searchAttractionById(@PathVariable int questId){
+        AttractionResponseDto attractionResponseDto = attractionService.searchAttractionById(questId);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("attraction", attractionResponseDto);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }
