@@ -24,15 +24,16 @@ public class StampController {
 
     @GetMapping("")
     @Operation(summary = "스탬프 목록 조회", description = "로그인한 사용자가 보유한 스탬프 목록을 조회합니다.")
-    public ResponseEntity<Map<String, Object>> findStamps(@RequestParam(defaultValue = "1") int page,
+    public ResponseEntity<Map<String, Object>> findStamps(@RequestParam(required = false) String difficulty,
+                                                          @RequestParam(defaultValue = "1") int page,
                                                           @RequestParam(defaultValue = "5") int size,
                                                           @RequestHeader("Authorization") String authorizationHeader) {
 
         String token = authorizationHeader.substring(7);
         String memberEmail = jwtService.extractUsername(token);
 
-        List<StampsResponseDto> stampsResponseDtoList = stampService.findStamps(memberEmail, page, size);
-        int totalItems = stampService.getTotalStamps(memberEmail);
+        List<StampsResponseDto> stampsResponseDtoList = stampService.findStamps(memberEmail, difficulty, page, size);
+        int totalItems = stampService.getTotalStamps(memberEmail, difficulty);
         int totalPages = (int) Math.ceil((double) totalItems / size);
 
         Map<String, Object> pagination = new HashMap<>();

@@ -7,27 +7,59 @@
 
     <select id="findStamps" resultMap="stampsMap" resultType="com.ssafy.questory.dto.response.stamp.StampsResponseDto">
         SELECT
-        q.title AS title,
-        q.content_type_id AS content_type_id,
-        mq.created_at AS date,
-        ct.content_type_name AS content_type_name,
-        g.gugun_name AS sido_name,
-        q.difficulty AS difficulty,
-        q.stamp_description AS description
+            q.title AS title,
+            q.content_type_id AS content_type_id,
+            mq.created_at AS date,
+            ct.content_type_name AS content_type_name,
+            g.gugun_name AS sido_name,
+            q.difficulty AS difficulty,
+            q.stamp_description AS description
         FROM
-        Quests q
+            Quests q
         JOIN
-        Members_Quests mq ON q.location_quest_id = mq.location_quest_id
+            Members_Quests mq ON q.location_quest_id = mq.location_quest_id
         JOIN
-        attractions a ON q.attraction_id = a.no
+            attractions a ON q.attraction_id = a.no
         JOIN
-        contenttypes ct ON a.content_type_id = ct.content_type_id
+            contenttypes ct ON a.content_type_id = ct.content_type_id
         JOIN
-        guguns g ON (a.area_code = g.sido_code AND a.si_gun_gu_code = g.gugun_code)
+            guguns g ON (a.area_code = g.sido_code AND a.si_gun_gu_code = g.gugun_code)
         WHERE
-        mq.member_email = #{memberEmail}
+         mq.member_email = #{memberEmail}
+        AND
+            mq.is_completed='COMPLETE'
         ORDER BY
-        mq.created_at
+            mq.created_at
+        LIMIT #{offset}, #{limit};
+    </select>
+
+    <select id="findStampsByDifficulty" resultMap="stampsMap" resultType="com.ssafy.questory.dto.response.stamp.StampsResponseDto">
+        SELECT
+            q.title AS title,
+            q.content_type_id AS content_type_id,
+            mq.created_at AS date,
+            ct.content_type_name AS content_type_name,
+            g.gugun_name AS sido_name,
+            q.difficulty AS difficulty,
+            q.stamp_description AS description
+        FROM
+            Quests q
+        JOIN
+            Members_Quests mq ON q.location_quest_id = mq.location_quest_id
+        JOIN
+            attractions a ON q.attraction_id = a.no
+        JOIN
+            contenttypes ct ON a.content_type_id = ct.content_type_id
+        JOIN
+            guguns g ON (a.area_code = g.sido_code AND a.si_gun_gu_code = g.gugun_code)
+        WHERE
+            mq.member_email = #{memberEmail}
+        AND
+            q.difficulty = #{difficulty}
+        AND
+            mq.is_completed='COMPLETE'
+        ORDER BY
+            mq.created_at
         LIMIT #{offset}, #{limit};
     </select>
 
@@ -39,6 +71,18 @@
         Members_Quests mq ON q.location_quest_id = mq.location_quest_id
         WHERE
         mq.member_email = #{memberEmail};
+    </select>
+
+    <select id="countStampsByDifficulty" resultType="int">
+        SELECT COUNT(*)
+        FROM
+            Quests q
+        JOIN
+            Members_Quests mq ON q.location_quest_id = mq.location_quest_id
+        WHERE
+            mq.member_email = #{memberEmail}
+        AND
+            q.difficulty = #{difficulty};
     </select>
 
     <resultMap type="StampsResponseDto" id="stampsMap">

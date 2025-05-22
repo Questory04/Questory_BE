@@ -90,8 +90,9 @@ CREATE TABLE Quests (
     difficulty ENUM('EASY', 'MEDIUM', 'HARD') DEFAULT 'MEDIUM',
 	created_at	DATETIME NOT NULL DEFAULT NOW(),
     is_private TINYINT(1) DEFAULT 0,
-    stamp_image_url VARCHAR(100) NOT NULL,
-    stamp_description TEXT
+    content_type_id int NOT NULL,
+    stamp_description TEXT NULL,
+    is_deleted TINYINT(1) DEFAULT 0 COMMENT '0:FALSE, 1:TRUE'
 );
 
 CREATE TABLE Members_Quests (
