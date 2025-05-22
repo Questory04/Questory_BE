@@ -70,7 +70,9 @@
         JOIN
         Members_Quests mq ON q.location_quest_id = mq.location_quest_id
         WHERE
-        mq.member_email = #{memberEmail};
+        mq.member_email = #{memberEmail}
+        AND
+        mq.is_completed='COMPLETE';
     </select>
 
     <select id="countStampsByDifficulty" resultType="int">
@@ -81,6 +83,8 @@
             Members_Quests mq ON q.location_quest_id = mq.location_quest_id
         WHERE
             mq.member_email = #{memberEmail}
+        AND
+            mq.is_completed='COMPLETE'
         AND
             q.difficulty = #{difficulty};
     </select>
