@@ -21,43 +21,82 @@
         JOIN
             contenttypes ct ON a.content_type_id = ct.content_type_id
         WHERE
-            q.is_deleted = 0
+            q.is_deleted = 0 AND q.is_private = 0
         LIMIT #{offset}, #{limit};
     </select>
 
     <select id="getTotalQuests">
-        SELECT count(*) FROM quests;
+        SELECT count(*) FROM quests WHERE is_deleted = 0 AND is_private = 0;
     </select>
 
     <select id="findQuestsByMemberEmail" resultMap="questsMap" resultType="com.ssafy.questory.dto.response.quest.QuestsResponseDto">
         SELECT
-            q.title AS quest_title,
-            a.first_image1 AS attraction_image,
-            a.title AS attraction_title,
-            ct.content_type_name AS content_type_name,
-            a.addr1 AS attraction_address,
-            q.difficulty AS quest_difficulty,
-            q.quest_description AS quest_description
+        q.title AS quest_title,
+        a.first_image1 AS attraction_image,
+        a.title AS attraction_title,
+        ct.content_type_name AS content_type_name,
+        a.addr1 AS attraction_address,
+        q.difficulty AS quest_difficulty,
+        q.quest_description AS quest_description
         FROM
-            quests q
-        JOIN
-            attractions a ON q.content_type_id = a.content_type_id AND q.attraction_id = a.no
-        JOIN
-            contenttypes ct ON a.content_type_id = ct.content_type_id
+        quests q
         LEFT JOIN
-            members_quests mq ON q.location_quest_id = mq.location_quest_id AND mq.member_email = #{memberEmail}
+        (select * from members_quests where member_email = #{memberEmail}) mq
+        ON q.location_quest_id = mq.location_quest_id
+        JOIN
+        attractions a ON q.content_type_id = a.content_type_id AND q.attraction_id = a.no
+        JOIN
+        contenttypes ct ON a.content_type_id = ct.content_type_id
         WHERE
-            q.is_deleted = 0 AND mq.is_completed = 'YET'
+        (mq.is_completed = 'YET' OR mq.is_completed IS NULL) AND  q.is_deleted = 0 AND q.is_private = 0
         LIMIT #{offset}, #{limit};
     </select>
 
     <select id="getTotalQuestsByMemberEmail">
         SELECT
-            count(*)
+            COUNT(*)
         FROM
-            Members_Quests
+            quests q
+        LEFT JOIN
+            (select * from members_quests where member_email = #{memberEmail}) mq
+            ON q.location_quest_id = mq.location_quest_id
         WHERE
-            member_email = #{memberEmail} AND is_completed = 'YET';
+            (mq.is_completed = 'YET' OR mq.is_completed IS NULL) AND  q.is_deleted = 0 AND q.is_private = 0;
+    </select>
+
+    <select id="findQuestsByMemberEmailAndDifficulty" resultMap="questsMap" resultType="com.ssafy.questory.dto.response.quest.QuestsResponseDto">
+        SELECT
+        q.title AS quest_title,
+        a.first_image1 AS attraction_image,
+        a.title AS attraction_title,
+        ct.content_type_name AS content_type_name,
+        a.addr1 AS attraction_address,
+        q.difficulty AS quest_difficulty,
+        q.quest_description AS quest_description
+        FROM
+        quests q
+        LEFT JOIN
+        (select * from members_quests where member_email = #{memberEmail}) mq
+        ON q.location_quest_id = mq.location_quest_id
+        JOIN
+        attractions a ON q.content_type_id = a.content_type_id AND q.attraction_id = a.no
+        JOIN
+        contenttypes ct ON a.content_type_id = ct.content_type_id
+        WHERE
+        (mq.is_completed = 'YET' OR mq.is_completed IS NULL) AND  q.is_deleted = 0 AND q.is_private = 0 AND q.difficulty=#{difficulty}
+        LIMIT #{offset}, #{limit};
+    </select>
+
+    <select id="getTotalQuestsByMemberEmailAndDifficulty">
+        SELECT
+            COUNT(*)
+        FROM
+            quests q
+        LEFT JOIN
+            (select * from members_quests where member_email = #{memberEmail}) mq
+            ON q.location_quest_id = mq.location_quest_id
+        WHERE
+            (mq.is_completed = 'YET' OR mq.is_completed IS NULL) AND  q.is_deleted = 0 AND q.is_private = 0 AND difficulty=#{difficulty};
     </select>
 
     <select id="saveQuest">
