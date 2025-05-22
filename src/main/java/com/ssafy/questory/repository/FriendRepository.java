@@ -6,11 +6,10 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
-import java.util.Optional;
 
 @Mapper
 public interface FriendRepository {
-    Optional<Member> findFriendMembersByEmail(@Param("email") String email);
+    List<Member> findFriendMembersByEmail(@Param("email") String email);
     List<Friend> findFollowRequestsByTargetEmail(@Param("targetEmail") String targetEmail);
     int request(Friend friend);
     int deleteFollowRequest(@Param("requesterEmail") String requesterEmail, @Param("targetEmail") String targetEmail);

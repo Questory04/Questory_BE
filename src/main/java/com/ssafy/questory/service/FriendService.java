@@ -14,9 +14,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -24,7 +22,7 @@ public class FriendService {
     private final FriendRepository friendRepository;
 
     public List<MemberInfoResponseDto> getFriendsInfo(Member member) {
-        Optional<Member> friends = friendRepository.findFriendMembersByEmail(member.getEmail());
+        List<Member> friends = friendRepository.findFriendMembersByEmail(member.getEmail());
         return friends.stream()
                 .map(MemberInfoResponseDto::from)
                 .toList();

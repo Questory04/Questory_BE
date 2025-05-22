@@ -38,14 +38,28 @@ class FriendServiceTest {
         Member member = Member.builder().email("me@domain.com").build();
         Member friend1 = Member.builder().email("a@domain.com").nickname("A").build();
 
+        Member friend1 = Member.builder()
+                .email("a@domain.com")
+                .password("pw1")
+                .nickname("A")
+                .build();
+
+        List<Member> mockFriends = List.of(friend1);
+
         when(friendRepository.findFriendMembersByEmail("me@domain.com"))
-                .thenReturn(Optional.of(friend1));
+                .thenReturn(mockFriends);
 
         List<MemberInfoResponseDto> friendsInfo = friendService.getFriendsInfo(member);
 
         assertThat(friendsInfo).hasSize(1);
         assertThat(friendsInfo.get(0).getEmail()).isEqualTo("a@domain.com");
+        assertThat(friendsInfo.get(0).getNickname()).isEqualTo("A");
+        assertThat(friendsInfo.get(0).getExp()).isEqualTo(0L);  // 기본값
+        assertThat(friendsInfo.get(0).getTitle()).isEqualTo(""); // 기본값
+        assertThat(friendsInfo.get(0).isAdmin()).isFalse();     // 기본값
     }
+
+
 
     @Test
     @DisplayName("친구 요청 테스트")
