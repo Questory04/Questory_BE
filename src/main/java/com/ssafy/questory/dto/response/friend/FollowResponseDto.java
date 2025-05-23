@@ -9,14 +9,15 @@ import lombok.Getter;
 public class FollowResponseDto {
     private String requesterEmail;
     private String targetNickname;
+    private String targetEmail;
     private FollowStatus status;
 
     @Builder
-    private FollowResponseDto(String requesterEmail, FollowStatus status, String targetNickname) {
+    private FollowResponseDto(String requesterEmail, FollowStatus status, String targetNickname, String targetEmail) {
         this.requesterEmail = requesterEmail;
         this.targetNickname = targetNickname;
+        this.targetEmail = targetEmail;
         this.status = status;
-        this.targetNickname = targetNickname;
     }
 
     public static FollowResponseDto from(Friend friend) {
@@ -24,6 +25,7 @@ public class FollowResponseDto {
                 .requesterEmail(friend.getRequesterEmail())
                 .status(friend.getStatus())
                 .targetNickname(friend.getTargetNickname())
+                .targetEmail(friend.getTargetEmail())
                 .build();
     }
 }

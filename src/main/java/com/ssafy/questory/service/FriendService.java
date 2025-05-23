@@ -85,6 +85,7 @@ public class FriendService {
                 .map(friend -> FollowResponseDto.builder()
                         .requesterEmail(friend.getRequesterEmail())
                         .targetNickname(friend.getTargetNickname())
+                        .targetEmail(friend.getTargetEmail())
                         .status(friend.getStatus())
                         .build())
                 .toList();
