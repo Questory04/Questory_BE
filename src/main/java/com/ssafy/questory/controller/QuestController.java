@@ -1,8 +1,9 @@
 package com.ssafy.questory.controller;
 
+import com.ssafy.questory.common.exception.CustomException;
+import com.ssafy.questory.common.exception.ErrorCode;
 import com.ssafy.questory.config.jwt.JwtService;
 import com.ssafy.questory.dto.request.quest.QuestRequestDto;
-import com.ssafy.questory.dto.response.attraction.AttractionResponseDto;
 import com.ssafy.questory.dto.response.quest.QuestResponseDto;
 import com.ssafy.questory.dto.response.quest.QuestsResponseDto;
 import com.ssafy.questory.service.QuestService;
@@ -29,7 +30,7 @@ public class QuestController {
     @Operation(summary = "퀘스트 목록 조회", description = "퀘스트 목록을 조회합니다.")
     public ResponseEntity<Map<String, Object>> findQuests(@RequestParam(required = false) String difficulty,
                                                           @RequestParam(defaultValue = "1") int page,
-                                                          @RequestParam(defaultValue = "5") int size,
+                                                          @RequestParam(defaultValue = "6") int size,
                                                           @RequestHeader(value = "Authorization", required = false) String authorizationHeader) {
         List<QuestsResponseDto> questsResponseDtoList;
         int totalItems;
@@ -38,7 +39,7 @@ public class QuestController {
             String token = authorizationHeader.substring(7);
             String memberEmail = jwtService.extractUsername(token);
 
-            questsResponseDtoList = questService.findQuestsByMemberEmail(memberEmail, difficulty, page, size);
+            questsResponseDtoList = questService.findValidQuestsByMemberEmail(memberEmail, difficulty, page, size);
             totalItems = questService.getTotalQuestsByMemberEmail(memberEmail, difficulty);
             totalPages = (int) Math.ceil((double) totalItems / size);
         }else{
@@ -60,8 +61,41 @@ public class QuestController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
+    @GetMapping("/me/created")
+    @Operation(summary = "생성한 퀘스트 목록 조회", description = "생성한 퀘스트 목록을 조회합니다.")
+    public ResponseEntity<Map<String, Object>> findQuestsCreatedByMe(@RequestParam(required = false) String difficulty,
+                                                          @RequestParam(defaultValue = "1") int page,
+                                                          @RequestParam(defaultValue = "6") int size,
+                                                          @RequestHeader(value = "Authorization", required = false) String authorizationHeader) {
+        if(authorizationHeader == null){
+            throw new CustomException(ErrorCode.TOKEN_NOT_FOUND);
+        } else if(!authorizationHeader.startsWith("Bearer ")){
+            throw new CustomException(ErrorCode.INVALID_TOKEN_FORMAT);
+        }
+
+        String token = authorizationHeader.substring(7);
+        String memberEmail = jwtService.extractUsername(token);
+
+        List<QuestsResponseDto> questsResponseDtoList = questService.findQuestsCreatedByMe(memberEmail, difficulty, page, size);
+
+        int totalItems = questService.getTotalQuestsByMemberEmail(memberEmail, difficulty);
+        int totalPages = (int) Math.ceil((double) totalItems / size);
+
+        Map<String, Object> pagination = new HashMap<>();
+        pagination.put("currentPage", page);
+        pagination.put("totalItems", totalItems);
+        pagination.put("totalPages", totalPages);
+        pagination.put("pageSize", size);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("quests", questsResponseDtoList);
+        response.put("pagination", pagination);
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
     @GetMapping("/{questId}")
-    @Operation(summary = "퀘스트 목록 조회", description = "퀘스트 목록을 조회합니다.")
+    @Operation(summary = "퀘스트 상세 조회", description = "퀘스트 id로 퀘스트를 조회합니다.")
     public ResponseEntity<Map<String, Object>> findQuestById(@PathVariable int questId) {
         QuestResponseDto questResponseDto = questService.findQuestById(questId);
 
@@ -100,7 +134,7 @@ public class QuestController {
     }
 
     @PatchMapping("/delete/{questId}")
-    @Operation(summary = "퀘스트 수정", description = "퀘스트를 수정합니다.")
+    @Operation(summary = "퀘스트 삭제", description = "퀘스트를 삭제합니다.")
     public ResponseEntity<Map<String, String>> deleteQuest(@PathVariable int questId,
                                                            @RequestHeader("Authorization") String authorizationHeader){
         String token = authorizationHeader.substring(7);

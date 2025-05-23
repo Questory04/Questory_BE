@@ -4,9 +4,11 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.ToString;
 
 @Getter
 @Builder
+@ToString
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class QuestRequestDto {
     private int attractionId;
@@ -15,16 +17,4 @@ public class QuestRequestDto {
     private String difficulty;
     private Boolean isPrivate;
     private String stampDescription;
-
-    @Override
-    public String toString() {
-        return "QuestRequestDto{" +
-                "attractionId=" + attractionId +
-                ", title='" + title + '\'' +
-                ", questDescription='" + questDescription + '\'' +
-                ", difficulty='" + difficulty + '\'' +
-                ", isPrivate=" + isPrivate +
-                ", stampDescription='" + stampDescription + '\'' +
-                '}';
-    }
 }

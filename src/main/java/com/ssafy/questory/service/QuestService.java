@@ -3,7 +3,6 @@ package com.ssafy.questory.service;
 import com.ssafy.questory.common.exception.CustomException;
 import com.ssafy.questory.common.exception.ErrorCode;
 import com.ssafy.questory.dto.request.quest.QuestRequestDto;
-import com.ssafy.questory.dto.response.attraction.AttractionResponseDto;
 import com.ssafy.questory.dto.response.quest.QuestResponseDto;
 import com.ssafy.questory.dto.response.quest.QuestsResponseDto;
 import com.ssafy.questory.repository.QuestRepository;
@@ -31,11 +30,11 @@ public class QuestService {
         return questRepository.getTotalQuests();
     }
 
-    public List<QuestsResponseDto> findQuestsByMemberEmail(String memberEmail, String difficulty, int page, int size) {
+    public List<QuestsResponseDto> findValidQuestsByMemberEmail(String memberEmail, String difficulty, int page, int size) {
         int offset  = (page-1) * size;
         List<QuestsResponseDto> questsResponseDtoList;
         if(difficulty== null || difficulty.equals("all")){
-            questsResponseDtoList = questRepository.findQuestsByMemberEmail(memberEmail, offset, size);
+            questsResponseDtoList = questRepository.findValidQuestsByMemberEmail(memberEmail, offset, size);
         }else{
             questsResponseDtoList = questRepository.findQuestsByMemberEmailAndDifficulty(memberEmail, difficulty, offset, size);
         }
@@ -51,6 +50,32 @@ public class QuestService {
             return questRepository.getTotalQuestsByMemberEmail(memberEmail);
         }else{
             return questRepository.getTotalQuestsByMemberEmailAndDifficulty(memberEmail, difficulty);
+        }
+    }
+
+
+    public List<QuestsResponseDto> findQuestsCreatedByMe(String memberEmail, String difficulty, int page, int size) {
+        // memberEmail 검증하는 코드 추가하기
+
+        int offset  = (page-1) * size;
+        List<QuestsResponseDto> questsResponseDtoList;
+        if(difficulty== null || difficulty.equals("all")){
+            questsResponseDtoList = questRepository.findQuestsCreatedByMe(memberEmail, offset, size);
+        }else{
+            questsResponseDtoList = questRepository.findQuestsCreatedByMeAndDifficulty(memberEmail, difficulty, offset, size);
+        }
+
+        if(questsResponseDtoList.isEmpty()){
+            throw new CustomException(ErrorCode.QUEST_LIST_EMPTY);
+        }
+        return questsResponseDtoList;
+    }
+
+    public int findQuestsCreatedByMe(String memberEmail, String difficulty) {
+        if(difficulty== null || difficulty.equals("all")){
+            return questRepository.getTotalQuestsCreatedByMe(memberEmail);
+        }else{
+            return questRepository.getTotalQuestsCreatedByMeAndDifficulty(memberEmail, difficulty);
         }
     }
 

@@ -7,6 +7,7 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @Builder
+@ToString
 public class StampsResponseDto {
 
     private String title;
@@ -16,17 +17,4 @@ public class StampsResponseDto {
     private String sidoName;
     private String difficulty;
     private String description;
-
-    @Override
-    public String toString() {
-        return "StampsResponseDto{" +
-                "title='" + title + '\'' +
-                ", contentTypeId='" + contentTypeId + '\'' +
-                ", date=" + date +
-                ", contentTypeName='" + contentTypeName + '\'' +
-                ", sidoName='" + sidoName + '\'' +
-                ", difficulty='" + difficulty + '\'' +
-                ", description='" + description + '\'' +
-                '}';
-    }
 }
