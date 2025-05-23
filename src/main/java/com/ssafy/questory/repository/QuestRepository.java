@@ -1,7 +1,8 @@
 package com.ssafy.questory.repository;
 
 import com.ssafy.questory.dto.request.quest.QuestRequestDto;
-import com.ssafy.questory.dto.response.quest.AttractionResponseDto;
+import com.ssafy.questory.dto.response.attraction.AttractionResponseDto;
+import com.ssafy.questory.dto.response.quest.QuestResponseDto;
 import com.ssafy.questory.dto.response.quest.QuestsResponseDto;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -27,6 +28,8 @@ public interface QuestRepository {
 
     int getAttractionById(@Param("attractionId")int attractionId);
 
+    int getAttractionIdByQuestId(@Param("questId") int questId);
+
     int getContentTypeIdByAttractionId(@Param("attractionId") int attractionId);
 
     void modifyQuest(int questId, QuestRequestDto questRequestDto);
@@ -39,5 +42,5 @@ public interface QuestRepository {
 
     int getValidQuestCntByQuestId(@Param("questId") int questId);
 
-    List<AttractionResponseDto> searchAttractionByTitle(@Param("searchKeyword") String searchKeyword);
+    QuestResponseDto findQuestById(@Param("questId") int questId);
 }

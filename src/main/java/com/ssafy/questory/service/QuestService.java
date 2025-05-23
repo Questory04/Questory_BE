@@ -3,7 +3,8 @@ package com.ssafy.questory.service;
 import com.ssafy.questory.common.exception.CustomException;
 import com.ssafy.questory.common.exception.ErrorCode;
 import com.ssafy.questory.dto.request.quest.QuestRequestDto;
-import com.ssafy.questory.dto.response.quest.AttractionResponseDto;
+import com.ssafy.questory.dto.response.attraction.AttractionResponseDto;
+import com.ssafy.questory.dto.response.quest.QuestResponseDto;
 import com.ssafy.questory.dto.response.quest.QuestsResponseDto;
 import com.ssafy.questory.repository.QuestRepository;
 import lombok.RequiredArgsConstructor;
@@ -69,6 +70,11 @@ public class QuestService {
             throw new CustomException(ErrorCode.ATTRACTION_NOT_FOUND);
         }
 
+        int attractionId = questRepository.getAttractionIdByQuestId(questId);
+        if(attractionId != questRequestDto.getAttractionId()){
+            throw new CustomException(ErrorCode.ATTRACTION_NOT_MATCH);
+        }
+
         String memberEmailByQuestId = questRepository.getmemberEmailByQuestId(questId);
         if(!memberEmailByQuestId.equals(memberEmail)){
             throw new CustomException(ErrorCode.UNAUTHORIZED_MEMBER);
@@ -96,10 +102,7 @@ public class QuestService {
         questRepository.deleteQuest(questId);
     }
 
-    public List<AttractionResponseDto> searchAttractionByTitle(String searchKeyword) {
-        if(searchKeyword.isBlank()){
-            throw new CustomException(ErrorCode.KEYWORD_EMPTY);
-        }
-        return questRepository.searchAttractionByTitle(searchKeyword);
+    public QuestResponseDto findQuestById(int questId) {
+        return questRepository.findQuestById(questId);
     }
 }

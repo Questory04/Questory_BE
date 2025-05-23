@@ -144,6 +144,10 @@
         location_quest_id = #{questId};
     </select>
 
+    <select id="getAttractionIdByQuestId">
+        SELECT attraction_id FROM quests WHERE location_quest_id=#{questId};
+    </select>
+
     <select id="getmemberEmailByQuestId">
         SELECT member_email FROM quests WHERE location_quest_id=#{questId};
     </select>
@@ -168,10 +172,24 @@
         WHERE location_quest_id = #{questId} AND is_deleted = 0;
     </select>
 
-    <select id="searchAttractionByTitle" resultMap="AttractionsMap" resultType="com.ssafy.questory.dto.response.quest.AttractionResponseDto">
-        SELECT title, addr1
-        FROM attractions
-        WHERE title LIKE CONCAT('%', #{searchKeyword}, '%');
+    <select id="findQuestById" resultMap="questMap" resultType="com.ssafy.questory.dto.response.quest.QuestResponseDto">
+        SELECT
+            location_quest_id 'quest_id',
+            no 'attraction_id',
+            a.title 'attraction_name',
+            a.addr1 'attraction_addr',
+            q.title 'quest_title',
+            q.difficulty 'quest_difficulty',
+            q.quest_description 'quest_description',
+            q.stamp_description 'stamp_description',
+            q.is_private 'is_private'
+        FROM
+            quests q
+        JOIN
+            attractions a
+            ON q.attraction_id = a.no
+        WHERE
+            location_quest_id=#{questId} AND is_deleted=0;
     </select>
 
     <resultMap type="QuestsResponseDto" id="questsMap">
@@ -184,9 +202,16 @@
         <result column="quest_description" property="questDescription" />
     </resultMap>
 
-    <resultMap type="AttractionResponseDto" id="AttractionsMap">
-        <result column="title" property="name" />
-        <result column="addr1" property="address" />
+    <resultMap type="QuestResponseDto" id="questMap">
+        <result column="quest_id" property="questId" />
+        <result column="attraction_id" property="attractionId" />
+        <result column="attraction_name" property="attractionName" />
+        <result column="attraction_addr" property="attractionAddr" />
+        <result column="quest_title" property="questTitle" />
+        <result column="quest_difficulty" property="questDifficulty" />
+        <result column="quest_description" property="questDescription" />
+        <result column="stamp_description" property="stampDescription" />
+        <result column="is_private" property="isPrivate" />
     </resultMap>
 
 </mapper>
