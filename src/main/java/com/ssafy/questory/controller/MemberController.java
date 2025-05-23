@@ -69,11 +69,4 @@ public class MemberController {
                 "message", "인증이 완료되었습니다."
         ));
     }
-
-    @GetMapping("/search")
-    @Operation(summary = "유저 검색", description = "이메일을 통해 유저를 검색합니다.")
-    public ResponseEntity<Page<MemberSearchResponseDto>> search(
-            @ModelAttribute MemberSearchRequestDto memberSearchRequestDto) {
-        return ResponseEntity.ok(userService.search(memberSearchRequestDto));
-    }
 }

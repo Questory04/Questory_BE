@@ -71,23 +71,6 @@ public class MemberService {
         return MemberTokenResponseDto.from(email, token);
     }
 
-    public Page<MemberSearchResponseDto> search(MemberSearchRequestDto memberSearchRequestDto) {
-        String email = memberSearchRequestDto.getEmail();
-        int offSet = memberSearchRequestDto.getPage() * memberSearchRequestDto.getSize();
-        int limit = memberSearchRequestDto.getSize();
-
-        List<Member> members = memberRepository.searchByEmailWithPaging(email, offSet, limit);
-        List<MemberSearchResponseDto> result = members.stream()
-                .map(member -> MemberSearchResponseDto.from(
-                        member.getEmail(),
-                        member.getNickname(),
-                        member.getProfileUrl()
-                ))
-                .toList();
-        int total = memberRepository.countByEmail(email);
-        return new PageImpl<>(result, PageRequest.of(memberSearchRequestDto.getPage(), memberSearchRequestDto.getSize()), total);
-    }
-
     private void authenticate(String email, String password) {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password));

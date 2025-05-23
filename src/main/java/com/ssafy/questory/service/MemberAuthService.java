@@ -5,11 +5,18 @@ import com.ssafy.questory.common.exception.ErrorCode;
 import com.ssafy.questory.domain.Member;
 import com.ssafy.questory.dto.request.member.MemberModifyPasswordRequestDto;
 import com.ssafy.questory.dto.request.member.MemberModifyRequestDto;
+import com.ssafy.questory.dto.request.member.MemberSearchRequestDto;
+import com.ssafy.questory.dto.response.member.MemberSearchResponseDto;
 import com.ssafy.questory.dto.response.member.auth.MemberInfoResponseDto;
 import com.ssafy.questory.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -40,5 +47,23 @@ public class MemberAuthService {
 
     public void withdraw(Member member) {
         memberRepository.withdraw(member);
+    }
+
+    public Page<MemberSearchResponseDto> search(Member requester, MemberSearchRequestDto memberSearchRequestDto) {
+        String email = memberSearchRequestDto.getEmail();
+        int offSet = memberSearchRequestDto.getPage() * memberSearchRequestDto.getSize();
+        int limit = memberSearchRequestDto.getSize();
+
+        List<Member> members = memberRepository.searchByEmailWithPaging(email, offSet, limit);
+        List<MemberSearchResponseDto> result = members.stream()
+                .filter(m -> !m.getEmail().equals(requester.getEmail()))
+                .map(member -> MemberSearchResponseDto.from(
+                        member.getEmail(),
+                        member.getNickname(),
+                        member.getProfileUrl()
+                ))
+                .toList();
+        int total = memberRepository.countByEmail(email);
+        return new PageImpl<>(result, PageRequest.of(memberSearchRequestDto.getPage(), memberSearchRequestDto.getSize()), total);
     }
 }

@@ -5,17 +5,22 @@ import com.ssafy.questory.common.exception.ErrorCode;
 import com.ssafy.questory.domain.Member;
 import com.ssafy.questory.dto.request.member.MemberModifyPasswordRequestDto;
 import com.ssafy.questory.dto.request.member.MemberModifyRequestDto;
+import com.ssafy.questory.dto.request.member.MemberSearchRequestDto;
+import com.ssafy.questory.dto.response.member.MemberSearchResponseDto;
 import com.ssafy.questory.dto.response.member.auth.MemberInfoResponseDto;
 import com.ssafy.questory.repository.MemberRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
+import org.springframework.data.domain.Page;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
 class MemberAuthServiceTest {
@@ -137,5 +142,54 @@ class MemberAuthServiceTest {
 
         // then
         verify(memberRepository).withdraw(member);
+    }
+
+    @Test
+    @DisplayName("이메일 키워드로 유저 검색 - 페이징 포함")
+    void searchMembersByEmail_withPaging() {
+        // given
+        String keyword = "kim";
+        int page = 0;
+        int size = 2;
+        int offset = page * size;
+
+        Member member1 = Member.builder()
+                .email("kim1@example.com")
+                .nickname("김하나")
+                .profileUrl("https://cdn.questory.com/kim1.jpg")
+                .build();
+
+        Member member2 = Member.builder()
+                .email("kim2@example.com")
+                .nickname("김둘")
+                .profileUrl("https://cdn.questory.com/kim2.jpg")
+                .build();
+
+        List<Member> memberList = List.of(member1, member2);
+
+        given(memberRepository.searchByEmailWithPaging(keyword, offset, size))
+                .willReturn(memberList);
+        given(memberRepository.countByEmail(keyword)).willReturn(10);
+
+        MemberSearchRequestDto requestDto = MemberSearchRequestDto.builder()
+                .email(keyword)
+                .page(page)
+                .size(size)
+                .build();
+
+        Member member = Member.builder()
+                .email("test@example.com")
+                .nickname("nick")
+                .password("pw")
+                .build();
+
+        // when
+        Page<MemberSearchResponseDto> result = memberAuthService.search(member, requestDto);
+
+        // then
+        assertThat(result.getContent()).hasSize(2);
+        assertThat(result.getTotalElements()).isEqualTo(10);
+        assertThat(result.getContent().get(0).getEmail()).isEqualTo("kim1@example.com");
+        assertThat(result.getContent().get(1).getNickname()).isEqualTo("김둘");
     }
 }
