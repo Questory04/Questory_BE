@@ -22,17 +22,20 @@ public class Member {
     protected Member() {}
 
     @Builder
-    private Member(String email, String password, String nickname) {
+    private Member(String email, String password, String nickname,
+                   Long exp, String title, LocalDate createdAt,
+                   boolean isAdmin, boolean mode, boolean isDeleted,
+                   String profileUrl) {
         this.email = email;
         this.password = password;
         this.nickname = nickname;
-        this.exp = 0L;
-        this.title = "";
-        this.createdAt = LocalDate.now();
-        this.isAdmin = false;
-        this.mode = false;
-        this.isDeleted = false;
-        this.profileUrl = "";
+        this.exp = exp != null ? exp : 0L;
+        this.title = title != null ? title : "";
+        this.createdAt = createdAt != null ? createdAt : LocalDate.now();
+        this.isAdmin = isAdmin;
+        this.mode = mode;
+        this.isDeleted = isDeleted;
+        this.profileUrl = profileUrl != null ? profileUrl : "";
     }
 
     public void modify(MemberModifyRequestDto memberModifyRequestDto) {
