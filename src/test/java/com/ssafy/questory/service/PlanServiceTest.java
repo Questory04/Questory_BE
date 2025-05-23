@@ -11,6 +11,7 @@ import com.ssafy.questory.dto.request.plan.PlanUpdateRequestDto;
 import com.ssafy.questory.dto.response.plan.PlanInfoResponseDto;
 import com.ssafy.questory.repository.PlanRepository;
 import com.ssafy.questory.repository.PlanRoutesRepository;
+import com.ssafy.questory.repository.SavedRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -27,13 +28,16 @@ class PlanServiceTest {
 
     private PlanRepository planRepository;
     private PlanRoutesRepository planRoutesRepository;
+    private SavedRepository savedRepository;
     private PlanService planService;
 
     @BeforeEach
     void setUp() {
         planRepository = mock(PlanRepository.class);
         planRoutesRepository = mock(PlanRoutesRepository.class);
-        planService = new PlanService(planRepository, planRoutesRepository);
+        savedRepository = mock(SavedRepository.class);
+
+        planService = new PlanService(planRepository, planRoutesRepository, savedRepository);
     }
 
     @Test
