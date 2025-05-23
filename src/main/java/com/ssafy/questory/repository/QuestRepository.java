@@ -16,13 +16,21 @@ public interface QuestRepository {
 
     int getTotalQuests();
 
-    List<QuestsResponseDto> findQuestsByMemberEmail(@Param("memberEmail") String memberEmail, @Param("offset") int offset, @Param("limit") int limit);
+    List<QuestsResponseDto> findValidQuestsByMemberEmail(@Param("memberEmail") String memberEmail, @Param("offset") int offset, @Param("limit") int limit);
 
     int getTotalQuestsByMemberEmail(@Param("memberEmail") String memberEmail);
 
     List<QuestsResponseDto> findQuestsByMemberEmailAndDifficulty(@Param("memberEmail") String memberEmail, @Param("difficulty") String difficulty, @Param("offset") int offset, @Param("limit") int limit);
 
     int getTotalQuestsByMemberEmailAndDifficulty(@Param("memberEmail") String memberEmail, @Param("difficulty") String difficulty);
+
+    List<QuestsResponseDto> findQuestsCreatedByMe(@Param("memberEmail") String memberEmail, @Param("offset") int offset, @Param("limit") int limit);
+
+    int getTotalQuestsCreatedByMe(@Param("memberEmail") String memberEmail);
+
+    List<QuestsResponseDto> findQuestsCreatedByMeAndDifficulty(@Param("memberEmail") String memberEmail, @Param("difficulty") String difficulty, @Param("offset") int offset, @Param("limit") int limit);
+
+    int getTotalQuestsCreatedByMeAndDifficulty(@Param("memberEmail") String memberEmail, @Param("difficulty") String difficulty);
 
     void saveQuest(@Param("questRequestDto") QuestRequestDto questRequestDto, @Param("memberEmail") String memberEmail, @Param("contentTypeId") int contentTypeId);
 
