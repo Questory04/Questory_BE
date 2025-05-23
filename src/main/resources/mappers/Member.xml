@@ -42,4 +42,16 @@
         <result property="profileUrl" column="profile_image_url"/>
     </resultMap>
 
+    <select id="searchByEmailWithPaging" resultType="com.ssafy.questory.domain.Member">
+        SELECT *
+        FROM members
+        WHERE email LIKE CONCAT('%', #{email}, '%')
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <select id="countByEmail" resultType="int">
+        SELECT COUNT(*)
+        FROM members
+        WHERE email LIKE CONCAT('%', #{email}, '%')
+    </select>
 </mapper>
