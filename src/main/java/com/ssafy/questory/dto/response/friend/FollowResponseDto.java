@@ -14,6 +14,7 @@ public class FollowResponseDto {
     @Builder
     private FollowResponseDto(String requesterEmail, FollowStatus status, String targetNickname) {
         this.requesterEmail = requesterEmail;
+        this.nickname = nickname;
         this.status = status;
         this.targetNickname = targetNickname;
     }

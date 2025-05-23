@@ -1,5 +1,7 @@
 package com.ssafy.questory.service;
 
+import com.ssafy.questory.common.exception.CustomException;
+import com.ssafy.questory.common.exception.ErrorCode;
 import com.ssafy.questory.domain.FollowStatus;
 import com.ssafy.questory.domain.Friend;
 import com.ssafy.questory.domain.Member;
@@ -8,6 +10,7 @@ import com.ssafy.questory.dto.request.member.MemberEmailRequestDto;
 import com.ssafy.questory.dto.response.friend.FollowResponseDto;
 import com.ssafy.questory.dto.response.member.auth.MemberInfoResponseDto;
 import com.ssafy.questory.repository.FriendRepository;
+import com.ssafy.questory.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -20,6 +23,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class FriendService {
     private final FriendRepository friendRepository;
+    private final MemberRepository memberRepository;
 
     public List<MemberInfoResponseDto> getFriendsInfo(Member member) {
         List<Member> friends = friendRepository.findFriendMembersByEmail(member.getEmail());
@@ -31,7 +35,16 @@ public class FriendService {
     public List<FollowResponseDto> getFollowRequestInfo(Member member) {
         List<Friend> friends = friendRepository.findFollowRequestsByTargetEmail(member.getEmail());
         return friends.stream()
-                .map(FollowResponseDto::from)
+                .map(friend -> {
+                    Member requester = memberRepository.findByEmail(friend.getRequesterEmail())
+                            .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+
+                    return FollowResponseDto.builder()
+                            .requesterEmail(friend.getRequesterEmail())
+                            .nickname(requester.getNickname())
+                            .status(friend.getStatus())
+                            .build();
+                })
                 .toList();
     }
 

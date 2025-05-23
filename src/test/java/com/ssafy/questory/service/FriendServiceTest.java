@@ -8,6 +8,7 @@ import com.ssafy.questory.dto.request.member.MemberEmailRequestDto;
 import com.ssafy.questory.dto.response.friend.FollowResponseDto;
 import com.ssafy.questory.dto.response.member.auth.MemberInfoResponseDto;
 import com.ssafy.questory.repository.FriendRepository;
+import com.ssafy.questory.repository.MemberRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,12 +25,14 @@ import static org.mockito.Mockito.*;
 class FriendServiceTest {
 
     private FriendRepository friendRepository;
+    private MemberRepository memberRepository;
     private FriendService friendService;
 
     @BeforeEach
     void setUp() {
         friendRepository = mock(FriendRepository.class);
-        friendService = new FriendService(friendRepository);
+        memberRepository = mock(MemberRepository.class);
+        friendService = new FriendService(friendRepository, memberRepository);
     }
 
     @Test
