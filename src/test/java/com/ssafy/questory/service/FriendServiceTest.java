@@ -39,7 +39,6 @@ class FriendServiceTest {
     @DisplayName("친구 목록 조회 테스트")
     void testGetFriendsInfo() {
         Member member = Member.builder().email("me@domain.com").build();
-        Member friend1 = Member.builder().email("a@domain.com").nickname("A").build();
 
         Member friend1 = Member.builder()
                 .email("a@domain.com")

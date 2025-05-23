@@ -41,7 +41,7 @@ public class FriendService {
 
                     return FollowResponseDto.builder()
                             .requesterEmail(friend.getRequesterEmail())
-                            .nickname(requester.getNickname())
+                            .targetNickname(requester.getNickname())
                             .status(friend.getStatus())
                             .build();
                 })
