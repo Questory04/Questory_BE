@@ -55,4 +55,31 @@
         <result property="isDeleted" column="is_deleted"/>
         <result property="profileUrl" column="profile_image_url"/>
     </resultMap>
+    <select id="findFollowRequestsByRequesterEmailWithPaging" resultMap="FollowRequestWithNicknameMap">
+        SELECT
+        f.requester_email,
+        f.target_email,
+        f.status,
+        m.nickname AS target_nickname
+        FROM follow_requests f
+        JOIN members m ON f.target_email = m.email
+        WHERE f.requester_email = #{requesterEmail}
+        AND f.status = 'APPLIED'
+        ORDER BY f.created_at DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+    <resultMap id="FollowRequestWithNicknameMap" type="com.ssafy.questory.domain.Friend">
+        <result property="requesterEmail" column="requester_email"/>
+        <result property="targetEmail" column="target_email"/>
+        <result property="status" column="status"/>
+        <result property="targetNickname" column="target_nickname"/>
+    </resultMap>
+
+
+    <select id="countFollowRequestsByRequesterEmail" parameterType="string" resultType="int">
+        SELECT COUNT(*)
+        FROM follow_requests
+        WHERE requester_email = #{requesterEmail}
+        AND status = 'APPLIED'
+    </select>
 </mapper>

@@ -9,6 +9,7 @@ import com.ssafy.questory.service.FriendService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -56,5 +57,14 @@ public class FollowController {
         return ResponseEntity.ok().body(Map.of(
                 "message", "친구 요청이 업데이트 되었습니다."
         ));
+    }
+
+    @GetMapping("/request/sent")
+    @Operation(summary = "보낸 친구 요청 목록 조회", description = " 보낸 친구 요청 목록을 조회합니다.")
+    public ResponseEntity<Page<FollowResponseDto>> getFollowRequests(
+            @AuthenticationPrincipal(expression = "member") Member member,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        return ResponseEntity.ok(friendService.getFollowRequests(member, page, size));
     }
 }
