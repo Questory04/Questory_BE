@@ -10,6 +10,7 @@ import java.time.LocalDate;
 @Setter
 @Builder
 public class QuestsResponseDto {
+    private int questId;
     private String questTitle;
     private String attractionImage;
     private String attractionTitle;
@@ -21,7 +22,8 @@ public class QuestsResponseDto {
     @Override
     public String toString() {
         return "QuestsResponseDto{" +
-                "questTitle='" + questTitle + '\'' +
+                "questId=" + questId +
+                ", questTitle='" + questTitle + '\'' +
                 ", attractionImage='" + attractionImage + '\'' +
                 ", attractionTitle='" + attractionTitle + '\'' +
                 ", contentTypeName='" + contentTypeName + '\'' +

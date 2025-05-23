@@ -7,6 +7,7 @@
 
     <select id="findQuests" resultMap="questsMap" resultType="com.ssafy.questory.dto.response.quest.QuestsResponseDto">
         SELECT
+            q.location_quest_id AS quest_id,
             q.title AS quest_title,
             a.first_image1 AS attraction_image,
             a.title AS attraction_title,
@@ -31,6 +32,7 @@
 
     <select id="findValidQuestsByMemberEmail" resultMap="questsMap" resultType="com.ssafy.questory.dto.response.quest.QuestsResponseDto">
         SELECT
+        q.location_quest_id AS quest_id,
         q.title AS quest_title,
         a.first_image1 AS attraction_image,
         a.title AS attraction_title,
@@ -66,6 +68,7 @@
 
     <select id="findQuestsByMemberEmailAndDifficulty" resultMap="questsMap" resultType="com.ssafy.questory.dto.response.quest.QuestsResponseDto">
         SELECT
+        q.location_quest_id AS quest_id,
         q.title AS quest_title,
         a.first_image1 AS attraction_image,
         a.title AS attraction_title,
@@ -101,6 +104,7 @@
 
     <select id="findQuestsCreatedByMe" resultMap="questsMap">
         SELECT
+            q.location_quest_id AS quest_id,
             q.title AS quest_title,
             a.first_image1 AS attraction_image,
             a.title AS attraction_title,
@@ -127,6 +131,7 @@
 
     <select id="findQuestsCreatedByMeAndDifficulty" resultMap="questsMap">
         SELECT
+            q.location_quest_id AS quest_id,
             q.title AS quest_title,
             a.first_image1 AS attraction_image,
             a.title AS attraction_title,
@@ -249,6 +254,7 @@
     </select>
 
     <resultMap type="QuestsResponseDto" id="questsMap">
+        <result column="location_quest_id" property="questId" />
         <result column="quest_title" property="questTitle" />
         <result column="attraction_image" property="attractionImage" />
         <result column="attraction_title" property="attractionTitle" />
