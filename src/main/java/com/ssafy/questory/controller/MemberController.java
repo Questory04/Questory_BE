@@ -1,10 +1,8 @@
 package com.ssafy.questory.controller;
 
-import com.ssafy.questory.dto.request.member.EmailVerifyRequestDto;
-import com.ssafy.questory.dto.request.member.MemberEmailRequestDto;
-import com.ssafy.questory.dto.request.member.MemberLoginRequestDto;
-import com.ssafy.questory.dto.request.member.MemberRegistRequestDto;
+import com.ssafy.questory.dto.request.member.*;
 import com.ssafy.questory.dto.response.member.MemberRegistResponseDto;
+import com.ssafy.questory.dto.response.member.MemberSearchResponseDto;
 import com.ssafy.questory.dto.response.member.MemberTokenResponseDto;
 import com.ssafy.questory.service.mail.MailSendService;
 import com.ssafy.questory.service.MemberService;
@@ -13,12 +11,10 @@ import com.ssafy.questory.service.mail.VerifyService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
@@ -72,5 +68,12 @@ public class MemberController {
         return ResponseEntity.ok().body(Map.of(
                 "message", "인증이 완료되었습니다."
         ));
+    }
+
+    @GetMapping("/search")
+    @Operation(summary = "유저 검색", description = "이메일을 통해 유저를 검색합니다.")
+    public ResponseEntity<Page<MemberSearchResponseDto>> search(
+            @ModelAttribute MemberSearchRequestDto memberSearchRequestDto) {
+        return ResponseEntity.ok(userService.search(memberSearchRequestDto));
     }
 }

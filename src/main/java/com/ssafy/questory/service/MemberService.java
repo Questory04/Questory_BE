@@ -7,10 +7,15 @@ import com.ssafy.questory.config.jwt.JwtService;
 import com.ssafy.questory.domain.Member;
 import com.ssafy.questory.dto.request.member.MemberLoginRequestDto;
 import com.ssafy.questory.dto.request.member.MemberRegistRequestDto;
+import com.ssafy.questory.dto.request.member.MemberSearchRequestDto;
 import com.ssafy.questory.dto.response.member.MemberRegistResponseDto;
+import com.ssafy.questory.dto.response.member.MemberSearchResponseDto;
 import com.ssafy.questory.dto.response.member.MemberTokenResponseDto;
 import com.ssafy.questory.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
@@ -18,6 +23,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -62,6 +69,23 @@ public class MemberService {
 
         String token = jwtService.generateToken(userDetails);
         return MemberTokenResponseDto.from(email, token);
+    }
+
+    public Page<MemberSearchResponseDto> search(MemberSearchRequestDto memberSearchRequestDto) {
+        String email = memberSearchRequestDto.getEmail();
+        int offSet = memberSearchRequestDto.getPage() * memberSearchRequestDto.getSize();
+        int limit = memberSearchRequestDto.getSize();
+
+        List<Member> members = memberRepository.searchByEmailWithPaging(email, offSet, limit);
+        List<MemberSearchResponseDto> result = members.stream()
+                .map(member -> MemberSearchResponseDto.from(
+                        member.getEmail(),
+                        member.getNickname(),
+                        member.getProfileUrl()
+                ))
+                .toList();
+        int total = memberRepository.countByEmail(email);
+        return new PageImpl<>(result, PageRequest.of(memberSearchRequestDto.getPage(), memberSearchRequestDto.getSize()), total);
     }
 
     private void authenticate(String email, String password) {

@@ -7,21 +7,27 @@ import com.ssafy.questory.config.jwt.JwtService;
 import com.ssafy.questory.domain.Member;
 import com.ssafy.questory.dto.request.member.MemberLoginRequestDto;
 import com.ssafy.questory.dto.request.member.MemberRegistRequestDto;
+import com.ssafy.questory.dto.request.member.MemberSearchRequestDto;
 import com.ssafy.questory.dto.response.member.MemberRegistResponseDto;
+import com.ssafy.questory.dto.response.member.MemberSearchResponseDto;
 import com.ssafy.questory.dto.response.member.MemberTokenResponseDto;
 import com.ssafy.questory.repository.MemberRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
 class MemberServiceTest {
@@ -54,7 +60,6 @@ class MemberServiceTest {
     @Test
     @DisplayName("회원가입 성공")
     void registerMember_success() {
-        // given
         MemberRegistRequestDto request = MemberRegistRequestDto.builder()
                 .email("test@example.com")
                 .password("1234")
@@ -65,10 +70,8 @@ class MemberServiceTest {
         when(passwordEncoder.encode("1234")).thenReturn("encodedPassword");
         when(memberRepository.regist(any(Member.class))).thenReturn(1);
 
-        // when
         MemberRegistResponseDto response = memberService.regist(request);
 
-        // then
         assertThat(response.getEmail()).isEqualTo("test@example.com");
         assertThat(response.getNickname()).isEqualTo("nickname");
 
@@ -84,7 +87,6 @@ class MemberServiceTest {
     @Test
     @DisplayName("중복 이메일 예외 발생")
     void registerMember_duplicateEmail() {
-        // given
         MemberRegistRequestDto request = MemberRegistRequestDto.builder()
                 .email("duplicate@example.com")
                 .password("1234")
@@ -94,7 +96,6 @@ class MemberServiceTest {
         when(memberRepository.findByEmail("duplicate@example.com"))
                 .thenReturn(Optional.of(mock(Member.class)));
 
-        // when & then
         assertThatThrownBy(() -> memberService.regist(request))
                 .isInstanceOf(CustomException.class)
                 .hasMessage(ErrorCode.EMAIL_ALREADY_EXISTS.getMessage());
@@ -103,7 +104,6 @@ class MemberServiceTest {
     @Test
     @DisplayName("로그인 성공 시 토큰 반환")
     void login_success() {
-        // given
         String email = "test@test.com";
         String rawPassword = "password";
         String encodedPassword = "encodedPassword";
@@ -122,10 +122,8 @@ class MemberServiceTest {
         when(userDetailsService.loadUserByUsername(email)).thenReturn(userDetails);
         when(jwtService.generateToken(userDetails)).thenReturn(expectedToken);
 
-        // when
         MemberTokenResponseDto response = memberService.login(request);
 
-        // then
         verify(authenticationManager).authenticate(
                 argThat(authToken -> authToken instanceof UsernamePasswordAuthenticationToken &&
                         authToken.getPrincipal().equals(email) &&
@@ -139,7 +137,6 @@ class MemberServiceTest {
     @Test
     @DisplayName("존재하지 않는 이메일로 로그인 시 예외 발생")
     void login_emailNotFound_throwsException() {
-        // given
         String email = "notfound@test.com";
         String password = "password";
 
@@ -151,7 +148,6 @@ class MemberServiceTest {
         when(userDetailsService.loadUserByUsername(email))
                 .thenThrow(new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
-        // when & then
         assertThatThrownBy(() -> memberService.login(request))
                 .isInstanceOf(CustomException.class)
                 .hasMessage(ErrorCode.MEMBER_NOT_FOUND.getMessage());
@@ -160,7 +156,6 @@ class MemberServiceTest {
     @Test
     @DisplayName("비밀번호가 일치하지 않을 경우 예외 발생")
     void login_passwordMismatch_throwsException() {
-        // given
         String email = "test@test.com";
         String rawPassword = "wrongpassword";
         String encodedPassword = "encodedPassword";
@@ -177,9 +172,51 @@ class MemberServiceTest {
         when(userDetailsService.loadUserByUsername(email)).thenReturn(userDetails);
         when(passwordEncoder.matches(rawPassword, encodedPassword)).thenReturn(false);
 
-        // when & then
         assertThatThrownBy(() -> memberService.login(request))
                 .isInstanceOf(CustomException.class)
                 .hasMessage(ErrorCode.INVALID_PASSWORD.getMessage());
+    }
+
+    @Test
+    @DisplayName("이메일 키워드로 유저 검색 - 페이징 포함")
+    void searchMembersByEmail_withPaging() {
+        // given
+        String keyword = "kim";
+        int page = 0;
+        int size = 2;
+        int offset = page * size;
+
+        Member member1 = Member.builder()
+                .email("kim1@example.com")
+                .nickname("김하나")
+                .profileUrl("https://cdn.questory.com/kim1.jpg")
+                .build();
+
+        Member member2 = Member.builder()
+                .email("kim2@example.com")
+                .nickname("김둘")
+                .profileUrl("https://cdn.questory.com/kim2.jpg")
+                .build();
+
+        List<Member> memberList = List.of(member1, member2);
+
+        given(memberRepository.searchByEmailWithPaging(keyword, offset, size))
+                .willReturn(memberList);
+        given(memberRepository.countByEmail(keyword)).willReturn(10);
+
+        MemberSearchRequestDto requestDto = MemberSearchRequestDto.builder()
+                .email(keyword)
+                .page(page)
+                .size(size)
+                .build();
+
+        // when
+        Page<MemberSearchResponseDto> result = memberService.search(requestDto);
+
+        // then
+        assertThat(result.getContent()).hasSize(2);
+        assertThat(result.getTotalElements()).isEqualTo(10);
+        assertThat(result.getContent().get(0).getEmail()).isEqualTo("kim1@example.com");
+        assertThat(result.getContent().get(1).getNickname()).isEqualTo("김둘");
     }
 }
