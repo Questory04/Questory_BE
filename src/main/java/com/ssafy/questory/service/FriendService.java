@@ -9,6 +9,9 @@ import com.ssafy.questory.dto.response.friend.FollowResponseDto;
 import com.ssafy.questory.dto.response.member.auth.MemberInfoResponseDto;
 import com.ssafy.questory.repository.FriendRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -60,5 +63,20 @@ public class FriendService {
             friendRepository.update(friend);
         }
         friendRepository.update(friend);
+    }
+
+    public Page<FollowResponseDto> getFollowRequests(Member member, int page, int size) {
+        int offset = page * size;
+        List<Friend> sentRequests = friendRepository.findFollowRequestsByRequesterEmailWithPaging(member.getEmail(), offset, size);
+        int total = friendRepository.countFollowRequestsByRequesterEmail(member.getEmail());
+
+        List<FollowResponseDto> result = sentRequests.stream()
+                .map(friend -> FollowResponseDto.builder()
+                        .requesterEmail(friend.getRequesterEmail())
+                        .targetNickname(friend.getTargetNickname())
+                        .status(friend.getStatus())
+                        .build())
+                .toList();
+        return new PageImpl<>(result, PageRequest.of(page, size), total);
     }
 }
