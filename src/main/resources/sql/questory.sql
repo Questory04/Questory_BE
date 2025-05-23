@@ -49,36 +49,25 @@ CREATE TABLE Plans (
     start_date DATETIME,
     end_date DATETIME,
     created_at DATETIME DEFAULT NOW(),
-    is_start TINYINT(1) DEFAULT 0,
-    is_shared TINYINT(1) DEFAULT 0
+    is_start TINYINT(1) DEFAULT 0
 );
 
-CREATE TABLE Saves (
-    member_email VARCHAR(40),
-    plan_id INT,
-    saved_at DATETIME DEFAULT NOW()
+CREATE TABLE Routes (
+    route_id INT AUTO_INCREMENT PRIMARY KEY,
+    plan_id INT NOT NULL,
+    day INT,
+    sequence INT
 );
 
 CREATE TABLE Plans_Routes (
-	plan_id INT NOT NULL,
-    attraction_id INT NOT NULL,
-    day INT NOT NULL,
-    sequence INT NOT NULL
+    plan_id INT NOT NULL,
+    route_id INT NOT NULL
 );
 
-CREATE TABLE Friends (
-    email1 VARCHAR(40),
-    email2 VARCHAR(40),
-    created_at DATETIME DEFAULT NOW(),
-    PRIMARY KEY (email1, email2)
-);
-
-CREATE TABLE Follow_Requests (
-    requester_email VARCHAR(40),
-    target_email VARCHAR(40),
-    status ENUM('APPLIED', 'ACCEPTED', 'DENIED') NOT NULL DEFAULT 'APPLIED',
-    created_at DATETIME DEFAULT NOW(),
-    PRIMARY KEY (requester_email, target_email)
+CREATE TABLE Follows (
+    following_email VARCHAR(40),
+    follow_email VARCHAR(40),
+    status ENUM('ACCEPTED', 'DENIED', 'APPLIED') NOT NULL DEFAULT 'APPLIED'
 );
 
 CREATE TABLE Titles (
@@ -99,7 +88,7 @@ CREATE TABLE Quests (
     title VARCHAR(100),
     quest_description VARCHAR(10000) NULL,
     difficulty ENUM('EASY', 'MEDIUM', 'HARD') DEFAULT 'MEDIUM',
-    created_at    DATETIME NOT NULL DEFAULT NOW(),
+	created_at	DATETIME NOT NULL DEFAULT NOW(),
     is_private TINYINT(1) DEFAULT 0,
     content_type_id int NOT NULL,
     stamp_description TEXT NULL,
@@ -109,6 +98,6 @@ CREATE TABLE Quests (
 CREATE TABLE Members_Quests (
     member_email VARCHAR(40) NOT NULL,
     location_quest_id INT NOT NULL,
-    is_completed ENUM('YET', 'COMPLETE') DEFAULT 'YET',
+    is_completed ENUM('YET', 'COMPLETE','CANCELED') DEFAULT 'YET',
     created_at DATETIME DEFAULT NOW()
 );
