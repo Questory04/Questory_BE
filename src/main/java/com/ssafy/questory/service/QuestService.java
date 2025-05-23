@@ -70,6 +70,11 @@ public class QuestService {
             throw new CustomException(ErrorCode.ATTRACTION_NOT_FOUND);
         }
 
+        int attractionId = questRepository.getAttractionIdByQuestId(questId);
+        if(attractionId != questRequestDto.getAttractionId()){
+            throw new CustomException(ErrorCode.ATTRACTION_NOT_MATCH);
+        }
+
         String memberEmailByQuestId = questRepository.getmemberEmailByQuestId(questId);
         if(!memberEmailByQuestId.equals(memberEmail)){
             throw new CustomException(ErrorCode.UNAUTHORIZED_MEMBER);

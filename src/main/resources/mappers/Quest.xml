@@ -144,6 +144,10 @@
         location_quest_id = #{questId};
     </select>
 
+    <select id="getAttractionIdByQuestId">
+        SELECT attraction_id FROM quests WHERE location_quest_id=#{questId};
+    </select>
+
     <select id="getmemberEmailByQuestId">
         SELECT member_email FROM quests WHERE location_quest_id=#{questId};
     </select>

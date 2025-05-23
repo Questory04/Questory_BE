@@ -10,7 +10,7 @@ public enum ErrorCode {
     EMAIL_ALREADY_EXISTS(HttpStatus.CONFLICT, "이미 존재하는 이메일입니다."),
     INVALID_PASSWORD(HttpStatus.UNAUTHORIZED, "비밀번호가 일치하지 않습니다."),
     MEMBER_DELETED(HttpStatus.FORBIDDEN, "해당 계정은 탈퇴된 상태입니다."),
-    UNAUTHORIZED_MEMBER(HttpStatus.UNAUTHORIZED, "권한이 없는 회원입니다."),
+    UNAUTHORIZED_MEMBER(HttpStatus.FORBIDDEN, "권한이 없는 회원입니다."),
 
     // 인증 관련
     TOKEN_NOT_FOUND(HttpStatus.UNAUTHORIZED, "토큰이 존재하지 않습니다."),
@@ -25,6 +25,7 @@ public enum ErrorCode {
 
     // 관광지 관련
     ATTRACTION_NOT_FOUND(HttpStatus.NOT_FOUND, "해당하는 관광지가 존재하지 않습니다."),
+    ATTRACTION_NOT_MATCH(HttpStatus.BAD_REQUEST, "수정하려는 관광지 id가 일치하지 않습니다."),
     KEYWORD_EMPTY(HttpStatus.BAD_REQUEST, "검색어가 비어있습니다. 검색어를 입력해주세요."),
 
     // 스탬프 관련

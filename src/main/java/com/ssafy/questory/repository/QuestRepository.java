@@ -28,6 +28,8 @@ public interface QuestRepository {
 
     int getAttractionById(@Param("attractionId")int attractionId);
 
+    int getAttractionIdByQuestId(@Param("questId") int questId);
+
     int getContentTypeIdByAttractionId(@Param("attractionId") int attractionId);
 
     void modifyQuest(int questId, QuestRequestDto questRequestDto);
