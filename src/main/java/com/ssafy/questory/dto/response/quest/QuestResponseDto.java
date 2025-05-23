@@ -3,10 +3,12 @@ package com.ssafy.questory.dto.response.quest;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
 @Builder
+@ToString
 public class QuestResponseDto {
     private int questId;
     private int attractionId;
@@ -17,19 +19,4 @@ public class QuestResponseDto {
     private String questDescription;
     private String stampDescription;
     private boolean isPrivate;
-
-    @Override
-    public String toString() {
-        return "QuestResponseDto{" +
-                "questId=" + questId +
-                ", attractionId=" + attractionId +
-                ", attractionName='" + attractionName + '\'' +
-                ", attractionAddr='" + attractionAddr + '\'' +
-                ", questTitle='" + questTitle + '\'' +
-                ", questDifficulty='" + questDifficulty + '\'' +
-                ", questDescription='" + questDescription + '\'' +
-                ", stampDescription='" + stampDescription + '\'' +
-                ", isPrivate=" + isPrivate +
-                '}';
-    }
 }

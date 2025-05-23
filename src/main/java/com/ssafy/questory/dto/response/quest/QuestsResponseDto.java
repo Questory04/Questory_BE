@@ -3,12 +3,14 @@ package com.ssafy.questory.dto.response.quest;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.time.LocalDate;
 
 @Getter
 @Setter
 @Builder
+@ToString
 public class QuestsResponseDto {
     private int questId;
     private String questTitle;
@@ -18,18 +20,4 @@ public class QuestsResponseDto {
     private String attractionAddress;
     private String questDifficulty;
     private String questDescription;
-
-    @Override
-    public String toString() {
-        return "QuestsResponseDto{" +
-                "questId=" + questId +
-                ", questTitle='" + questTitle + '\'' +
-                ", attractionImage='" + attractionImage + '\'' +
-                ", attractionTitle='" + attractionTitle + '\'' +
-                ", contentTypeName='" + contentTypeName + '\'' +
-                ", attractionAddress='" + attractionAddress + '\'' +
-                ", questDifficulty='" + questDifficulty + '\'' +
-                ", questDescription='" + questDescription + '\'' +
-                '}';
-    }
 }
