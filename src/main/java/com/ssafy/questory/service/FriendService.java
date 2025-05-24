@@ -7,7 +7,9 @@ import com.ssafy.questory.domain.Friend;
 import com.ssafy.questory.domain.Member;
 import com.ssafy.questory.dto.request.friend.FriendStatusRequestDto;
 import com.ssafy.questory.dto.request.member.MemberEmailRequestDto;
+import com.ssafy.questory.dto.request.member.MemberSearchRequestDto;
 import com.ssafy.questory.dto.response.friend.FollowResponseDto;
+import com.ssafy.questory.dto.response.member.MemberSearchResponseDto;
 import com.ssafy.questory.dto.response.member.auth.MemberInfoResponseDto;
 import com.ssafy.questory.repository.FriendRepository;
 import com.ssafy.questory.repository.MemberRepository;
@@ -94,5 +96,23 @@ public class FriendService {
                         .build())
                 .toList();
         return new PageImpl<>(result, PageRequest.of(page, size), total);
+    }
+
+    public Page<MemberSearchResponseDto> search(Member requester, MemberSearchRequestDto memberSearchRequestDto) {
+        String email = memberSearchRequestDto.getEmail();
+        int offSet = memberSearchRequestDto.getPage() * memberSearchRequestDto.getSize();
+        int limit = memberSearchRequestDto.getSize();
+
+        List<Member> members = memberRepository.searchByEmailWithPaging(email, requester.getEmail(), offSet, limit);
+        List<MemberSearchResponseDto> result = members.stream()
+                .filter(m -> !m.getEmail().equals(requester.getEmail()))
+                .map(member -> MemberSearchResponseDto.from(
+                        member.getEmail(),
+                        member.getNickname(),
+                        member.getProfileUrl()
+                ))
+                .toList();
+        int total = memberRepository.countByEmail(email);
+        return new PageImpl<>(result, PageRequest.of(memberSearchRequestDto.getPage(), memberSearchRequestDto.getSize()), total);
     }
 }

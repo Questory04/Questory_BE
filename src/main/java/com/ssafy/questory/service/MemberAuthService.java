@@ -48,22 +48,4 @@ public class MemberAuthService {
     public void withdraw(Member member) {
         memberRepository.withdraw(member);
     }
-
-    public Page<MemberSearchResponseDto> search(Member requester, MemberSearchRequestDto memberSearchRequestDto) {
-        String email = memberSearchRequestDto.getEmail();
-        int offSet = memberSearchRequestDto.getPage() * memberSearchRequestDto.getSize();
-        int limit = memberSearchRequestDto.getSize();
-
-        List<Member> members = memberRepository.searchByEmailWithPaging(email, offSet, limit);
-        List<MemberSearchResponseDto> result = members.stream()
-                .filter(m -> !m.getEmail().equals(requester.getEmail()))
-                .map(member -> MemberSearchResponseDto.from(
-                        member.getEmail(),
-                        member.getNickname(),
-                        member.getProfileUrl()
-                ))
-                .toList();
-        int total = memberRepository.countByEmail(email);
-        return new PageImpl<>(result, PageRequest.of(memberSearchRequestDto.getPage(), memberSearchRequestDto.getSize()), total);
-    }
 }

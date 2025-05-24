@@ -44,8 +44,15 @@
 
     <select id="searchByEmailWithPaging" resultType="com.ssafy.questory.domain.Member">
         SELECT *
-        FROM members
-        WHERE email LIKE CONCAT('%', #{email}, '%')
+        FROM members m
+        WHERE m.email LIKE CONCAT('%', #{email}, '%')
+        AND m.email NOT IN (
+        SELECT f.target_email
+        FROM follow_requests f
+        WHERE f.requester_email = #{requesterEmail}
+        AND f.status = 'APPLIED'
+        )
+        AND m.email != #{requesterEmail}
         LIMIT #{limit} OFFSET #{offset}
     </select>
 

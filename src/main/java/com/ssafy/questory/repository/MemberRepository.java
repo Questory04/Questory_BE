@@ -16,6 +16,7 @@ public interface MemberRepository {
     int changePassword(@Param("member") Member member, @Param("changedPassword") String changedPassword);
     int modify(Member member);
     int withdraw(Member member);
-    List<Member> searchByEmailWithPaging(@Param("email") String email, @Param("offset") int offset, @Param("limit") int limit);
+    List<Member> searchByEmailWithPaging(@Param("email") String email, @Param("requesterEmail") String requesterEmail,
+                                         @Param("offset") int offset, @Param("limit") int limit);
     int countByEmail(@Param("email") String email);
 }
