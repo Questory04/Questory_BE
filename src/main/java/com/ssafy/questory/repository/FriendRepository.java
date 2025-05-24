@@ -15,6 +15,7 @@ public interface FriendRepository {
     int deleteFollowRequest(@Param("requesterEmail") String requesterEmail, @Param("targetEmail") String targetEmail);
     int insertFriendRelation(@Param("email1") String email1, @Param("email2") String email2);
     int update(Friend friend);
+    int cancelRequest(@Param("requesterEmail") String requesterEmail, @Param("targetEmail") String targetEmail);
     List<Friend> findFollowRequestsByRequesterEmailWithPaging(@Param("requesterEmail") String email,
                                                               @Param("offset") int offset,
                                                               @Param("limit") int limit);

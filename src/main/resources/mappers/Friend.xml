@@ -82,4 +82,9 @@
         WHERE requester_email = #{requesterEmail}
         AND status = 'APPLIED'
     </select>
+    <delete id="cancelRequest" parameterType="map">
+        DELETE FROM follow_requests
+        WHERE requester_email = #{requesterEmail}
+        AND target_email = #{targetEmail}
+    </delete>
 </mapper>

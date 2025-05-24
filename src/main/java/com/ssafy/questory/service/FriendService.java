@@ -76,6 +76,10 @@ public class FriendService {
         friendRepository.update(friend);
     }
 
+    public void cancelRequest(Member member, MemberEmailRequestDto memberEmailRequestDto) {
+        friendRepository.cancelRequest(member.getEmail(), memberEmailRequestDto.getEmail());
+    }
+
     public Page<FollowResponseDto> getFollowRequests(Member member, int page, int size) {
         int offset = page * size;
         List<Friend> sentRequests = friendRepository.findFollowRequestsByRequesterEmailWithPaging(member.getEmail(), offset, size);

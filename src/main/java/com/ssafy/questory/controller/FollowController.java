@@ -59,6 +59,18 @@ public class FollowController {
         ));
     }
 
+
+    @DeleteMapping("/request")
+    @Operation(summary = "친구 요청 취소", description = "친구 요청을 취소합니다.")
+    public ResponseEntity<Map<String, String>> cancel(
+            @AuthenticationPrincipal(expression = "member") Member member,
+            @RequestBody MemberEmailRequestDto memberEmailRequestDto) {
+        friendService.cancelRequest(member, memberEmailRequestDto);
+        return ResponseEntity.ok().body(Map.of(
+                "message", "친구 요청이 취소 되었습니다."
+        ));
+    }
+
     @GetMapping("/request/sent")
     @Operation(summary = "보낸 친구 요청 목록 조회", description = " 보낸 친구 요청 목록을 조회합니다.")
     public ResponseEntity<Page<FollowResponseDto>> getFollowRequests(
