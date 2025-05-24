@@ -50,6 +50,18 @@ public class FriendService {
                 .toList();
     }
 
+    public void deleteFriend(Member member, MemberEmailRequestDto dto) {
+        String email = member.getEmail();
+        String targetEmail = dto.getEmail();
+
+        boolean isFriend = friendRepository.existsByEmails(email, targetEmail);
+        if (!isFriend) {
+            throw new CustomException(ErrorCode.FRIEND_NOT_FOUND);
+        }
+
+        friendRepository.deleteFriend(email, targetEmail);
+    }
+
     public void request(Member member, MemberEmailRequestDto memberEmailRequestDto) {
         Friend friend = Friend.builder()
                 .requesterEmail(member.getEmail())

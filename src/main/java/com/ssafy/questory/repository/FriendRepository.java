@@ -11,6 +11,8 @@ import java.util.List;
 public interface FriendRepository {
     List<Member> findFriendMembersByEmail(@Param("email") String email);
     List<Friend> findFollowRequestsByTargetEmail(@Param("targetEmail") String targetEmail);
+    boolean existsByEmails(@Param("email1") String email, @Param("email2") String targetEmail);
+    void deleteFriend(@Param("email1") String email1, @Param("email2") String email2);
     int request(Friend friend);
     int deleteFollowRequest(@Param("requesterEmail") String requesterEmail, @Param("targetEmail") String targetEmail);
     int insertFriendRelation(@Param("email1") String email1, @Param("email2") String email2);

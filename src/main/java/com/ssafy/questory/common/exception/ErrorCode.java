@@ -23,6 +23,9 @@ public enum ErrorCode {
     EMAIL_SEND_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "이메일 전송에 실패했습니다."),
     INVALID_EMAIL_FORMAT(HttpStatus.BAD_REQUEST, "이메일 형식이 올바르지 않습니다."),
 
+    // 친구 관련
+    FRIEND_NOT_FOUND(HttpStatus.BAD_REQUEST, "친구 관계가 아닙니다."),
+
     // 관광지 관련
     ATTRACTION_NOT_FOUND(HttpStatus.NOT_FOUND, "해당하는 관광지가 존재하지 않습니다."),
     ATTRACTION_NOT_MATCH(HttpStatus.BAD_REQUEST, "수정하려는 관광지 id가 일치하지 않습니다."),

@@ -32,6 +32,15 @@ public class FollowController {
         return ResponseEntity.ok(friendService.getFriendsInfo(member));
     }
 
+    @DeleteMapping("")
+    @Operation(summary = "친구 삭제", description = "친구 관계를 삭제합니다.")
+    public ResponseEntity<Map<String, String>> deleteFriend(
+            @AuthenticationPrincipal(expression = "member") Member member,
+            @RequestBody MemberEmailRequestDto memberEmailRequestDto) {
+        friendService.deleteFriend(member, memberEmailRequestDto);
+        return ResponseEntity.ok(Map.of("message", "친구가 삭제되었습니다."));
+    }
+
     @GetMapping("/request")
     @Operation(summary = "친구 요청 목록 조회", description = "친구 요청 목록을 조회합니다.")
     public ResponseEntity<List<FollowResponseDto>> getFollowRequestInfo(
