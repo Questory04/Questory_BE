@@ -329,6 +329,17 @@
             location_quest_id = #{questId};
     </select>
 
+    <select id="startQuest">
+        INSERT INTO Members_Quests(member_email, location_quest_id)
+        VALUES (#{memberEmail}, #{questId});
+    </select>
+
+    <select id="getMemberQuestCntByQuestId">
+        SELECT COUNT(*)
+        FROM members_quests
+        WHERE member_email = #{memberEmail} AND location_quest_id = #{questId};
+    </select>
+
     <resultMap type="QuestsResponseDto" id="questsMap">
         <result column="location_quest_id" property="questId" />
         <result column="quest_title" property="questTitle" />

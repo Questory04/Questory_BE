@@ -7,9 +7,12 @@ import com.ssafy.questory.dto.response.quest.QuestResponseDto;
 import com.ssafy.questory.dto.response.quest.QuestsResponseDto;
 import com.ssafy.questory.repository.QuestRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -160,5 +163,19 @@ public class QuestService {
             throw new CustomException(ErrorCode.QUEST_NOT_FOUND);
         }
         questRepository.cancelQuest(questId);
+    }
+
+    public void startQuest(int questId, String memberEmail) {
+        int questCntByQuestId = questRepository.getQuestCntByQuestId(questId);
+        if(questCntByQuestId!=1){
+            throw new CustomException(ErrorCode.QUEST_NOT_FOUND);
+        }
+
+        int memberQuestCntByQuestId = questRepository.getMemberQuestCntByQuestId(questId, memberEmail);
+        if(memberQuestCntByQuestId!=0){
+            throw new CustomException(ErrorCode.QUEST_ALREADY_STARTED);
+        }
+
+        questRepository.startQuest(questId, memberEmail);
     }
 }

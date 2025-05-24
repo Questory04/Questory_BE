@@ -61,4 +61,8 @@ public interface QuestRepository {
     int getActiveQuestsByMemberEmailAndDifficulty(@Param("memberEmail") String memberEmail, @Param("difficulty") String difficulty);
 
     void cancelQuest(@Param("questId") int questId);
+
+    void startQuest(@Param("questId") int questId, @Param("memberEmail") String memberEmail);
+
+    int getMemberQuestCntByQuestId(@Param("questId") int questId, @Param("memberEmail") String memberEmail);
 }

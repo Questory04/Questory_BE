@@ -196,4 +196,17 @@ public class QuestController {
         return ResponseEntity.status(HttpStatus.OK).body(Map.of(
                 "message", "성공적으로 퀘스트를 취소했습니다."));
     }
+
+    @PatchMapping("/{questId}/start")
+    @Operation(summary = "퀘스트 진행 시작", description = "퀘스트 진행을 시작합니다.")
+    public ResponseEntity<Map<String, String>> startQuest(@PathVariable int questId,
+                                                           @RequestHeader("Authorization") String authorizationHeader){
+        String token = authorizationHeader.substring(7);
+        String memberEmail = jwtService.extractUsername(token);
+
+        questService.startQuest(questId, memberEmail);
+
+        return ResponseEntity.status(HttpStatus.OK).body(Map.of(
+                "message", "성공적으로 퀘스트를 시작했습니다."));
+    }
 }
