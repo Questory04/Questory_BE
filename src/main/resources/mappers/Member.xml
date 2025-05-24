@@ -46,14 +46,23 @@
         SELECT *
         FROM members m
         WHERE m.email LIKE CONCAT('%', #{email}, '%')
-        AND m.email NOT IN (
-        SELECT f.target_email
-        FROM follow_requests f
-        WHERE f.requester_email = #{requesterEmail}
-        AND f.status = 'APPLIED'
-        )
         AND m.email != #{requesterEmail}
-        LIMIT #{limit} OFFSET #{offset}
+        AND m.email NOT IN (
+        SELECT
+        CASE
+        WHEN f.email1 = #{requesterEmail} THEN f.email2
+        WHEN f.email2 = #{requesterEmail} THEN f.email1
+        END
+        FROM Friends f
+        WHERE f.email1 = #{requesterEmail} OR f.email2 = #{requesterEmail}
+        )
+        AND m.email NOT IN (
+        SELECT fr.target_email
+        FROM Follow_Requests fr
+        WHERE fr.requester_email = #{requesterEmail}
+        AND fr.status = 'APPLIED'
+        )
+        LIMIT #{limit} OFFSET #{offset};
     </select>
 
     <select id="countByEmail" resultType="int">
