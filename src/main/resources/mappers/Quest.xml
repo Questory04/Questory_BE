@@ -32,6 +32,38 @@
 
     <select id="findValidQuestsByMemberEmail" resultMap="questsMap" resultType="com.ssafy.questory.dto.response.quest.QuestsResponseDto">
         SELECT
+            q.location_quest_id AS quest_id,
+            q.title AS quest_title,
+            a.first_image1 AS attraction_image,
+            a.title AS attraction_title,
+            ct.content_type_name AS content_type_name,
+            a.addr1 AS attraction_address,
+            q.difficulty AS quest_difficulty,
+            q.quest_description AS quest_description
+        FROM
+            quests q
+        JOIN
+            attractions a ON q.content_type_id = a.content_type_id AND q.attraction_id = a.no
+        JOIN
+            contenttypes ct ON a.content_type_id = ct.content_type_id
+        WHERE
+            q.location_quest_id NOT IN (select location_quest_id from members_quests where member_email = #{memberEmail})
+            AND  q.is_deleted = 0 AND q.is_private = 0
+        LIMIT #{offset}, #{limit};
+    </select>
+
+    <select id="getValidQuestsCntByMemberEmail">
+        SELECT
+            COUNT(*)
+        FROM
+            quests q
+        WHERE
+            q.location_quest_id NOT IN (select location_quest_id from members_quests where member_email = #{memberEmail})
+            AND  q.is_deleted = 0 AND q.is_private = 0;
+    </select>
+
+    <select id="findValidQuestsByMemberEmailAndDifficulty" resultMap="questsMap" resultType="com.ssafy.questory.dto.response.quest.QuestsResponseDto">
+        SELECT
         q.location_quest_id AS quest_id,
         q.title AS quest_title,
         a.first_image1 AS attraction_image,
@@ -42,64 +74,24 @@
         q.quest_description AS quest_description
         FROM
         quests q
-        LEFT JOIN
-        (select * from members_quests where member_email = #{memberEmail}) mq
-        ON q.location_quest_id = mq.location_quest_id
         JOIN
         attractions a ON q.content_type_id = a.content_type_id AND q.attraction_id = a.no
         JOIN
         contenttypes ct ON a.content_type_id = ct.content_type_id
         WHERE
-        (mq.is_completed = 'READY' OR mq.is_completed IS NULL) AND  q.is_deleted = 0 AND q.is_private = 0
+        q.location_quest_id NOT IN (select location_quest_id from members_quests where member_email = #{memberEmail})
+        AND  q.is_deleted = 0 AND q.is_private = 0 AND q.difficulty=#{difficulty}
         LIMIT #{offset}, #{limit};
     </select>
 
-    <select id="getTotalQuestsByMemberEmail">
+    <select id="getValidQuestsCntByMemberEmailAndDifficulty">
         SELECT
-            COUNT(*)
-        FROM
-            quests q
-        LEFT JOIN
-            (select * from members_quests where member_email = #{memberEmail}) mq
-            ON q.location_quest_id = mq.location_quest_id
-        WHERE
-            (mq.is_completed = 'READY' OR mq.is_completed IS NULL) AND  q.is_deleted = 0 AND q.is_private = 0;
-    </select>
-
-    <select id="findQuestsByMemberEmailAndDifficulty" resultMap="questsMap" resultType="com.ssafy.questory.dto.response.quest.QuestsResponseDto">
-        SELECT
-        q.location_quest_id AS quest_id,
-        q.title AS quest_title,
-        a.first_image1 AS attraction_image,
-        a.title AS attraction_title,
-        ct.content_type_name AS content_type_name,
-        a.addr1 AS attraction_address,
-        q.difficulty AS quest_difficulty,
-        q.quest_description AS quest_description
+        COUNT(*)
         FROM
         quests q
-        LEFT JOIN
-        (select * from members_quests where member_email = #{memberEmail}) mq
-        ON q.location_quest_id = mq.location_quest_id
-        JOIN
-        attractions a ON q.content_type_id = a.content_type_id AND q.attraction_id = a.no
-        JOIN
-        contenttypes ct ON a.content_type_id = ct.content_type_id
         WHERE
-        (mq.is_completed = 'READY' OR mq.is_completed IS NULL) AND  q.is_deleted = 0 AND q.is_private = 0 AND q.difficulty=#{difficulty}
-        LIMIT #{offset}, #{limit};
-    </select>
-
-    <select id="getTotalQuestsByMemberEmailAndDifficulty">
-        SELECT
-            COUNT(*)
-        FROM
-            quests q
-        LEFT JOIN
-            (select * from members_quests where member_email = #{memberEmail}) mq
-            ON q.location_quest_id = mq.location_quest_id
-        WHERE
-            (mq.is_completed = 'READY' OR mq.is_completed IS NULL) AND  q.is_deleted = 0 AND q.is_private = 0 AND difficulty=#{difficulty};
+        q.location_quest_id NOT IN (select location_quest_id from members_quests where member_email = #{memberEmail}))
+        AND  q.is_deleted = 0 AND q.is_private = 0 AND difficulty=#{difficulty};
     </select>
 
     <select id="findQuestsCreatedByMe" resultMap="questsMap">
@@ -321,12 +313,15 @@
     </select>
 
     <select id="cancelQuest">
-        UPDATE
+        DELETE FROM
             Members_Quests
-        SET
-            is_completed = 'READY'
-        WHERE
-            location_quest_id = #{questId};
+        WHERE location_quest_id = #{questId};
+    </select>
+
+    <select id="getInProgressQuestCntByQuestId">
+        SELECT COUNT(*)
+        FROM members_quests
+        WHERE location_quest_id = #{questId} AND is_completed = 'IN_PROGRESS';
     </select>
 
     <select id="startQuest">

@@ -38,7 +38,8 @@ public enum ErrorCode {
     QUEST_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 퀘스트입니다."),
     QUEST_ALREADY_DELETED(HttpStatus.GONE, "이미 삭제된 퀘스트입니다."),
     QUEST_LIST_EMPTY(HttpStatus.NO_CONTENT, "조회할 퀘스트가 없습니다."),
-    QUEST_ALREADY_STARTED(HttpStatus.NO_CONTENT, "이미 진행중인 퀘스트입니다."),
+    QUEST_ALREADY_STARTED(HttpStatus.BAD_REQUEST, "이미 진행중인 퀘스트입니다."),
+    QUEST_ALREADY_COMPLETED(HttpStatus.BAD_REQUEST, "이미 완료된 퀘스트입니다."),
 
     // 계획, 경로 관련
     PLAN_NOT_FOUND(HttpStatus.NOT_FOUND, "회원이 생성한 계획이 없습니다."),

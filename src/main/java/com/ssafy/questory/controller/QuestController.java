@@ -40,7 +40,7 @@ public class QuestController {
             String memberEmail = jwtService.extractUsername(token);
 
             questsResponseDtoList = questService.findValidQuestsByMemberEmail(memberEmail, difficulty, page, size);
-            totalItems = questService.getTotalQuestsByMemberEmail(memberEmail, difficulty);
+            totalItems = questService.getValidQuestsCntByMemberEmail(memberEmail, difficulty);
             totalPages = (int) Math.ceil((double) totalItems / size);
         }else{
             questsResponseDtoList = questService.findQuests(page, size);

@@ -39,7 +39,7 @@ public class QuestService {
         if(difficulty== null || difficulty.equals("all")){
             questsResponseDtoList = questRepository.findValidQuestsByMemberEmail(memberEmail, offset, size);
         }else{
-            questsResponseDtoList = questRepository.findQuestsByMemberEmailAndDifficulty(memberEmail, difficulty, offset, size);
+            questsResponseDtoList = questRepository.findValidQuestsByMemberEmailAndDifficulty(memberEmail, difficulty, offset, size);
         }
 
         if(questsResponseDtoList.isEmpty()){
@@ -48,11 +48,11 @@ public class QuestService {
         return questsResponseDtoList;
     }
 
-    public int getTotalQuestsByMemberEmail(String memberEmail, String difficulty) {
+    public int getValidQuestsCntByMemberEmail(String memberEmail, String difficulty) {
         if(difficulty== null || difficulty.equals("all")){
-            return questRepository.getTotalQuestsByMemberEmail(memberEmail);
+            return questRepository.getValidQuestsCntByMemberEmail(memberEmail);
         }else{
-            return questRepository.getTotalQuestsByMemberEmailAndDifficulty(memberEmail, difficulty);
+            return questRepository.getValidQuestsCntByMemberEmailAndDifficulty(memberEmail, difficulty);
         }
     }
 
@@ -159,9 +159,15 @@ public class QuestService {
 
     public void cancelQuest(int questId, String memberEmail) {
         int questCntByQuestId = questRepository.getQuestCntByQuestId(questId);
-        if(questCntByQuestId!=1){
+        if(questCntByQuestId != 1) {
             throw new CustomException(ErrorCode.QUEST_NOT_FOUND);
         }
+
+        int inProgressQuestCntByQuestId = questRepository.getInProgressQuestCntByQuestId(questId);
+        if(inProgressQuestCntByQuestId==0){
+            throw new CustomException(ErrorCode.QUEST_ALREADY_COMPLETED);
+        }
+
         questRepository.cancelQuest(questId);
     }
 
