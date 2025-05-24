@@ -71,7 +71,7 @@ public class QuestService {
         return questsResponseDtoList;
     }
 
-    public int findQuestsCreatedByMe(String memberEmail, String difficulty) {
+    public int getQuestsCntCreatedByMe(String memberEmail, String difficulty) {
         if(difficulty== null || difficulty.equals("all")){
             return questRepository.getTotalQuestsCreatedByMe(memberEmail);
         }else{

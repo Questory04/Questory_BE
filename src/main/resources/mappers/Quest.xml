@@ -50,7 +50,7 @@
         JOIN
         contenttypes ct ON a.content_type_id = ct.content_type_id
         WHERE
-        (mq.is_completed = 'YET' OR mq.is_completed IS NULL) AND  q.is_deleted = 0 AND q.is_private = 0
+        (mq.is_completed = 'READY' OR mq.is_completed IS NULL) AND  q.is_deleted = 0 AND q.is_private = 0
         LIMIT #{offset}, #{limit};
     </select>
 
@@ -63,7 +63,7 @@
             (select * from members_quests where member_email = #{memberEmail}) mq
             ON q.location_quest_id = mq.location_quest_id
         WHERE
-            (mq.is_completed = 'YET' OR mq.is_completed IS NULL) AND  q.is_deleted = 0 AND q.is_private = 0;
+            (mq.is_completed = 'READY' OR mq.is_completed IS NULL) AND  q.is_deleted = 0 AND q.is_private = 0;
     </select>
 
     <select id="findQuestsByMemberEmailAndDifficulty" resultMap="questsMap" resultType="com.ssafy.questory.dto.response.quest.QuestsResponseDto">
@@ -86,7 +86,7 @@
         JOIN
         contenttypes ct ON a.content_type_id = ct.content_type_id
         WHERE
-        (mq.is_completed = 'YET' OR mq.is_completed IS NULL) AND  q.is_deleted = 0 AND q.is_private = 0 AND q.difficulty=#{difficulty}
+        (mq.is_completed = 'READY' OR mq.is_completed IS NULL) AND  q.is_deleted = 0 AND q.is_private = 0 AND q.difficulty=#{difficulty}
         LIMIT #{offset}, #{limit};
     </select>
 
@@ -99,7 +99,7 @@
             (select * from members_quests where member_email = #{memberEmail}) mq
             ON q.location_quest_id = mq.location_quest_id
         WHERE
-            (mq.is_completed = 'YET' OR mq.is_completed IS NULL) AND  q.is_deleted = 0 AND q.is_private = 0 AND difficulty=#{difficulty};
+            (mq.is_completed = 'READY' OR mq.is_completed IS NULL) AND  q.is_deleted = 0 AND q.is_private = 0 AND difficulty=#{difficulty};
     </select>
 
     <select id="findQuestsCreatedByMe" resultMap="questsMap">
@@ -177,7 +177,7 @@
         ON q.attraction_id = a.no
         JOIN contenttypes ct
         ON a.content_type_id = ct.content_type_id
-        where mq.is_completed = 'YET' AND mq.member_email = #{memberEmail}
+        where mq.is_completed = 'IN_PROGRESS' AND mq.member_email = #{memberEmail}
         LIMIT #{offset}, #{limit};
     </select>
 
@@ -198,7 +198,7 @@
         ON q.attraction_id = a.no
         JOIN contenttypes ct
         ON a.content_type_id = ct.content_type_id
-        where mq.is_completed = 'YET' AND mq.member_email = #{memberEmail} AND q.difficulty = #{difficulty}
+        where mq.is_completed = 'IN_PROGRESS' AND mq.member_email = #{memberEmail} AND q.difficulty = #{difficulty}
         LIMIT #{offset}, #{limit};
     </select>
 
@@ -212,7 +212,7 @@
             ON q.attraction_id = a.no
         JOIN contenttypes ct
             ON a.content_type_id = ct.content_type_id
-        where mq.is_completed = 'YET' AND mq.member_email = #{memberEmail};
+        where mq.is_completed = 'IN_PROGRESS' AND mq.member_email = #{memberEmail};
     </select>
 
     <select id="getActiveQuestsByMemberEmailAndDifficulty">
@@ -224,7 +224,7 @@
             ON q.attraction_id = a.no
         JOIN contenttypes ct
             ON a.content_type_id = ct.content_type_id
-        WHERE mq.is_completed = 'YET' AND mq.member_email = #{memberEmail} AND q.difficulty = #{difficulty};
+        WHERE mq.is_completed = 'IN_PROGRESS' AND mq.member_email = #{memberEmail} AND q.difficulty = #{difficulty};
     </select>
 
     <select id="saveQuest">
@@ -324,7 +324,7 @@
         UPDATE
             Members_Quests
         SET
-            is_completed = 'CANCELLED'
+            is_completed = 'READY'
         WHERE
             location_quest_id = #{questId};
     </select>

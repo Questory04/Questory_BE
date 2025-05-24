@@ -27,7 +27,7 @@
         WHERE
          mq.member_email = #{memberEmail}
         AND
-            mq.is_completed='COMPLETE'
+            mq.is_completed='COMPLETED'
         ORDER BY
             mq.created_at
         LIMIT #{offset}, #{limit};
@@ -57,7 +57,7 @@
         AND
             q.difficulty = #{difficulty}
         AND
-            mq.is_completed='COMPLETE'
+            mq.is_completed='COMPLETED'
         ORDER BY
             mq.created_at
         LIMIT #{offset}, #{limit};
@@ -72,7 +72,7 @@
         WHERE
         mq.member_email = #{memberEmail}
         AND
-        mq.is_completed='COMPLETE';
+        mq.is_completed='COMPLETED';
     </select>
 
     <select id="countStampsByDifficulty" resultType="int">
@@ -84,7 +84,7 @@
         WHERE
             mq.member_email = #{memberEmail}
         AND
-            mq.is_completed='COMPLETE'
+            mq.is_completed='COMPLETED'
         AND
             q.difficulty = #{difficulty};
     </select>

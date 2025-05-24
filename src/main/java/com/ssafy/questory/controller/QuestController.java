@@ -78,7 +78,7 @@ public class QuestController {
 
         List<QuestsResponseDto> questsResponseDtoList = questService.findQuestsCreatedByMe(memberEmail, difficulty, page, size);
 
-        int totalItems = questService.getTotalQuestsByMemberEmail(memberEmail, difficulty);
+        int totalItems = questService.getQuestsCntCreatedByMe(memberEmail, difficulty);
         int totalPages = (int) Math.ceil((double) totalItems / size);
 
         Map<String, Object> pagination = new HashMap<>();
