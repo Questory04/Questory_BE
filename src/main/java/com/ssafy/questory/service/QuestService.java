@@ -130,4 +130,27 @@ public class QuestService {
     public QuestResponseDto findQuestById(int questId) {
         return questRepository.findQuestById(questId);
     }
+
+    public List<QuestsResponseDto> findActiveQuestsByMemberEmail(String memberEmail, String difficulty, int page, int size) {
+        int offset  = (page-1) * size;
+        List<QuestsResponseDto> questsResponseDtoList;
+        if(difficulty== null || difficulty.equals("all")){
+            questsResponseDtoList = questRepository.findActiveQuestsByMemberEmail(memberEmail, offset, size);
+        }else{
+            questsResponseDtoList = questRepository.findActiveQuestsByMemberEmailAndDifficulty(memberEmail, difficulty, offset, size);
+        }
+
+        if(questsResponseDtoList.isEmpty()){
+            throw new CustomException(ErrorCode.QUEST_LIST_EMPTY);
+        }
+        return questsResponseDtoList;
+    }
+
+    public int getActiveQuestsByMemberEmail(String memberEmail, String difficulty) {
+        if(difficulty== null || difficulty.equals("all")){
+            return questRepository.getActiveQuestsByMemberEmail(memberEmail);
+        }else{
+            return questRepository.getActiveQuestsByMemberEmailAndDifficulty(memberEmail, difficulty);
+        }
+    }
 }

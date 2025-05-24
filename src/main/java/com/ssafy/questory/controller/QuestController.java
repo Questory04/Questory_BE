@@ -94,6 +94,44 @@ public class QuestController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
+    @GetMapping("/me/active")
+    @Operation(summary = "진행 중인 퀘스트 목록 조회", description = "진행 중인 퀘스트 목록을 조회합니다.")
+    public ResponseEntity<Map<String, Object>> findActiveQuestsByMemberEmail(@RequestParam(required = false) String difficulty,
+                                                          @RequestParam(defaultValue = "1") int page,
+                                                          @RequestParam(defaultValue = "6") int size,
+                                                          @RequestHeader("Authorization") String authorizationHeader) {
+        if(authorizationHeader == null){
+            throw new CustomException(ErrorCode.TOKEN_NOT_FOUND);
+        } else if(!authorizationHeader.startsWith("Bearer ")){
+            throw new CustomException(ErrorCode.INVALID_TOKEN_FORMAT);
+        }
+
+        String token = authorizationHeader.substring(7);
+        String memberEmail = jwtService.extractUsername(token);
+
+        List<QuestsResponseDto> questsResponseDtoList = questService.findActiveQuestsByMemberEmail(memberEmail, difficulty, page, size);
+
+        for(QuestsResponseDto dto : questsResponseDtoList){
+            System.out.println(dto.toString());
+        }
+
+        int totalItems = questService.getActiveQuestsByMemberEmail(memberEmail, difficulty);
+        System.out.println("totalItems : "+totalItems);
+        int totalPages = (int) Math.ceil((double) totalItems / size);
+
+        Map<String, Object> pagination = new HashMap<>();
+        pagination.put("currentPage", page);
+        pagination.put("totalItems", totalItems);
+        pagination.put("totalPages", totalPages);
+        pagination.put("pageSize", size);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("quests", questsResponseDtoList);
+        response.put("pagination", pagination);
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
     @GetMapping("/{questId}")
     @Operation(summary = "퀘스트 상세 조회", description = "퀘스트 id로 퀘스트를 조회합니다.")
     public ResponseEntity<Map<String, Object>> findQuestById(@PathVariable int questId) {

@@ -51,4 +51,12 @@ public interface QuestRepository {
     int getValidQuestCntByQuestId(@Param("questId") int questId);
 
     QuestResponseDto findQuestById(@Param("questId") int questId);
+
+    List<QuestsResponseDto> findActiveQuestsByMemberEmail(@Param("memberEmail") String memberEmail, @Param("offset") int offset, @Param("limit") int limit);
+
+    List<QuestsResponseDto> findActiveQuestsByMemberEmailAndDifficulty(@Param("memberEmail") String memberEmail, @Param("difficulty") String difficulty, @Param("offset") int offset, @Param("limit") int limit);
+
+    int getActiveQuestsByMemberEmail(@Param("memberEmail") String memberEmail);
+
+    int getActiveQuestsByMemberEmailAndDifficulty(@Param("memberEmail") String memberEmail, @Param("difficulty") String difficulty);
 }
