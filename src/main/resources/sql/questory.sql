@@ -98,6 +98,6 @@ CREATE TABLE Quests (
 CREATE TABLE Members_Quests (
     member_email VARCHAR(40) NOT NULL,
     location_quest_id INT NOT NULL,
-    is_completed ENUM('YET', 'COMPLETE','CANCELED') DEFAULT 'YET',
+    is_completed ENUM('READY', 'IN_PROGRESS', 'COMPLETED') DEFAULT 'READY',
     created_at DATETIME DEFAULT NOW()
 );
