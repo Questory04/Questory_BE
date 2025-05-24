@@ -183,4 +183,17 @@ public class QuestController {
         return ResponseEntity.status(HttpStatus.OK).body(Map.of(
                 "message", "성공적으로 퀘스트를 삭제했습니다."));
     }
+
+    @PatchMapping("/{questId}/cancel")
+    @Operation(summary = "퀘스트 진행 취소", description = "퀘스트 진행을 취소합니다.")
+    public ResponseEntity<Map<String, String>> cancelQuest(@PathVariable int questId,
+                                                           @RequestHeader("Authorization") String authorizationHeader){
+        String token = authorizationHeader.substring(7);
+        String memberEmail = jwtService.extractUsername(token);
+
+        questService.cancelQuest(questId, memberEmail);
+
+        return ResponseEntity.status(HttpStatus.OK).body(Map.of(
+                "message", "성공적으로 퀘스트를 취소했습니다."));
+    }
 }

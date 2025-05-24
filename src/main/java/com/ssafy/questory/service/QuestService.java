@@ -153,4 +153,12 @@ public class QuestService {
             return questRepository.getActiveQuestsByMemberEmailAndDifficulty(memberEmail, difficulty);
         }
     }
+
+    public void cancelQuest(int questId, String memberEmail) {
+        int questCntByQuestId = questRepository.getQuestCntByQuestId(questId);
+        if(questCntByQuestId!=1){
+            throw new CustomException(ErrorCode.QUEST_NOT_FOUND);
+        }
+        questRepository.cancelQuest(questId);
+    }
 }

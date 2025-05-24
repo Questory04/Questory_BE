@@ -320,6 +320,15 @@
             location_quest_id=#{questId} AND is_deleted=0;
     </select>
 
+    <select id="cancelQuest">
+        UPDATE
+            Members_Quests
+        SET
+            is_completed = 'CANCELLED'
+        WHERE
+            location_quest_id = #{questId};
+    </select>
+
     <resultMap type="QuestsResponseDto" id="questsMap">
         <result column="location_quest_id" property="questId" />
         <result column="quest_title" property="questTitle" />
