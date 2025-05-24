@@ -3,7 +3,9 @@ package com.ssafy.questory.controller;
 import com.ssafy.questory.domain.Member;
 import com.ssafy.questory.dto.request.friend.FriendStatusRequestDto;
 import com.ssafy.questory.dto.request.member.MemberEmailRequestDto;
+import com.ssafy.questory.dto.request.member.MemberSearchRequestDto;
 import com.ssafy.questory.dto.response.friend.FollowResponseDto;
+import com.ssafy.questory.dto.response.member.MemberSearchResponseDto;
 import com.ssafy.questory.dto.response.member.auth.MemberInfoResponseDto;
 import com.ssafy.questory.service.FriendService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -28,6 +30,15 @@ public class FollowController {
     public ResponseEntity<List<MemberInfoResponseDto>> getFriendsInfo(
             @AuthenticationPrincipal(expression = "member") Member member) {
         return ResponseEntity.ok(friendService.getFriendsInfo(member));
+    }
+
+    @DeleteMapping("")
+    @Operation(summary = "친구 삭제", description = "친구 관계를 삭제합니다.")
+    public ResponseEntity<Map<String, String>> deleteFriend(
+            @AuthenticationPrincipal(expression = "member") Member member,
+            @RequestBody MemberEmailRequestDto memberEmailRequestDto) {
+        friendService.deleteFriend(member, memberEmailRequestDto);
+        return ResponseEntity.ok(Map.of("message", "친구가 삭제되었습니다."));
     }
 
     @GetMapping("/request")
@@ -59,6 +70,18 @@ public class FollowController {
         ));
     }
 
+
+    @DeleteMapping("/request")
+    @Operation(summary = "친구 요청 취소", description = "친구 요청을 취소합니다.")
+    public ResponseEntity<Map<String, String>> cancel(
+            @AuthenticationPrincipal(expression = "member") Member member,
+            @RequestBody MemberEmailRequestDto memberEmailRequestDto) {
+        friendService.cancelRequest(member, memberEmailRequestDto);
+        return ResponseEntity.ok().body(Map.of(
+                "message", "친구 요청이 취소 되었습니다."
+        ));
+    }
+
     @GetMapping("/request/sent")
     @Operation(summary = "보낸 친구 요청 목록 조회", description = " 보낸 친구 요청 목록을 조회합니다.")
     public ResponseEntity<Page<FollowResponseDto>> getFollowRequests(
@@ -66,5 +89,13 @@ public class FollowController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
         return ResponseEntity.ok(friendService.getFollowRequests(member, page, size));
+    }
+
+    @GetMapping("/search")
+    @Operation(summary = "유저 검색", description = "이메일을 통해 유저를 검색합니다.")
+    public ResponseEntity<Page<MemberSearchResponseDto>> search(
+            @AuthenticationPrincipal(expression = "member") Member member,
+            @ModelAttribute MemberSearchRequestDto memberSearchRequestDto) {
+        return ResponseEntity.ok(friendService.search(member, memberSearchRequestDto));
     }
 }

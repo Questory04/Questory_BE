@@ -40,6 +40,7 @@ class PlanServiceTest {
         planService = new PlanService(planRepository, planRoutesRepository, savedRepository);
     }
 
+
     @Test
     @DisplayName("getPlanInfo: 회원의 모든 계획과 각 계획의 경로 목록을 조회한다")
     void getPlanInfoTest() {

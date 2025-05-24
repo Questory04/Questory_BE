@@ -176,47 +176,4 @@ class MemberServiceTest {
                 .isInstanceOf(CustomException.class)
                 .hasMessage(ErrorCode.INVALID_PASSWORD.getMessage());
     }
-
-    @Test
-    @DisplayName("이메일 키워드로 유저 검색 - 페이징 포함")
-    void searchMembersByEmail_withPaging() {
-        // given
-        String keyword = "kim";
-        int page = 0;
-        int size = 2;
-        int offset = page * size;
-
-        Member member1 = Member.builder()
-                .email("kim1@example.com")
-                .nickname("김하나")
-                .profileUrl("https://cdn.questory.com/kim1.jpg")
-                .build();
-
-        Member member2 = Member.builder()
-                .email("kim2@example.com")
-                .nickname("김둘")
-                .profileUrl("https://cdn.questory.com/kim2.jpg")
-                .build();
-
-        List<Member> memberList = List.of(member1, member2);
-
-        given(memberRepository.searchByEmailWithPaging(keyword, offset, size))
-                .willReturn(memberList);
-        given(memberRepository.countByEmail(keyword)).willReturn(10);
-
-        MemberSearchRequestDto requestDto = MemberSearchRequestDto.builder()
-                .email(keyword)
-                .page(page)
-                .size(size)
-                .build();
-
-        // when
-        Page<MemberSearchResponseDto> result = memberService.search(requestDto);
-
-        // then
-        assertThat(result.getContent()).hasSize(2);
-        assertThat(result.getTotalElements()).isEqualTo(10);
-        assertThat(result.getContent().get(0).getEmail()).isEqualTo("kim1@example.com");
-        assertThat(result.getContent().get(1).getNickname()).isEqualTo("김둘");
-    }
 }

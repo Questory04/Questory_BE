@@ -82,4 +82,22 @@
         WHERE requester_email = #{requesterEmail}
         AND status = 'APPLIED'
     </select>
+    <delete id="cancelRequest" parameterType="map">
+        DELETE FROM follow_requests
+        WHERE requester_email = #{requesterEmail}
+        AND target_email = #{targetEmail}
+    </delete>
+    <select id="existsByEmails" resultType="boolean">
+        SELECT EXISTS (
+        SELECT 1
+        FROM Friends
+        WHERE (email1 = #{email1} AND email2 = #{email2})
+        OR (email1 = #{email2} AND email2 = #{email1})
+        )
+    </select>
+    <delete id="deleteFriend" parameterType="map">
+        DELETE FROM Friends
+        WHERE (email1 = #{email1} AND email2 = #{email2})
+        OR (email1 = #{email2} AND email2 = #{email1})
+    </delete>
 </mapper>
