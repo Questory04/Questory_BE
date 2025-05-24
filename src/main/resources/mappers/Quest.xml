@@ -160,6 +160,73 @@
             member_email = #{memberEmail} AND is_deleted = 0 AND difficulty = #{difficulty};
     </select>
 
+    <select id="findActiveQuestsByMemberEmail" resultMap="questsMap">
+        SELECT
+        q.location_quest_id AS quest_id,
+        q.title AS quest_title,
+        a.first_image1 AS attraction_image,
+        a.title AS attraction_title,
+        ct.content_type_name AS content_type_name,
+        a.addr1 AS attraction_address,
+        q.difficulty AS quest_difficulty,
+        q.quest_description AS quest_description
+        from members_quests mq
+        join quests q
+        on mq.location_quest_id = q.location_quest_id
+        JOIN attractions a
+        ON q.attraction_id = a.no
+        JOIN contenttypes ct
+        ON a.content_type_id = ct.content_type_id
+        where mq.is_completed = 'YET' AND mq.member_email = #{memberEmail}
+        LIMIT #{offset}, #{limit};
+    </select>
+
+    <select id="findActiveQuestsByMemberEmailAndDifficulty" resultMap="questsMap">
+        SELECT
+        q.location_quest_id AS quest_id,
+        q.title AS quest_title,
+        a.first_image1 AS attraction_image,
+        a.title AS attraction_title,
+        ct.content_type_name AS content_type_name,
+        a.addr1 AS attraction_address,
+        q.difficulty AS quest_difficulty,
+        q.quest_description AS quest_description
+        from members_quests mq
+        join quests q
+        on mq.location_quest_id = q.location_quest_id
+        JOIN attractions a
+        ON q.attraction_id = a.no
+        JOIN contenttypes ct
+        ON a.content_type_id = ct.content_type_id
+        where mq.is_completed = 'YET' AND mq.member_email = #{memberEmail} AND q.difficulty = #{difficulty}
+        LIMIT #{offset}, #{limit};
+    </select>
+
+    <select id="getActiveQuestsByMemberEmail">
+        SELECT
+            COUNT(*)
+        FROM members_quests mq
+        JOIN quests q
+            ON mq.location_quest_id = q.location_quest_id
+        JOIN attractions a
+            ON q.attraction_id = a.no
+        JOIN contenttypes ct
+            ON a.content_type_id = ct.content_type_id
+        where mq.is_completed = 'YET' AND mq.member_email = #{memberEmail};
+    </select>
+
+    <select id="getActiveQuestsByMemberEmailAndDifficulty">
+        SELECT COUNT(*)
+        FROM members_quests mq
+        JOIN quests q
+            ON mq.location_quest_id = q.location_quest_id
+        JOIN attractions a
+            ON q.attraction_id = a.no
+        JOIN contenttypes ct
+            ON a.content_type_id = ct.content_type_id
+        WHERE mq.is_completed = 'YET' AND mq.member_email = #{memberEmail} AND q.difficulty = #{difficulty};
+    </select>
+
     <select id="saveQuest">
         INSERT INTO Quests (
             attraction_id,
