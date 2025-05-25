@@ -55,6 +55,14 @@ public class CommunityService {
         postRepository.delete(post);
     }
 
+    public List<PostsResponseDto> findMyPosts(Member member, int page, int size, String keyword) {
+        int offset = page * size;
+        List<Post> posts = postRepository.findMyPosts(member.getEmail(), offset, size, keyword);
+        return posts.stream()
+                .map(PostsResponseDto::from)
+                .toList();
+    }
+
     private void validateMember(Member member, Long id) {
         Post find = postRepository.findById(id);
         if (!member.getEmail().equals(find.getUserEmail())) {

@@ -45,4 +45,14 @@
         ORDER BY created_at DESC
         LIMIT #{size} OFFSET #{offset}
     </select>
+    <select id="findMyPosts" resultType="com.ssafy.questory.domain.Post">
+        SELECT *
+        FROM Posts
+        WHERE user_email = #{userEmail}
+        <if test="keyword != null and keyword != ''">
+            AND title LIKE CONCAT('%', #{keyword}, '%')
+        </if>
+        ORDER BY created_at DESC
+        LIMIT #{size} OFFSET #{offset}
+    </select>
 </mapper>

@@ -68,4 +68,15 @@ public class BoardController {
         communityService.delete(member, postsDeleteRequestDto);
         return ResponseEntity.ok(Map.of("message", "게시글이 삭제되었습니다."));
     }
+
+    @GetMapping("/me")
+    @Operation(summary = "내가 작성한 게시글 조회", description = "로그인한 사용자가 작성한 게시글을 조회합니다.")
+    public ResponseEntity<List<PostsResponseDto>> findMyPosts(
+            @AuthenticationPrincipal(expression = "member") Member member,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String keyword) {
+        List<PostsResponseDto> result = communityService.findMyPosts(member, page, size, keyword);
+        return ResponseEntity.ok(result);
+    }
 }
