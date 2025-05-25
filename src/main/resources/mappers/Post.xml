@@ -5,17 +5,15 @@
 
 <mapper namespace="com.ssafy.questory.repository.PostRepository">
 
-    <insert id="create" parameterType="com.ssafy.questory.domain.Posts">
+    <insert id="create" parameterType="com.ssafy.questory.domain.Post">
         INSERT INTO Posts (
         user_email,
-        plan_id,
         title,
         content,
         created_at,
         category
         ) VALUES (
-        #{email},
-        #{planId},
+        #{userEmail},
         #{title},
         #{content},
         NOW(),
