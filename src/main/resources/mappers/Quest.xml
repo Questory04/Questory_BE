@@ -14,7 +14,9 @@
             ct.content_type_name AS content_type_name,
             a.addr1 AS attraction_address,
             q.difficulty AS quest_difficulty,
-            q.quest_description AS quest_description
+            q.quest_description AS quest_description,
+            a.latitude AS attraction_latitude,
+            a.longitude AS attraction_longitude
         FROM
             quests q
         JOIN
@@ -39,7 +41,9 @@
             ct.content_type_name AS content_type_name,
             a.addr1 AS attraction_address,
             q.difficulty AS quest_difficulty,
-            q.quest_description AS quest_description
+            q.quest_description AS quest_description,
+            a.latitude AS attraction_latitude,
+            a.longitude AS attraction_longitude
         FROM
             quests q
         JOIN
@@ -71,7 +75,9 @@
         ct.content_type_name AS content_type_name,
         a.addr1 AS attraction_address,
         q.difficulty AS quest_difficulty,
-        q.quest_description AS quest_description
+        q.quest_description AS quest_description,
+        a.latitude AS attraction_latitude,
+        a.longitude AS attraction_longitude
         FROM
         quests q
         JOIN
@@ -103,7 +109,9 @@
             ct.content_type_name AS content_type_name,
             a.addr1 AS attraction_address,
             q.difficulty AS quest_difficulty,
-            q.quest_description AS quest_description
+            q.quest_description AS quest_description,
+            a.latitude AS attraction_latitude,
+            a.longitude AS attraction_longitude
         FROM quests q
         JOIN
         attractions a
@@ -130,7 +138,9 @@
             ct.content_type_name AS content_type_name,
             a.addr1 AS attraction_address,
             q.difficulty AS quest_difficulty,
-            q.quest_description AS quest_description
+            q.quest_description AS quest_description,
+            a.latitude AS attraction_latitude,
+            a.longitude AS attraction_longitude
         FROM quests q
         JOIN
             attractions a
@@ -154,35 +164,40 @@
 
     <select id="findActiveQuestsByMemberEmail" resultMap="questsMap">
         SELECT
-        q.location_quest_id AS quest_id,
-        q.title AS quest_title,
-        a.first_image1 AS attraction_image,
-        a.title AS attraction_title,
-        ct.content_type_name AS content_type_name,
-        a.addr1 AS attraction_address,
-        q.difficulty AS quest_difficulty,
-        q.quest_description AS quest_description
+            q.location_quest_id AS quest_id,
+            q.title AS quest_title,
+            a.first_image1 AS attraction_image,
+            a.title AS attraction_title,
+            ct.content_type_name AS content_type_name,
+            a.addr1 AS attraction_address,
+            q.difficulty AS quest_difficulty,
+            q.quest_description AS quest_description,
+            a.latitude AS attraction_latitude,
+            a.longitude AS attraction_longitude
         from members_quests mq
-        join quests q
-        on mq.location_quest_id = q.location_quest_id
-        JOIN attractions a
-        ON q.attraction_id = a.no
-        JOIN contenttypes ct
-        ON a.content_type_id = ct.content_type_id
-        where mq.is_completed = 'IN_PROGRESS' AND mq.member_email = #{memberEmail}
+            join quests q
+            on mq.location_quest_id = q.location_quest_id
+            JOIN attractions a
+            ON q.attraction_id = a.no
+            JOIN contenttypes ct
+            ON a.content_type_id = ct.content_type_id
+        where
+            mq.is_completed = 'IN_PROGRESS' AND mq.member_email = #{memberEmail}
         LIMIT #{offset}, #{limit};
     </select>
 
     <select id="findActiveQuestsByMemberEmailAndDifficulty" resultMap="questsMap">
         SELECT
-        q.location_quest_id AS quest_id,
-        q.title AS quest_title,
-        a.first_image1 AS attraction_image,
-        a.title AS attraction_title,
-        ct.content_type_name AS content_type_name,
-        a.addr1 AS attraction_address,
-        q.difficulty AS quest_difficulty,
-        q.quest_description AS quest_description
+            q.location_quest_id AS quest_id,
+            q.title AS quest_title,
+            a.first_image1 AS attraction_image,
+            a.title AS attraction_title,
+            ct.content_type_name AS content_type_name,
+            a.addr1 AS attraction_address,
+            q.difficulty AS quest_difficulty,
+            q.quest_description AS quest_description,
+            a.latitude AS attraction_latitude,
+            a.longitude AS attraction_longitude
         from members_quests mq
         join quests q
         on mq.location_quest_id = q.location_quest_id
@@ -344,6 +359,8 @@
         <result column="attraction_address" property="attractionAddress" />
         <result column="quest_difficulty" property="questDifficulty" />
         <result column="quest_description" property="questDescription" />
+        <result column="attraction_latitude" property="attractionLatitude" />
+        <result column="attraction_longitude" property="attractionLongitude" />
     </resultMap>
 
     <resultMap type="QuestResponseDto" id="questMap">
