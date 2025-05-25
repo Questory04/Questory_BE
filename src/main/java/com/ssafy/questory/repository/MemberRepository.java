@@ -19,4 +19,7 @@ public interface MemberRepository {
     List<Member> searchByEmailWithPaging(@Param("email") String email, @Param("requesterEmail") String requesterEmail,
                                          @Param("offset") int offset, @Param("limit") int limit);
     int countByEmail(@Param("email") String email);
+
+    int getMemberExp(@Param("memberEmail") String memberEmail);
+    void addMemberExp(@Param("memberEmail") String memberEmail, @Param("experiencePoints") int experiencePoints);
 }

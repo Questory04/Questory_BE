@@ -2,6 +2,7 @@ package com.ssafy.questory.service;
 
 import com.ssafy.questory.common.exception.CustomException;
 import com.ssafy.questory.common.exception.ErrorCode;
+import com.ssafy.questory.domain.DifficultyStatus;
 import com.ssafy.questory.dto.request.quest.QuestPositionRequestDto;
 import com.ssafy.questory.dto.request.quest.QuestRequestDto;
 import com.ssafy.questory.dto.response.quest.QuestResponseDto;
@@ -19,6 +20,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class QuestService {
     private final QuestRepository questRepository;
+    private final MemberAuthService memberAuthService;
 
     public List<QuestsResponseDto> findQuests(int page, int size) {
         int offset  = (page-1) * size;
@@ -196,8 +198,20 @@ public class QuestService {
         System.out.println("distance : "+distance);
 
         if(distance < 1){   // 관광지와 사용자의 거리가 1km 미만이여야 퀘스트 성공
-            // 성공
             questRepository.completeQuest(questId, memberEmail);
+
+            // 퀘스트 난이도 조회하기
+            String difficulty = questRepository.getDifficultyByQuestId(questId).toUpperCase();
+            int exp = memberAuthService.getMemberExp(memberEmail);
+
+            // 난이도에 따라서 경험치 더해주기
+            if(difficulty.equals("EASY")){
+                memberAuthService.setMemberExp(memberEmail, exp+DifficultyStatus.EASY.getExperiencePoints());
+            }else if(difficulty.equals("MEDIUM")){
+                memberAuthService.setMemberExp(memberEmail, exp+DifficultyStatus.MEDIUM.getExperiencePoints());
+            }else if(difficulty.equals("HARD")) {
+                memberAuthService.setMemberExp(memberEmail, exp + DifficultyStatus.HARD.getExperiencePoints());
+            }
         }
         else{
             throw new CustomException(ErrorCode.QUEST_LOCATION_TOO_FAR);

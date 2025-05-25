@@ -356,6 +356,12 @@
         WHERE member_email=#{memberEmail} AND location_quest_id= #{questId};
     </select>
 
+    <select id="getDifficultyByQuestId">
+        SELECT difficulty
+        FROM quests
+        WHERE location_quest_id=#{questId};
+    </select>
+
     <resultMap type="QuestsResponseDto" id="questsMap">
         <result column="location_quest_id" property="questId" />
         <result column="quest_title" property="questTitle" />

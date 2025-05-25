@@ -48,4 +48,12 @@ public class MemberAuthService {
     public void withdraw(Member member) {
         memberRepository.withdraw(member);
     }
+
+    public int getMemberExp(String memberEmail){
+        return memberRepository.getMemberExp(memberEmail);
+    }
+
+    public void setMemberExp(String memberEmail, int experiencePoints) {
+        memberRepository.addMemberExp(memberEmail, experiencePoints);
+    }
 }

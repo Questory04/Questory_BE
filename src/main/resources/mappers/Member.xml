@@ -70,4 +70,16 @@
         FROM members
         WHERE email LIKE CONCAT('%', #{email}, '%')
     </select>
+
+    <select id="getMemberExp" resultType="int">
+        SELECT exp
+        FROM members
+        WHERE email = #{memberEmail};
+    </select>
+
+    <update id="addMemberExp">
+        UPDATE members
+        SET exp = #{experiencePoints}
+        WHERE email = #{memberEmail};
+    </update>
 </mapper>
