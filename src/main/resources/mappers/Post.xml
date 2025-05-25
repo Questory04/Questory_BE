@@ -20,5 +20,15 @@
         #{category}
         )
     </insert>
-
+    <update id="update" parameterType="com.ssafy.questory.domain.Post">
+        UPDATE Posts
+        SET title = #{title},
+        content = #{content},
+        category = #{category},
+        updated_at = NOW()
+        WHERE post_id = #{postId} AND user_email = #{userEmail}
+    </update>
+    <select id="findById" resultType="com.ssafy.questory.domain.Post" parameterType="long">
+        SELECT * FROM Posts WHERE post_id = #{postId}
+    </select>
 </mapper>

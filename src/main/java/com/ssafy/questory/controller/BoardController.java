@@ -2,11 +2,13 @@ package com.ssafy.questory.controller;
 
 import com.ssafy.questory.domain.Member;
 import com.ssafy.questory.dto.request.posts.PostsCreateRequestDto;
+import com.ssafy.questory.dto.request.posts.PostsUpdateRequestDto;
 import com.ssafy.questory.service.CommunityService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,9 +28,19 @@ public class BoardController {
             @AuthenticationPrincipal(expression = "member") Member member,
             @RequestBody PostsCreateRequestDto postsCreateRequestDto) {
         System.out.println("게시글 작성 요청 도착");
+        System.out.println(member.getEmail());
         communityService.create(member, postsCreateRequestDto);
         return ResponseEntity.ok().body(Map.of(
                 "message", "글이 등록되었습니다."
         ));
+    }
+
+    @PatchMapping("")
+    @Operation(summary = "게시글 수정", description = "게시글을 수정합니다.")
+    public ResponseEntity<Map<String, String>> update(
+            @AuthenticationPrincipal(expression = "member") Member member,
+            @RequestBody PostsUpdateRequestDto postsUpdateRequestDto) {
+        communityService.update(member, postsUpdateRequestDto);
+        return ResponseEntity.ok(Map.of("message", "게시글이 수정되었습니다."));
     }
 }
