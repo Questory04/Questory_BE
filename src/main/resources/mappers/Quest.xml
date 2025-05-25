@@ -350,6 +350,12 @@
         WHERE member_email = #{memberEmail} AND location_quest_id = #{questId};
     </select>
 
+    <select id="completeQuest">
+        UPDATE members_Quests
+        SET is_completed='COMPLETED'
+        WHERE member_email=#{memberEmail} AND location_quest_id= #{questId};
+    </select>
+
     <resultMap type="QuestsResponseDto" id="questsMap">
         <result column="location_quest_id" property="questId" />
         <result column="quest_title" property="questTitle" />
