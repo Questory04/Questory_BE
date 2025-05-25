@@ -7,14 +7,25 @@ import com.ssafy.questory.domain.Post;
 import com.ssafy.questory.dto.request.posts.PostsCreateRequestDto;
 import com.ssafy.questory.dto.request.posts.PostsDeleteRequestDto;
 import com.ssafy.questory.dto.request.posts.PostsUpdateRequestDto;
+import com.ssafy.questory.dto.response.post.PostsResponseDto;
 import com.ssafy.questory.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class CommunityService {
     private final PostRepository postRepository;
+
+    public List<PostsResponseDto> findAll(int page, int size, String keyword) {
+        int offset = page * size;
+        List<Post> posts = postRepository.findFiltered(offset, size, keyword);
+        return posts.stream()
+                .map(PostsResponseDto::from)
+                .toList();
+    }
 
     public void create(Member member, PostsCreateRequestDto postsCreateRequestDto) {
         Post post = Post.builder()

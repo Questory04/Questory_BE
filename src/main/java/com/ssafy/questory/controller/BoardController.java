@@ -4,18 +4,22 @@ import com.ssafy.questory.domain.Member;
 import com.ssafy.questory.dto.request.posts.PostsCreateRequestDto;
 import com.ssafy.questory.dto.request.posts.PostsDeleteRequestDto;
 import com.ssafy.questory.dto.request.posts.PostsUpdateRequestDto;
+import com.ssafy.questory.dto.response.post.PostsResponseDto;
 import com.ssafy.questory.service.CommunityService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -23,6 +27,16 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class BoardController {
     private final CommunityService communityService;
+
+    @GetMapping("")
+    @Operation(summary = "게시글 페이징 + 필터 조회", description = "게시글을 페이지별로 조회하며, 제목 또는 카테고리로 필터링할 수 있습니다.")
+    public ResponseEntity<List<PostsResponseDto>> findAll(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String keyword) {
+        List<PostsResponseDto> result = communityService.findAll(page, size, keyword);
+        return ResponseEntity.ok(result);
+    }
 
     @PostMapping("")
     @Operation(summary = "게시판 글 작성", description = "게시판에 글을 작성합니다.")
