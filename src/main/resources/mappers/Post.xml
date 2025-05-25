@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ssafy.questory.repository.PostRepository">
+
+    <insert id="create" parameterType="com.ssafy.questory.domain.Posts">
+        INSERT INTO Posts (
+        user_email,
+        plan_id,
+        title,
+        content,
+        created_at,
+        category
+        ) VALUES (
+        #{email},
+        #{planId},
+        #{title},
+        #{content},
+        NOW(),
+        #{category}
+        )
+    </insert>
+
+</mapper>
