@@ -7,6 +7,7 @@ import com.ssafy.questory.domain.Post;
 import com.ssafy.questory.dto.request.posts.PostsCreateRequestDto;
 import com.ssafy.questory.dto.request.posts.PostsDeleteRequestDto;
 import com.ssafy.questory.dto.request.posts.PostsUpdateRequestDto;
+import com.ssafy.questory.dto.response.post.PostDetailResponseDto;
 import com.ssafy.questory.dto.response.post.PostsResponseDto;
 import com.ssafy.questory.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,14 @@ public class CommunityService {
         return posts.stream()
                 .map(PostsResponseDto::from)
                 .toList();
+    }
+
+    public PostDetailResponseDto findById(Long id) {
+        Post post = postRepository.findById(id);
+        if (post == null) {
+            throw new CustomException(ErrorCode.POST_NOT_FOUND);
+        }
+        return PostDetailResponseDto.from(post);
     }
 
     public void create(Member member, PostsCreateRequestDto postsCreateRequestDto) {

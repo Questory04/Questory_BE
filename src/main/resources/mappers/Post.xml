@@ -28,8 +28,13 @@
         updated_at = NOW()
         WHERE post_id = #{postId} AND user_email = #{userEmail}
     </update>
-    <select id="findById" resultType="com.ssafy.questory.domain.Post" parameterType="long">
-        SELECT * FROM Posts WHERE post_id = #{postId}
+    <select id="findById" resultMap="PostWithNicknameResultMap" parameterType="long">
+        SELECT
+        p.*,
+        m.nickname
+        FROM Posts p
+        JOIN Members m ON p.user_email = m.email
+        WHERE p.post_id = #{postId}
     </select>
     <delete id="delete" parameterType="com.ssafy.questory.domain.Post">
         DELETE FROM Posts
