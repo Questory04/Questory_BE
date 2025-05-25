@@ -96,7 +96,7 @@
         FROM
         quests q
         WHERE
-        q.location_quest_id NOT IN (select location_quest_id from members_quests where member_email = #{memberEmail}))
+        q.location_quest_id NOT IN (select location_quest_id from members_quests where member_email = #{memberEmail})
         AND  q.is_deleted = 0 AND q.is_private = 0 AND difficulty=#{difficulty};
     </select>
 
