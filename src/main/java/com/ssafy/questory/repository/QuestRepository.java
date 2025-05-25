@@ -18,11 +18,11 @@ public interface QuestRepository {
 
     List<QuestsResponseDto> findValidQuestsByMemberEmail(@Param("memberEmail") String memberEmail, @Param("offset") int offset, @Param("limit") int limit);
 
-    int getTotalQuestsByMemberEmail(@Param("memberEmail") String memberEmail);
+    int getValidQuestsCntByMemberEmail(@Param("memberEmail") String memberEmail);
 
-    List<QuestsResponseDto> findQuestsByMemberEmailAndDifficulty(@Param("memberEmail") String memberEmail, @Param("difficulty") String difficulty, @Param("offset") int offset, @Param("limit") int limit);
+    List<QuestsResponseDto> findValidQuestsByMemberEmailAndDifficulty(@Param("memberEmail") String memberEmail, @Param("difficulty") String difficulty, @Param("offset") int offset, @Param("limit") int limit);
 
-    int getTotalQuestsByMemberEmailAndDifficulty(@Param("memberEmail") String memberEmail, @Param("difficulty") String difficulty);
+    int getValidQuestsCntByMemberEmailAndDifficulty(@Param("memberEmail") String memberEmail, @Param("difficulty") String difficulty);
 
     List<QuestsResponseDto> findQuestsCreatedByMe(@Param("memberEmail") String memberEmail, @Param("offset") int offset, @Param("limit") int limit);
 
@@ -61,4 +61,12 @@ public interface QuestRepository {
     int getActiveQuestsByMemberEmailAndDifficulty(@Param("memberEmail") String memberEmail, @Param("difficulty") String difficulty);
 
     void cancelQuest(@Param("questId") int questId);
+
+    void startQuest(@Param("questId") int questId, @Param("memberEmail") String memberEmail);
+
+    int getMemberQuestCntByQuestId(@Param("questId") int questId, @Param("memberEmail") String memberEmail);
+
+    int getInProgressQuestCntByQuestId(@Param("questId") int questId);
+
+    void completeQuest(@Param("questId") int questId, @Param("memberEmail") String memberEmail);
 }

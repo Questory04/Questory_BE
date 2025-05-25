@@ -2,14 +2,18 @@ package com.ssafy.questory.service;
 
 import com.ssafy.questory.common.exception.CustomException;
 import com.ssafy.questory.common.exception.ErrorCode;
+import com.ssafy.questory.dto.request.quest.QuestPositionRequestDto;
 import com.ssafy.questory.dto.request.quest.QuestRequestDto;
 import com.ssafy.questory.dto.response.quest.QuestResponseDto;
 import com.ssafy.questory.dto.response.quest.QuestsResponseDto;
 import com.ssafy.questory.repository.QuestRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -36,7 +40,7 @@ public class QuestService {
         if(difficulty== null || difficulty.equals("all")){
             questsResponseDtoList = questRepository.findValidQuestsByMemberEmail(memberEmail, offset, size);
         }else{
-            questsResponseDtoList = questRepository.findQuestsByMemberEmailAndDifficulty(memberEmail, difficulty, offset, size);
+            questsResponseDtoList = questRepository.findValidQuestsByMemberEmailAndDifficulty(memberEmail, difficulty, offset, size);
         }
 
         if(questsResponseDtoList.isEmpty()){
@@ -45,11 +49,11 @@ public class QuestService {
         return questsResponseDtoList;
     }
 
-    public int getTotalQuestsByMemberEmail(String memberEmail, String difficulty) {
+    public int getValidQuestsCntByMemberEmail(String memberEmail, String difficulty) {
         if(difficulty== null || difficulty.equals("all")){
-            return questRepository.getTotalQuestsByMemberEmail(memberEmail);
+            return questRepository.getValidQuestsCntByMemberEmail(memberEmail);
         }else{
-            return questRepository.getTotalQuestsByMemberEmailAndDifficulty(memberEmail, difficulty);
+            return questRepository.getValidQuestsCntByMemberEmailAndDifficulty(memberEmail, difficulty);
         }
     }
 
@@ -156,9 +160,67 @@ public class QuestService {
 
     public void cancelQuest(int questId, String memberEmail) {
         int questCntByQuestId = questRepository.getQuestCntByQuestId(questId);
+        if(questCntByQuestId != 1) {
+            throw new CustomException(ErrorCode.QUEST_NOT_FOUND);
+        }
+
+        int inProgressQuestCntByQuestId = questRepository.getInProgressQuestCntByQuestId(questId);
+        if(inProgressQuestCntByQuestId==0){
+            throw new CustomException(ErrorCode.QUEST_ALREADY_COMPLETED);
+        }
+
+        questRepository.cancelQuest(questId);
+    }
+
+    public void startQuest(int questId, String memberEmail) {
+        int questCntByQuestId = questRepository.getQuestCntByQuestId(questId);
         if(questCntByQuestId!=1){
             throw new CustomException(ErrorCode.QUEST_NOT_FOUND);
         }
-        questRepository.cancelQuest(questId);
+
+        int memberQuestCntByQuestId = questRepository.getMemberQuestCntByQuestId(questId, memberEmail);
+        if(memberQuestCntByQuestId!=0){
+            throw new CustomException(ErrorCode.QUEST_ALREADY_STARTED);
+        }
+
+        questRepository.startQuest(questId, memberEmail);
     }
+
+    public void completeQuest(int questId, QuestPositionRequestDto questPositionRequestDto, String memberEmail) {
+        int questCntByQuestId = questRepository.getQuestCntByQuestId(questId);
+        if(questCntByQuestId!=1){
+            throw new CustomException(ErrorCode.QUEST_NOT_FOUND);
+        }
+
+        double distance = calculateDistance(questPositionRequestDto.getAttractionLatitude(), questPositionRequestDto.getAttractionLongitude(), questPositionRequestDto.getUserLatitude(), questPositionRequestDto.getUserLongitude());
+        System.out.println("distance : "+distance);
+
+        if(distance < 1){   // 관광지와 사용자의 거리가 1km 미만이여야 퀘스트 성공
+            // 성공
+            questRepository.completeQuest(questId, memberEmail);
+        }
+        else{
+            throw new CustomException(ErrorCode.QUEST_LOCATION_TOO_FAR);
+        }
+    }
+
+    public double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
+        double theta = lon1 - lon2;
+        double dist = Math.sin(deg2rad(lat1)) * Math.sin(deg2rad(lat2)) + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.cos(deg2rad(theta));
+
+        dist = Math.acos(dist);
+        dist = rad2deg(dist);
+        dist = dist * 60 * 1.1515 * 1.609344;
+
+        return dist;
+    }
+
+    public double deg2rad(double deg) {
+        return (deg * Math.PI / 180.0);
+    }
+
+    public double rad2deg(double rad) {
+        return (rad * 180 / Math.PI);
+    }
+
 }

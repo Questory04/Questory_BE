@@ -20,4 +20,6 @@ public class QuestsResponseDto {
     private String attractionAddress;
     private String questDifficulty;
     private String questDescription;
+    private Double attractionLatitude;
+    private Double attractionLongitude;
 }

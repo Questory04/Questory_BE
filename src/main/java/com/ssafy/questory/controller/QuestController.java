@@ -3,6 +3,7 @@ package com.ssafy.questory.controller;
 import com.ssafy.questory.common.exception.CustomException;
 import com.ssafy.questory.common.exception.ErrorCode;
 import com.ssafy.questory.config.jwt.JwtService;
+import com.ssafy.questory.dto.request.quest.QuestPositionRequestDto;
 import com.ssafy.questory.dto.request.quest.QuestRequestDto;
 import com.ssafy.questory.dto.response.quest.QuestResponseDto;
 import com.ssafy.questory.dto.response.quest.QuestsResponseDto;
@@ -40,7 +41,7 @@ public class QuestController {
             String memberEmail = jwtService.extractUsername(token);
 
             questsResponseDtoList = questService.findValidQuestsByMemberEmail(memberEmail, difficulty, page, size);
-            totalItems = questService.getTotalQuestsByMemberEmail(memberEmail, difficulty);
+            totalItems = questService.getValidQuestsCntByMemberEmail(memberEmail, difficulty);
             totalPages = (int) Math.ceil((double) totalItems / size);
         }else{
             questsResponseDtoList = questService.findQuests(page, size);
@@ -195,5 +196,32 @@ public class QuestController {
 
         return ResponseEntity.status(HttpStatus.OK).body(Map.of(
                 "message", "성공적으로 퀘스트를 취소했습니다."));
+    }
+
+    @PatchMapping("/{questId}/start")
+    @Operation(summary = "퀘스트 진행 시작", description = "퀘스트 진행을 시작합니다.")
+    public ResponseEntity<Map<String, String>> startQuest(@PathVariable int questId,
+                                                           @RequestHeader("Authorization") String authorizationHeader){
+        String token = authorizationHeader.substring(7);
+        String memberEmail = jwtService.extractUsername(token);
+
+        questService.startQuest(questId, memberEmail);
+
+        return ResponseEntity.status(HttpStatus.OK).body(Map.of(
+                "message", "성공적으로 퀘스트를 시작했습니다."));
+    }
+
+    @PatchMapping("/{questId}/complete")
+    @Operation(summary = "퀘스트 완료", description = "퀘스트를 완료하였습니다.")
+    public ResponseEntity<Map<String, String>> completeQuest(@PathVariable int questId,
+                                                          @RequestBody QuestPositionRequestDto questPositionRequestDto,
+                                                          @RequestHeader("Authorization") String authorizationHeader){
+        String token = authorizationHeader.substring(7);
+        String memberEmail = jwtService.extractUsername(token);
+
+        questService.completeQuest(questId, questPositionRequestDto, memberEmail);
+
+        return ResponseEntity.status(HttpStatus.OK).body(Map.of(
+                "message", "성공적으로 퀘스트를 완료했습니다."));
     }
 }
