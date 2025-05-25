@@ -5,6 +5,7 @@ import com.ssafy.questory.common.exception.ErrorCode;
 import com.ssafy.questory.domain.Member;
 import com.ssafy.questory.domain.Post;
 import com.ssafy.questory.dto.request.posts.PostsCreateRequestDto;
+import com.ssafy.questory.dto.request.posts.PostsDeleteRequestDto;
 import com.ssafy.questory.dto.request.posts.PostsUpdateRequestDto;
 import com.ssafy.questory.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
@@ -35,6 +36,12 @@ public class CommunityService {
                 .build();
         validateMember(member, post.getPostId());
         postRepository.update(post);
+    }
+
+    public void delete(Member member, PostsDeleteRequestDto postsDeleteRequestDto) {
+        Post post = postRepository.findById(postsDeleteRequestDto.getPostId());
+        validateMember(member, post.getPostId());
+        postRepository.delete(post);
     }
 
     private void validateMember(Member member, Long id) {

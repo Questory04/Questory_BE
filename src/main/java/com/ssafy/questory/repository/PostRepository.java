@@ -7,5 +7,6 @@ import org.apache.ibatis.annotations.Mapper;
 public interface PostRepository {
     int create(Post post);
     void update(Post post);
+    void delete(Post post);
     Post findById(Long postId);
 }

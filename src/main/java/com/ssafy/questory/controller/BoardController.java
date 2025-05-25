@@ -2,12 +2,14 @@ package com.ssafy.questory.controller;
 
 import com.ssafy.questory.domain.Member;
 import com.ssafy.questory.dto.request.posts.PostsCreateRequestDto;
+import com.ssafy.questory.dto.request.posts.PostsDeleteRequestDto;
 import com.ssafy.questory.dto.request.posts.PostsUpdateRequestDto;
 import com.ssafy.questory.service.CommunityService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -42,5 +44,14 @@ public class BoardController {
             @RequestBody PostsUpdateRequestDto postsUpdateRequestDto) {
         communityService.update(member, postsUpdateRequestDto);
         return ResponseEntity.ok(Map.of("message", "게시글이 수정되었습니다."));
+    }
+
+    @DeleteMapping("")
+    @Operation(summary = "게시글 삭제", description = "게시글을 삭제합니다.")
+    public ResponseEntity<Map<String, String>> delete(
+            @AuthenticationPrincipal(expression = "member") Member member,
+            @RequestBody PostsDeleteRequestDto postsDeleteRequestDto) {
+        communityService.delete(member, postsDeleteRequestDto);
+        return ResponseEntity.ok(Map.of("message", "게시글이 삭제되었습니다."));
     }
 }

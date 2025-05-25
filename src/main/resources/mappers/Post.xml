@@ -31,4 +31,8 @@
     <select id="findById" resultType="com.ssafy.questory.domain.Post" parameterType="long">
         SELECT * FROM Posts WHERE post_id = #{postId}
     </select>
+    <delete id="delete" parameterType="com.ssafy.questory.domain.Post">
+        DELETE FROM Posts
+        WHERE post_id = #{postId}
+    </delete>
 </mapper>
