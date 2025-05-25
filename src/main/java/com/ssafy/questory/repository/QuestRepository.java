@@ -69,4 +69,6 @@ public interface QuestRepository {
     int getInProgressQuestCntByQuestId(@Param("questId") int questId);
 
     void completeQuest(@Param("questId") int questId, @Param("memberEmail") String memberEmail);
+
+    String getDifficultyByQuestId(@Param("questId") int questId);
 }
