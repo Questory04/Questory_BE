@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 public class Post {
     private Long postId;
     private String userEmail;
+    private String nickname;
     private String title;
     private String content;
     private LocalDateTime createdAt;
@@ -19,11 +20,12 @@ public class Post {
     protected Post() {}
 
     @Builder
-    private Post(Long postId, String email, String title, String content,
+    private Post(Long postId, String email, String title, String content, String nickname,
                  LocalDateTime createdAt, LocalDateTime updatedAt,
                  PostCategory category) {
         this.postId = postId;
         this.userEmail = email;
+        this.nickname = nickname;
         this.title = title;
         this.content = content;
         this.createdAt = createdAt;
