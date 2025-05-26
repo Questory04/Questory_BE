@@ -47,6 +47,7 @@
         FROM Posts p
         JOIN Members m ON p.user_email = m.email
         WHERE 1=1
+        AND p.category != 'NOTICE'
         <if test="keyword != null and keyword != ''">
             AND p.title LIKE CONCAT('%', #{keyword}, '%')
         </if>

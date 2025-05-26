@@ -4,6 +4,7 @@ import com.ssafy.questory.common.exception.CustomException;
 import com.ssafy.questory.common.exception.ErrorCode;
 import com.ssafy.questory.domain.Member;
 import com.ssafy.questory.domain.Post;
+import com.ssafy.questory.domain.PostCategory;
 import com.ssafy.questory.dto.request.posts.PostsCreateRequestDto;
 import com.ssafy.questory.dto.request.posts.PostsDeleteRequestDto;
 import com.ssafy.questory.dto.request.posts.PostsUpdateRequestDto;
@@ -41,7 +42,7 @@ public class CommunityService {
                 .email(member.getEmail())
                 .title(postsCreateRequestDto.getTitle())
                 .content(postsCreateRequestDto.getContent())
-                .category(postsCreateRequestDto.getCategory())
+                .category(PostCategory.NORMAL)
                 .build();
         postRepository.create(post);
     }
