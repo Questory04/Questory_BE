@@ -1,8 +1,7 @@
 package com.ssafy.questory.repository;
 
 import com.ssafy.questory.domain.Member;
-import com.ssafy.questory.dto.request.member.MemberModifyRequestDto;
-import com.ssafy.questory.dto.response.member.MemberSearchResponseDto;
+import com.ssafy.questory.domain.Ranking;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -22,4 +21,5 @@ public interface MemberRepository {
 
     int getMemberExp(@Param("memberEmail") String memberEmail);
     void addMemberExp(@Param("memberEmail") String memberEmail, @Param("experiencePoints") int experiencePoints);
+    List<Ranking> getRankingList();
 }
