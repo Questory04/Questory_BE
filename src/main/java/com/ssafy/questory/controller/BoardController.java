@@ -1,6 +1,7 @@
 package com.ssafy.questory.controller;
 
 import com.ssafy.questory.domain.Member;
+import com.ssafy.questory.domain.PostCategory;
 import com.ssafy.questory.dto.request.posts.PostsCreateRequestDto;
 import com.ssafy.questory.dto.request.posts.PostsDeleteRequestDto;
 import com.ssafy.questory.dto.request.posts.PostsUpdateRequestDto;
@@ -86,5 +87,12 @@ public class BoardController {
             @RequestParam(required = false) String keyword) {
         List<PostsResponseDto> result = communityService.findMyPosts(member, page, size, keyword);
         return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/notice")
+    @Operation(summary = "공지글 조회", description = "공지글을 조회합니다.")
+    public ResponseEntity<List<PostsResponseDto>> getByCategory() {
+        List<PostsResponseDto> posts = communityService.getNotice(PostCategory.NOTICE.name());
+        return ResponseEntity.ok(posts);
     }
 }

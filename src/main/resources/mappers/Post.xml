@@ -82,4 +82,11 @@
         ORDER BY created_at DESC
         LIMIT #{size} OFFSET #{offset}
     </select>
+    <select id="findByCategory" parameterType="string" resultMap="PostWithNicknameResultMap">
+        SELECT p.*, m.nickname
+        FROM Posts p
+        JOIN Members m ON p.user_email = m.email
+        WHERE p.category = #{category}
+        ORDER BY p.created_at DESC
+    </select>
 </mapper>

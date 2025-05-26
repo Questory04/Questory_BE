@@ -15,6 +15,7 @@ public interface PostRepository {
     void update(Post post);
     void deleteById(@Param("postId") Long postId);
     Post findById(Long postId);
+    List<Post> findByCategory(@Param("category") String category);
     List<Post> findMyPosts(@Param("userEmail") String userEmail,
                            @Param("offset") int offset,
                            @Param("size") int size,

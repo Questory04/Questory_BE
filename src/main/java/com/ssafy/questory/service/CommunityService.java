@@ -72,6 +72,13 @@ public class CommunityService {
                 .toList();
     }
 
+    public List<PostsResponseDto> getNotice(String category) {
+        List<Post> posts = postRepository.findByCategory(category);
+        return posts.stream()
+                .map(PostsResponseDto::from)
+                .toList();
+    }
+
     private void validateMember(Member member, Long id) {
         Post find = postRepository.findById(id);
         if (!member.getEmail().equals(find.getUserEmail())) {
