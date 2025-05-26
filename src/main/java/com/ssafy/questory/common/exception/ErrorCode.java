@@ -49,6 +49,9 @@ public enum ErrorCode {
     CANNOT_COPY_OWN_PLAN(HttpStatus.BAD_REQUEST, "자신의 계획은 복사할 수 없습니다."),
     ALREADY_COPIED_PLAN(HttpStatus.BAD_REQUEST, "이미 복사된 계획입니다."),
 
+    // 게시판 관련
+    POST_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 글이 존재하지 않습니다."),
+
     // 입력 검증
     VALIDATION_ERROR(HttpStatus.BAD_REQUEST, "입력값이 유효하지 않습니다."),
 
