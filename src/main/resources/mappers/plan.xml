@@ -84,6 +84,52 @@
             ]]>
     </select>
 
+    <select id="selectSharedPlansByMemberEmail" resultMap="plansMap" resultType="com.ssafy.questory.dto.response.plan.PlansListResponseDto">
+        <![CDATA[
+            SELECT
+            p.plan_id AS plan_id,
+            p.title AS plan_title,
+            p.description AS plan_description,
+            p.start_date AS startDate,
+            p.end_date AS endDate,
+            CASE
+            WHEN p.start_date IS NULL OR p.end_date IS NULL THEN 1
+            ELSE DATEDIFF(p.end_date, p.start_date) + 1
+            END AS duration,
+            CASE
+                WHEN NOW() < p.start_date THEN 'PLANNING'
+                WHEN NOW() BETWEEN p.start_date AND p.end_date THEN 'CONFIRMED'
+                WHEN NOW() > p.end_date THEN 'COMPLETED'
+                ELSE 'UNKNOWN'
+                END AS status,
+            COALESCE(route_stats.routesCnt, 0) AS routes_cnt,
+            CASE
+            WHEN route_stats.routesCnt = 0 THEN 0
+            WHEN p.start_date IS NULL OR p.end_date IS NULL THEN 0
+            WHEN route_stats.total_days = 0 THEN 0
+            ELSE LEAST(100, ROUND((route_stats.filled_days / route_stats.total_days) * 100))
+            END AS completion_rate,
+            p.created_at AS createdAt
+            FROM Plans p
+            INNER JOIN Saves s ON p.plan_id = s.plan_id
+            LEFT JOIN (
+            SELECT
+            pr.plan_id,
+            COUNT(*) AS routesCnt,
+            COUNT(DISTINCT pr.day) AS filled_days,
+            CASE
+            WHEN p2.start_date IS NULL OR p2.end_date IS NULL THEN 1
+            ELSE DATEDIFF(p2.end_date, p2.start_date) + 1
+            END AS total_days
+            FROM Plans_Routes pr
+            INNER JOIN Plans p2 ON pr.plan_id = p2.plan_id
+            GROUP BY pr.plan_id, p2.start_date, p2.end_date
+            ) route_stats ON p.plan_id = route_stats.plan_id
+            WHERE s.member_email = #{memberEmail}
+            ORDER BY s.saved_at DESC;
+        ]]>
+    </select>
+
     <resultMap type="PlansListResponseDto" id="plansMap">
         <result column="plan_id" property="planId" />
         <result column="plan_title" property="planTitle" />
@@ -98,8 +144,8 @@
     </resultMap>
 
     <insert id="create" parameterType="com.ssafy.questory.domain.Plan" useGeneratedKeys="true" keyProperty="planId">
-        INSERT INTO Plans (member_email, title, description, start_date, end_date, created_at, is_start)
-        VALUES (#{memberEmail}, #{title}, #{description}, #{startDate}, #{endDate}, NOW(), 0)
+        INSERT INTO Plans (member_email, title, description, start_date, end_date, created_at, is_start, is_shared)
+        VALUES (#{memberEmail}, #{title}, #{description}, #{startDate}, #{endDate}, NOW(), 0, 1)
     </insert>
     <update id="update" parameterType="com.ssafy.questory.domain.Plan">
         UPDATE Plans
