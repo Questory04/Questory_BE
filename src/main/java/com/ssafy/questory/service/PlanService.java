@@ -153,4 +153,8 @@ public class PlanService {
     public List<PlansListResponseDto> findPlansListCreatedByMe(String memberEmail) {
         return planRepository.findPlansListCreatedByMe(memberEmail);
     }
+
+    public List<PlansListResponseDto> findPlansListCreatedByNotMe(String memberEmail) {
+        return planRepository.findPlansListCreatedByNotMe(memberEmail);
+    }
 }

@@ -72,6 +72,23 @@ public class PlanController {
         return ResponseEntity.status(HttpStatus.OK).body(plansListResponseDtoList);
     }
 
+    @GetMapping("/all")
+    @Operation(summary = "모든 여행 계획 목록 조회", description = "모든 여행 계획 목록을 조회합니다.")
+    public ResponseEntity<List<PlansListResponseDto>> findPlansListCreatedByNotMe(@RequestHeader(value = "Authorization", required = false) String authorizationHeader) {
+        if(authorizationHeader == null){
+            throw new CustomException(ErrorCode.TOKEN_NOT_FOUND);
+        } else if(!authorizationHeader.startsWith("Bearer ")){
+            throw new CustomException(ErrorCode.INVALID_TOKEN_FORMAT);
+        }
+
+        String token = authorizationHeader.substring(7);
+        String memberEmail = jwtService.extractUsername(token);
+
+        List<PlansListResponseDto> plansListResponseDtoList = planService.findPlansListCreatedByNotMe(memberEmail);
+
+        return ResponseEntity.status(HttpStatus.OK).body(plansListResponseDtoList);
+    }
+
 
     @PostMapping()
     @Operation(summary = "계획 생성", description = "계획을 생성합니다.")
