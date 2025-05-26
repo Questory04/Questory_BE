@@ -80,6 +80,23 @@ public class MemberService {
                 .toList();
     }
 
+    public MemberRankingResponseDto getMyRanking(String email) {
+        List<Ranking> all = memberRepository.getAllRankedMembers();
+
+        for (int i = 0; i < all.size(); i++) {
+            Ranking r = all.get(i);
+            if (r.getEmail().equals(email)) {
+                return MemberRankingResponseDto.builder()
+                        .rank(i + 1)
+                        .nickname(r.getNickname())
+                        .exp(r.getExp())
+                        .build();
+            }
+        }
+
+        throw new CustomException(ErrorCode.MEMBER_NOT_FOUND); // 혹은 null 반환
+    }
+
     private void authenticate(String email, String password) {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password));

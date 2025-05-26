@@ -97,4 +97,9 @@
         LIMIT 100
         ) AS ranked
     </select>
+    <select id="getAllRankedMembers" resultType="com.ssafy.questory.domain.Ranking">
+        SELECT email, nickname, exp
+        FROM Members
+        ORDER BY exp DESC
+    </select>
 </mapper>

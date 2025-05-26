@@ -22,4 +22,5 @@ public interface MemberRepository {
     int getMemberExp(@Param("memberEmail") String memberEmail);
     void addMemberExp(@Param("memberEmail") String memberEmail, @Param("experiencePoints") int experiencePoints);
     List<Ranking> getRankingList();
+    List<Ranking> getAllRankedMembers();
 }
