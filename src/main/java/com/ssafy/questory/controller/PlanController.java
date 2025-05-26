@@ -33,7 +33,7 @@ public class PlanController {
     }
 
     @PostMapping()
-    @Operation(summary = "계획 생성", description = "계획을 생성하고 경로를 추가합니다.")
+    @Operation(summary = "계획 생성", description = "계획을 생성합니다.")
     public ResponseEntity<Map<String, Object>> create(
             @AuthenticationPrincipal(expression = "member") Member member,
             @RequestBody PlanCreateRequestDto planCreateRequestDto) {
@@ -43,10 +43,6 @@ public class PlanController {
         response.put("plan", planCreateResponseDto);
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
-
-//        return ResponseEntity.ok().body(Map.of(
-//                "message", "여행 계획이 생성되었습니다."
-//        ));
     }
 
     @PatchMapping()

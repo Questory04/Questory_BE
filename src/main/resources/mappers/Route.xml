@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ssafy.questory.repository.RouteRepository">
+    <insert id="createRoute" useGeneratedKeys="true" keyProperty="attractionId">
+        INSERT INTO routes (plan_id, name, address, latitude, longitude, type, category_name, phone)
+        VALUES (#{planId}, #{name}, #{address}, #{latitude}, #{longitude}, #{type}, #{categoryName}, #{phone});
+    </insert>
+
+    <insert id="createRoutePlan">
+        INSERT INTO plans_routes (plan_id, attraction_id, day, sequence)
+        VALUES (#{planId}, #{attractionId}, #{day}, #{sequence});
+    </insert>
+</mapper>
