@@ -98,8 +98,8 @@
     </resultMap>
 
     <insert id="create" parameterType="com.ssafy.questory.domain.Plan" useGeneratedKeys="true" keyProperty="planId">
-        INSERT INTO Plans (member_email, title, description, start_date, end_date, created_at, is_start)
-        VALUES (#{memberEmail}, #{title}, #{description}, #{startDate}, #{endDate}, NOW(), 0)
+        INSERT INTO Plans (member_email, title, description, start_date, end_date, created_at, is_start, is_shared)
+        VALUES (#{memberEmail}, #{title}, #{description}, #{startDate}, #{endDate}, NOW(), 0, 1)
     </insert>
     <update id="update" parameterType="com.ssafy.questory.domain.Plan">
         UPDATE Plans
