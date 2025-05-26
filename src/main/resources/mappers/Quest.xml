@@ -387,4 +387,19 @@
         <result column="is_private" property="isPrivate" />
     </resultMap>
 
+    <select id="findRecommendedQuests" resultType="com.ssafy.questory.dto.response.quest.QuestRecommendationResponseDto">
+        SELECT
+        q.location_quest_id AS questId,
+        q.title,
+        q.quest_description AS description,
+        q.difficulty,
+        COUNT(mq.member_email) AS participantCount,
+        q.created_at
+        FROM Quests q
+        LEFT JOIN Members_Quests mq ON q.location_quest_id = mq.location_quest_id
+        WHERE q.is_deleted = 0 AND q.is_private = 0
+        GROUP BY q.location_quest_id
+        ORDER BY COUNT(mq.member_email) * 0.7 + (DATEDIFF(NOW(), q.created_at) * -0.3) DESC
+        LIMIT #{limit}
+    </select>
 </mapper>
