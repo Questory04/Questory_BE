@@ -10,6 +10,7 @@ import com.ssafy.questory.dto.request.plan.PlanDeleteRequestDto;
 import com.ssafy.questory.dto.request.plan.PlanUpdateRequestDto;
 import com.ssafy.questory.dto.response.plan.PlanCreateResponseDto;
 import com.ssafy.questory.dto.response.plan.PlanInfoResponseDto;
+import com.ssafy.questory.dto.response.plan.PlansListResponseDto;
 import com.ssafy.questory.repository.PlanRoutesRepository;
 import com.ssafy.questory.repository.PlanRepository;
 import com.ssafy.questory.repository.SavedRepository;
@@ -147,5 +148,9 @@ public class PlanService {
 
     public Optional<Plan> findPlanByPlanId(Long planId) {
         return planRepository.findById(planId);
+    }
+
+    public List<PlansListResponseDto> findPlansListCreatedByMe(String memberEmail) {
+        return planRepository.findPlansListCreatedByMe(memberEmail);
     }
 }

@@ -17,6 +17,53 @@
         FROM Plans
         WHERE member_email = #{memberEmail}
     </select>
+
+    <select id="findPlansListCreatedByMe" resultMap="plansMap" resultType="com.ssafy.questory.dto.response.plan.PlansListResponseDto">
+        <![CDATA[
+            SELECT
+            p.plan_id AS plan_id,
+            p.title AS plan_title,
+            p.description AS plan_description,
+            p.start_date AS startDate,
+            p.end_date AS endDate,
+            DATEDIFF(p.end_date, p.start_date) + 1 AS duration,
+            CASE
+            WHEN NOW() < p.start_date THEN 'PLANNING'
+            WHEN NOW() BETWEEN p.start_date AND p.end_date THEN 'CONFIRMED'
+            WHEN NOW() > p.end_date THEN 'COMPLETED'
+            ELSE 'UNKNOWN'
+            END AS status,
+            COUNT(DISTINCT pr.attraction_id) AS routes_cnt,
+            CASE
+            WHEN NOW() < p.start_date THEN 0
+            WHEN NOW() > p.end_date THEN 100
+            ELSE ROUND(
+            (DATEDIFF(NOW(), p.start_date) + 1) / (DATEDIFF(p.end_date, p.start_date) + 1) * 100,
+            0
+            )
+            END AS completion_rate,
+            p.created_at AS createdAt
+            FROM Plans p
+            LEFT JOIN Plans_Routes pr ON p.plan_id = pr.plan_id
+            WHERE p.member_email = #{memberEmail}
+            GROUP BY
+            p.plan_id, p.title, p.description, p.start_date, p.end_date, p.created_at
+        ]]>
+    </select>
+
+    <resultMap type="PlansListResponseDto" id="plansMap">
+        <result column="plan_id" property="planId" />
+        <result column="plan_title" property="planTitle" />
+        <result column="plan_description" property="planDescription" />
+        <result column="startDate" property="startDate" />
+        <result column="endDate" property="endDate" />
+        <result column="duration" property="duration" />
+        <result column="status" property="status" />
+        <result column="routes_cnt" property="routesCnt" />
+        <result column="completion_rate" property="completionRate" />
+        <result column="createdAt" property="createdAt" />
+    </resultMap>
+
     <insert id="create" parameterType="com.ssafy.questory.domain.Plan" useGeneratedKeys="true" keyProperty="planId">
         INSERT INTO Plans (member_email, title, description, start_date, end_date, created_at, is_start)
         VALUES (#{memberEmail}, #{title}, #{description}, #{startDate}, #{endDate}, NOW(), 0)

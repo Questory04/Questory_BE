@@ -10,6 +10,7 @@ import com.ssafy.questory.dto.request.plan.PlanDeleteRequestDto;
 import com.ssafy.questory.dto.request.plan.PlanUpdateRequestDto;
 import com.ssafy.questory.dto.response.plan.PlanCreateResponseDto;
 import com.ssafy.questory.dto.response.plan.PlanInfoResponseDto;
+import com.ssafy.questory.dto.response.plan.PlansListResponseDto;
 import com.ssafy.questory.service.PlanService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -52,6 +53,25 @@ public class PlanController {
 
         return planService.findPlanByPlanId(planId);
     }
+
+
+    @GetMapping("/me/created")
+    @Operation(summary = "생성한 여행 계획 목록 조회", description = "생성한 여행 계획 목록을 조회합니다.")
+    public ResponseEntity<List<PlansListResponseDto>> findPlansListCreatedByMe(@RequestHeader(value = "Authorization", required = false) String authorizationHeader) {
+        if(authorizationHeader == null){
+            throw new CustomException(ErrorCode.TOKEN_NOT_FOUND);
+        } else if(!authorizationHeader.startsWith("Bearer ")){
+            throw new CustomException(ErrorCode.INVALID_TOKEN_FORMAT);
+        }
+
+        String token = authorizationHeader.substring(7);
+        String memberEmail = jwtService.extractUsername(token);
+
+        List<PlansListResponseDto> plansListResponseDtoList = planService.findPlansListCreatedByMe(memberEmail);
+
+        return ResponseEntity.status(HttpStatus.OK).body(plansListResponseDtoList);
+    }
+
 
     @PostMapping()
     @Operation(summary = "계획 생성", description = "계획을 생성합니다.")
