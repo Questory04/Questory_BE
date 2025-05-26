@@ -8,14 +8,18 @@ import com.ssafy.questory.domain.Route;
 import com.ssafy.questory.dto.request.plan.PlanCreateRequestDto;
 import com.ssafy.questory.dto.request.plan.PlanDeleteRequestDto;
 import com.ssafy.questory.dto.request.plan.PlanUpdateRequestDto;
+import com.ssafy.questory.dto.response.plan.PlanCreateResponseDto;
 import com.ssafy.questory.dto.response.plan.PlanInfoResponseDto;
+import com.ssafy.questory.dto.response.plan.PlansListResponseDto;
 import com.ssafy.questory.repository.PlanRoutesRepository;
 import com.ssafy.questory.repository.PlanRepository;
 import com.ssafy.questory.repository.SavedRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -47,7 +51,7 @@ public class PlanService {
     }
 
 
-    public void create(Member member, PlanCreateRequestDto dto) {
+    public PlanCreateResponseDto create(Member member, PlanCreateRequestDto dto) {
         Plan plan = Plan.builder()
                 .memberEmail(member.getEmail())
                 .title(dto.getTitle())
@@ -57,16 +61,19 @@ public class PlanService {
                 .build();
         planRepository.create(plan);
 
-        List<Route> routes = dto.getRoutes().stream()
-                .map(routeDto -> Route.builder()
-                        .planId(plan.getPlanId())
-                        .attractionId(routeDto.getAttractionId())
-                        .day(routeDto.getDay())
-                        .sequence(routeDto.getSequence())
-                        .build())
-                .toList();
+//        List<Route> routes = dto.getRoutes().stream()
+//                .map(routeDto -> Route.builder()
+//                        .planId(plan.getPlanId())
+//                        .attractionId(routeDto.getAttractionId())
+//                        .day(routeDto.getDay())
+//                        .sequence(routeDto.getSequence())
+//                        .build())
+//                .toList();
+//
+//        planRoutesRepository.insert(routes);
 
-        planRoutesRepository.insert(routes);
+        long daysBetween = ChronoUnit.DAYS.between(plan.getStartDate().toLocalDate(), plan.getEndDate().toLocalDate())+1;
+        return PlanCreateResponseDto.builder().planId(plan.getPlanId()).days(daysBetween).build();
     }
 
     public void update(Member member, PlanUpdateRequestDto planUpdateRequestDto) {
@@ -137,5 +144,13 @@ public class PlanService {
         if (!email1.equals(email2)) {
             throw new CustomException(ErrorCode.TOKEN_NOT_FOUND);
         }
+    }
+
+    public Optional<Plan> findPlanByPlanId(Long planId) {
+        return planRepository.findById(planId);
+    }
+
+    public List<PlansListResponseDto> findPlansListCreatedByMe(String memberEmail) {
+        return planRepository.findPlansListCreatedByMe(memberEmail);
     }
 }

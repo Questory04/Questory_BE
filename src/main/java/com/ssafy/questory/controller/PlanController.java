@@ -1,25 +1,35 @@
 package com.ssafy.questory.controller;
 
+import com.ssafy.questory.common.exception.CustomException;
+import com.ssafy.questory.common.exception.ErrorCode;
+import com.ssafy.questory.config.jwt.JwtService;
 import com.ssafy.questory.domain.Member;
+import com.ssafy.questory.domain.Plan;
 import com.ssafy.questory.dto.request.plan.PlanCreateRequestDto;
 import com.ssafy.questory.dto.request.plan.PlanDeleteRequestDto;
 import com.ssafy.questory.dto.request.plan.PlanUpdateRequestDto;
+import com.ssafy.questory.dto.response.plan.PlanCreateResponseDto;
 import com.ssafy.questory.dto.response.plan.PlanInfoResponseDto;
+import com.ssafy.questory.dto.response.plan.PlansListResponseDto;
 import com.ssafy.questory.service.PlanService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/plans")
 @RequiredArgsConstructor
 public class PlanController {
     private final PlanService planService;
+    private final JwtService jwtService;
 
     @GetMapping()
     @Operation(summary = "계획 조회", description = "내 계획을 조회합니다.")
@@ -28,15 +38,52 @@ public class PlanController {
         return ResponseEntity.ok().body(planService.getPlanInfo(member));
     }
 
+    @GetMapping("/{planId}")
+    @Operation(summary = "계획 상세 정보 조회", description = "계획 상세 정보를 조회합니다.")
+    public Optional<Plan> findPlanByPlanId(@PathVariable Long planId,
+                                           @RequestHeader(value = "Authorization", required = false) String authorizationHeader) {
+        if(authorizationHeader == null){
+            throw new CustomException(ErrorCode.TOKEN_NOT_FOUND);
+        } else if(!authorizationHeader.startsWith("Bearer ")){
+            throw new CustomException(ErrorCode.INVALID_TOKEN_FORMAT);
+        }
+
+//        String token = authorizationHeader.substring(7);
+//        String memberEmail = jwtService.extractUsername(token);
+
+        return planService.findPlanByPlanId(planId);
+    }
+
+
+    @GetMapping("/me/created")
+    @Operation(summary = "생성한 여행 계획 목록 조회", description = "생성한 여행 계획 목록을 조회합니다.")
+    public ResponseEntity<List<PlansListResponseDto>> findPlansListCreatedByMe(@RequestHeader(value = "Authorization", required = false) String authorizationHeader) {
+        if(authorizationHeader == null){
+            throw new CustomException(ErrorCode.TOKEN_NOT_FOUND);
+        } else if(!authorizationHeader.startsWith("Bearer ")){
+            throw new CustomException(ErrorCode.INVALID_TOKEN_FORMAT);
+        }
+
+        String token = authorizationHeader.substring(7);
+        String memberEmail = jwtService.extractUsername(token);
+
+        List<PlansListResponseDto> plansListResponseDtoList = planService.findPlansListCreatedByMe(memberEmail);
+
+        return ResponseEntity.status(HttpStatus.OK).body(plansListResponseDtoList);
+    }
+
+
     @PostMapping()
-    @Operation(summary = "계획 생성", description = "계획을 생성하고 경로를 추가합니다.")
-    public ResponseEntity<Map<String, String>> create(
+    @Operation(summary = "계획 생성", description = "계획을 생성합니다.")
+    public ResponseEntity<Map<String, Object>> create(
             @AuthenticationPrincipal(expression = "member") Member member,
             @RequestBody PlanCreateRequestDto planCreateRequestDto) {
-        planService.create(member, planCreateRequestDto);
-        return ResponseEntity.ok().body(Map.of(
-                "message", "여행 계획이 생성되었습니다."
-        ));
+        PlanCreateResponseDto planCreateResponseDto = planService.create(member, planCreateRequestDto);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("plan", planCreateResponseDto);
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @PatchMapping()
