@@ -82,4 +82,24 @@
         SET exp = #{experiencePoints}
         WHERE email = #{memberEmail};
     </update>
+    <select id="getRankingList" resultType="com.ssafy.questory.domain.Ranking">
+        SELECT
+        ranked.nickname,
+        ranked.exp,
+        ranked.`rank`
+        FROM (
+        SELECT
+        nickname,
+        exp,
+        @r := @r + 1 AS `rank`
+        FROM Members, (SELECT @r := 0) AS init
+        ORDER BY exp DESC
+        LIMIT 100
+        ) AS ranked
+    </select>
+    <select id="getAllRankedMembers" resultType="com.ssafy.questory.domain.Ranking">
+        SELECT email, nickname, exp
+        FROM Members
+        ORDER BY exp DESC
+    </select>
 </mapper>

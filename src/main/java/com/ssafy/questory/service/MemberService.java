@@ -5,12 +5,14 @@ import com.ssafy.questory.common.exception.ErrorCode;
 import com.ssafy.questory.config.jwt.CustomUserDetailsService;
 import com.ssafy.questory.config.jwt.JwtService;
 import com.ssafy.questory.domain.Member;
+import com.ssafy.questory.domain.Ranking;
 import com.ssafy.questory.dto.request.member.MemberLoginRequestDto;
 import com.ssafy.questory.dto.request.member.MemberRegistRequestDto;
 import com.ssafy.questory.dto.request.member.MemberSearchRequestDto;
 import com.ssafy.questory.dto.response.member.MemberRegistResponseDto;
 import com.ssafy.questory.dto.response.member.MemberSearchResponseDto;
 import com.ssafy.questory.dto.response.member.MemberTokenResponseDto;
+import com.ssafy.questory.dto.response.ranking.MemberRankingResponseDto;
 import com.ssafy.questory.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -69,6 +71,30 @@ public class MemberService {
 
         String token = jwtService.generateToken(userDetails);
         return MemberTokenResponseDto.from(email, token);
+    }
+
+    public List<MemberRankingResponseDto> getTopRankingList() {
+        return memberRepository.getRankingList()
+                .stream()
+                .map(MemberRankingResponseDto::from)
+                .toList();
+    }
+
+    public MemberRankingResponseDto getMyRanking(String email) {
+        List<Ranking> all = memberRepository.getAllRankedMembers();
+
+        for (int i = 0; i < all.size(); i++) {
+            Ranking r = all.get(i);
+            if (r.getEmail().equals(email)) {
+                return MemberRankingResponseDto.builder()
+                        .rank(i + 1)
+                        .nickname(r.getNickname())
+                        .exp(r.getExp())
+                        .build();
+            }
+        }
+
+        throw new CustomException(ErrorCode.MEMBER_NOT_FOUND); // 혹은 null 반환
     }
 
     private void authenticate(String email, String password) {
