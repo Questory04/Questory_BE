@@ -1,17 +1,21 @@
 package com.ssafy.questory.controller;
 
 import com.ssafy.questory.domain.Member;
+import com.ssafy.questory.domain.Plan;
 import com.ssafy.questory.dto.request.plan.PlanCreateRequestDto;
 import com.ssafy.questory.dto.request.plan.PlanDeleteRequestDto;
 import com.ssafy.questory.dto.request.plan.PlanUpdateRequestDto;
+import com.ssafy.questory.dto.response.plan.PlanCreateResponseDto;
 import com.ssafy.questory.dto.response.plan.PlanInfoResponseDto;
 import com.ssafy.questory.service.PlanService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -30,13 +34,19 @@ public class PlanController {
 
     @PostMapping()
     @Operation(summary = "계획 생성", description = "계획을 생성하고 경로를 추가합니다.")
-    public ResponseEntity<Map<String, String>> create(
+    public ResponseEntity<Map<String, Object>> create(
             @AuthenticationPrincipal(expression = "member") Member member,
             @RequestBody PlanCreateRequestDto planCreateRequestDto) {
-        planService.create(member, planCreateRequestDto);
-        return ResponseEntity.ok().body(Map.of(
-                "message", "여행 계획이 생성되었습니다."
-        ));
+        PlanCreateResponseDto planCreateResponseDto = planService.create(member, planCreateRequestDto);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("plan", planCreateResponseDto);
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+
+//        return ResponseEntity.ok().body(Map.of(
+//                "message", "여행 계획이 생성되었습니다."
+//        ));
     }
 
     @PatchMapping()
