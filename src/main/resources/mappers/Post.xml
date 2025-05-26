@@ -62,7 +62,17 @@
         <result property="views" column="views"/>
         <result property="nickname" column="nickname"/>
     </resultMap>
-    <select id="findMyPosts" resultType="com.ssafy.questory.domain.Post">
+    <resultMap id="PostResultMap" type="com.ssafy.questory.domain.Post">
+        <id property="postId" column="post_id"/>
+        <result property="title" column="title"/>
+        <result property="content" column="content"/>
+        <result property="userEmail" column="user_email"/>
+        <result property="nickname" column="nickname"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+    </resultMap>
+
+    <select id="findMyPosts" resultMap="PostResultMap">
         SELECT *
         FROM Posts
         WHERE user_email = #{userEmail}
