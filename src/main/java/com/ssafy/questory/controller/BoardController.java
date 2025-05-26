@@ -65,7 +65,7 @@ public class BoardController {
             @AuthenticationPrincipal(expression = "member") Member member,
             @RequestBody PostsUpdateRequestDto postsUpdateRequestDto) {
         communityService.update(member, postsUpdateRequestDto);
-        return ResponseEntity.ok(Map.of("message", "게시글이 수정되었습니다."));
+        return ResponseEntity.ok().body(Map.of("message", "게시글이 수정되었습니다."));
     }
 
     @DeleteMapping("")
@@ -74,7 +74,7 @@ public class BoardController {
             @AuthenticationPrincipal(expression = "member") Member member,
             @RequestBody PostsDeleteRequestDto postsDeleteRequestDto) {
         communityService.delete(member, postsDeleteRequestDto);
-        return ResponseEntity.ok(Map.of("message", "게시글이 삭제되었습니다."));
+        return ResponseEntity.ok().body(Map.of("message", "게시글이 삭제되었습니다."));
     }
 
     @GetMapping("/me")

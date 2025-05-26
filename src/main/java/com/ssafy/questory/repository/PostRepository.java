@@ -13,7 +13,7 @@ public interface PostRepository {
                             @Param("keyword") String keyword);
     int create(Post post);
     void update(Post post);
-    void delete(Post post);
+    void deleteById(@Param("postId") Long postId);
     Post findById(Long postId);
     List<Post> findMyPosts(@Param("userEmail") String userEmail,
                            @Param("offset") int offset,

@@ -36,7 +36,7 @@
         JOIN Members m ON p.user_email = m.email
         WHERE p.post_id = #{postId}
     </select>
-    <delete id="delete" parameterType="com.ssafy.questory.domain.Post">
+    <delete id="deleteById" parameterType="long">
         DELETE FROM Posts
         WHERE post_id = #{postId}
     </delete>

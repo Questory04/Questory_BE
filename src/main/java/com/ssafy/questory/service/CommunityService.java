@@ -61,7 +61,7 @@ public class CommunityService {
     public void delete(Member member, PostsDeleteRequestDto postsDeleteRequestDto) {
         Post post = postRepository.findById(postsDeleteRequestDto.getPostId());
         validateMember(member, post.getPostId());
-        postRepository.delete(post);
+        postRepository.deleteById(post.getPostId());
     }
 
     public List<PostsResponseDto> findMyPosts(Member member, int page, int size, String keyword) {
