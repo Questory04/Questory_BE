@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -142,5 +143,9 @@ public class PlanService {
         if (!email1.equals(email2)) {
             throw new CustomException(ErrorCode.TOKEN_NOT_FOUND);
         }
+    }
+
+    public Optional<Plan> findPlanByPlanId(Long planId) {
+        return planRepository.findById(planId);
     }
 }

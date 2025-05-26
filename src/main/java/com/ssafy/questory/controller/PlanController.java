@@ -1,5 +1,8 @@
 package com.ssafy.questory.controller;
 
+import com.ssafy.questory.common.exception.CustomException;
+import com.ssafy.questory.common.exception.ErrorCode;
+import com.ssafy.questory.config.jwt.JwtService;
 import com.ssafy.questory.domain.Member;
 import com.ssafy.questory.domain.Plan;
 import com.ssafy.questory.dto.request.plan.PlanCreateRequestDto;
@@ -18,18 +21,36 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/plans")
 @RequiredArgsConstructor
 public class PlanController {
     private final PlanService planService;
+    private final JwtService jwtService;
 
     @GetMapping()
     @Operation(summary = "계획 조회", description = "내 계획을 조회합니다.")
     public ResponseEntity<List<PlanInfoResponseDto>> getPlanInfo(
             @AuthenticationPrincipal(expression = "member") Member member) {
         return ResponseEntity.ok().body(planService.getPlanInfo(member));
+    }
+
+    @GetMapping("/{planId}")
+    @Operation(summary = "계획 상세 정보 조회", description = "계획 상세 정보를 조회합니다.")
+    public Optional<Plan> findPlanByPlanId(@PathVariable Long planId,
+                                           @RequestHeader(value = "Authorization", required = false) String authorizationHeader) {
+        if(authorizationHeader == null){
+            throw new CustomException(ErrorCode.TOKEN_NOT_FOUND);
+        } else if(!authorizationHeader.startsWith("Bearer ")){
+            throw new CustomException(ErrorCode.INVALID_TOKEN_FORMAT);
+        }
+
+//        String token = authorizationHeader.substring(7);
+//        String memberEmail = jwtService.extractUsername(token);
+
+        return planService.findPlanByPlanId(planId);
     }
 
     @PostMapping()

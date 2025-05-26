@@ -46,7 +46,7 @@ public class RouteController {
     }
 
     @GetMapping("/{planId}")
-    @Operation(summary = "퀘스트 목록 조회", description = "퀘스트 목록을 조회합니다.")
+    @Operation(summary = "계획에 속한 관광지 목록 조회", description = "계획에 속한 관광지 목록 조회합니다.")
     public ResponseEntity<Map<String, Object>> getRoutesByPlanId(@PathVariable int planId,
                                                           @RequestHeader(value = "Authorization", required = false) String authorizationHeader) {
         if(authorizationHeader == null){
