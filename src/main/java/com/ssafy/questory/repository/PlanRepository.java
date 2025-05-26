@@ -17,4 +17,5 @@ public interface PlanRepository {
     int toggleShareStatus(@Param("planId") Long planId, @Param("shared") boolean isShared);
     int deleteById(Long planId);
     List<PlansListResponseDto> findPlansListCreatedByMe(@Param("memberEmail") String memberEmail);
+    List<PlansListResponseDto> findPlansListCreatedByNotMe(@Param("memberEmail") String memberEmail);
 }
