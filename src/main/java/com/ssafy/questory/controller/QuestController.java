@@ -5,6 +5,7 @@ import com.ssafy.questory.common.exception.ErrorCode;
 import com.ssafy.questory.config.jwt.JwtService;
 import com.ssafy.questory.dto.request.quest.QuestPositionRequestDto;
 import com.ssafy.questory.dto.request.quest.QuestRequestDto;
+import com.ssafy.questory.dto.response.quest.QuestRecommendationResponseDto;
 import com.ssafy.questory.dto.response.quest.QuestResponseDto;
 import com.ssafy.questory.dto.response.quest.QuestsResponseDto;
 import com.ssafy.questory.service.QuestService;
@@ -223,5 +224,12 @@ public class QuestController {
 
         return ResponseEntity.status(HttpStatus.OK).body(Map.of(
                 "message", "성공적으로 퀘스트를 완료했습니다."));
+    }
+
+    @GetMapping("/recommendation")
+    @Operation(summary = "추천 퀘스트 조회", description = "인기 기반 + 최신성 가중치로 정렬한 상위 퀘스트 목록을 조회합니다.")
+    public ResponseEntity<List<QuestRecommendationResponseDto>> getRecommendation(
+            @RequestParam(defaultValue = "10") int limit) {
+        return ResponseEntity.ok(questService.getRecommendation(limit));
     }
 }

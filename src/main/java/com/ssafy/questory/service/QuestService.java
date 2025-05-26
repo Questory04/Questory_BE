@@ -5,6 +5,7 @@ import com.ssafy.questory.common.exception.ErrorCode;
 import com.ssafy.questory.domain.DifficultyStatus;
 import com.ssafy.questory.dto.request.quest.QuestPositionRequestDto;
 import com.ssafy.questory.dto.request.quest.QuestRequestDto;
+import com.ssafy.questory.dto.response.quest.QuestRecommendationResponseDto;
 import com.ssafy.questory.dto.response.quest.QuestResponseDto;
 import com.ssafy.questory.dto.response.quest.QuestsResponseDto;
 import com.ssafy.questory.repository.QuestRepository;
@@ -237,4 +238,7 @@ public class QuestService {
         return (rad * 180 / Math.PI);
     }
 
+    public List<QuestRecommendationResponseDto> getRecommendation(int limit) {
+        return questRepository.findRecommendedQuests(limit);
+    }
 }

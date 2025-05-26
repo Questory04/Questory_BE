@@ -2,6 +2,7 @@ package com.ssafy.questory.repository;
 
 import com.ssafy.questory.dto.request.quest.QuestRequestDto;
 import com.ssafy.questory.dto.response.attraction.AttractionResponseDto;
+import com.ssafy.questory.dto.response.quest.QuestRecommendationResponseDto;
 import com.ssafy.questory.dto.response.quest.QuestResponseDto;
 import com.ssafy.questory.dto.response.quest.QuestsResponseDto;
 import org.apache.ibatis.annotations.Mapper;
@@ -71,4 +72,6 @@ public interface QuestRepository {
     void completeQuest(@Param("questId") int questId, @Param("memberEmail") String memberEmail);
 
     String getDifficultyByQuestId(@Param("questId") int questId);
+
+    List<QuestRecommendationResponseDto> findRecommendedQuests(int limit);
 }
