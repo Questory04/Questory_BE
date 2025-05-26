@@ -157,4 +157,8 @@ public class PlanService {
     public List<PlansListResponseDto> findPlansListCreatedByNotMe(String memberEmail) {
         return planRepository.findPlansListCreatedByNotMe(memberEmail);
     }
+
+    public List<PlansListResponseDto> selectSharedPlansByMemberEmail(String memberEmail) {
+        return planRepository.selectSharedPlansByMemberEmail(memberEmail);
+    }
 }
