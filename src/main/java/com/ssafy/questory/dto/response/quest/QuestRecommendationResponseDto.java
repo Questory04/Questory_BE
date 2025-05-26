@@ -11,17 +11,19 @@ public class QuestRecommendationResponseDto {
     private Long questId;
     private String title;
     private String description;
-    private DifficultyStatus difficulty;
+    private String difficulty;
+    private int exp;
     private int participantCount;
     private LocalDateTime createdAt;
 
     @Builder
     private QuestRecommendationResponseDto(Long questId, String title, String description,
-                                           DifficultyStatus difficulty, int participantCount, LocalDateTime createdAt) {
+                                           String difficulty, int exp, int participantCount, LocalDateTime createdAt) {
         this.questId = questId;
         this.title = title;
         this.description = description;
         this.difficulty = difficulty;
+        this.exp = exp;
         this.participantCount = participantCount;
         this.createdAt = createdAt;
     }

@@ -393,6 +393,12 @@
         q.title,
         q.quest_description AS description,
         q.difficulty,
+        CASE q.difficulty
+        WHEN 'EASY' THEN 30
+        WHEN 'MEDIUM' THEN 50
+        WHEN 'HARD' THEN 100
+        ELSE 0
+        END AS exp,
         COUNT(mq.member_email) AS participantCount,
         q.created_at
         FROM Quests q
