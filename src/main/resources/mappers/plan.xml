@@ -137,10 +137,12 @@
                 END AS status,
             COALESCE(route_stats.routesCnt, 0) AS routes_cnt,
             CASE
-            WHEN route_stats.routesCnt = 0 THEN 0
-            WHEN p.start_date IS NULL OR p.end_date IS NULL THEN 0
-            WHEN route_stats.total_days = 0 THEN 0
-            ELSE LEAST(100, ROUND((route_stats.filled_days / route_stats.total_days) * 100))
+                WHEN NOW() < p.start_date THEN 0
+                WHEN NOW() > p.end_date THEN 100
+                ELSE ROUND(
+                    (DATEDIFF(NOW(), p.start_date) + 1) / (DATEDIFF(p.end_date, p.start_date) + 1) * 100,
+                    0
+                )
             END AS completion_rate,
             p.created_at AS createdAt
             FROM Plans p

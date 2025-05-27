@@ -54,6 +54,7 @@ public class CommunityService {
                 .content(postsUpdateRequestDto.getContent())
                 .category(postsUpdateRequestDto.getCategory())
                 .email(member.getEmail())
+                .category(PostCategory.NORMAL)
                 .build();
         validateMember(member, post.getPostId());
         postRepository.update(post);
