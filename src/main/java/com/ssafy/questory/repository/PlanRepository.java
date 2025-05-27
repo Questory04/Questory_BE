@@ -18,5 +18,6 @@ public interface PlanRepository {
     int deleteById(Long planId);
     List<PlansListResponseDto> findPlansListCreatedByMe(@Param("memberEmail") String memberEmail);
     List<PlansListResponseDto> findPlansListCreatedByNotMe(@Param("memberEmail") String memberEmail);
+    List<PlansListResponseDto> findPlansListForMainPage();
     List<PlansListResponseDto> selectSharedPlansByMemberEmail(@Param("memberEmail") String memberEmail);
 }
