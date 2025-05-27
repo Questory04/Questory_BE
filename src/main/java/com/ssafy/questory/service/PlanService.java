@@ -161,4 +161,8 @@ public class PlanService {
     public List<PlansListResponseDto> selectSharedPlansByMemberEmail(String memberEmail) {
         return planRepository.selectSharedPlansByMemberEmail(memberEmail);
     }
+
+    public List<PlansListResponseDto> findPlansListForMainPage() {
+        return planRepository.findPlansListForMainPage();
+    }
 }

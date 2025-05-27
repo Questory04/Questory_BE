@@ -89,6 +89,14 @@ public class PlanController {
         return ResponseEntity.status(HttpStatus.OK).body(plansListResponseDtoList);
     }
 
+    @GetMapping("/mainPage")
+    @Operation(summary = "모든 여행 계획 목록 조회", description = "모든 여행 계획 목록을 조회합니다.")
+    public ResponseEntity<List<PlansListResponseDto>> findPlansListForMainPage() {
+        List<PlansListResponseDto> plansListResponseDtoList = planService.findPlansListForMainPage();
+
+        return ResponseEntity.status(HttpStatus.OK).body(plansListResponseDtoList);
+    }
+
     @GetMapping("/shared")
     @Operation(summary = "공유 받은 여행 계획 목록 조회", description = "공유 받은 여행 계획 목록을 조회합니다.")
     public ResponseEntity<List<PlansListResponseDto>> findSharedPlansListCreatedByMe(@RequestHeader(value = "Authorization", required = false) String authorizationHeader) {
