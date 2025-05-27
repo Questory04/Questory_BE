@@ -393,6 +393,7 @@
         q.title,
         q.quest_description AS description,
         q.difficulty,
+        a.first_image1 AS img,
         CASE q.difficulty
         WHEN 'EASY' THEN 30
         WHEN 'MEDIUM' THEN 50
@@ -403,6 +404,7 @@
         q.created_at
         FROM Quests q
         LEFT JOIN Members_Quests mq ON q.location_quest_id = mq.location_quest_id
+        LEFT JOIN Attractions a ON q.attraction_id = a.no
         WHERE q.is_deleted = 0 AND q.is_private = 0
         GROUP BY q.location_quest_id
         ORDER BY COUNT(mq.member_email) * 0.7 + (DATEDIFF(NOW(), q.created_at) * -0.3) DESC
